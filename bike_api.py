@@ -1,9 +1,8 @@
 import os
 import requests
 from dotenv import load_dotenv
-from ast import literal_eval
 
-def request_bike_data():
+def api_call():
     load_dotenv()
     api_key = os.getenv('bike_key')
     contract = 'Dublin'
@@ -14,17 +13,25 @@ def request_bike_data():
     return api_request
 
 def relavent_bike_dict():
-    data = request_bike_data()
-    j_data = data.json()
-    for d in j_data:
+    data = api_call()
+    data_json = data.json()
+    for d in data_json:
         #ALL RELAVENT DATA
         id = d['number']
         lat = d['position']['lat']
-        lng = d['position']['lat']
+        lng = d['position']['lng']
         av_bike_stands = d['available_bike_stands']
         av_bikes = d['available_bikes']
         status = d['status']
-        name = d['adress']
+        name = d['address']
         timestamp = d['last_update']
+        print(id)
+        print(lat)
+        print(lng)
+        print(av_bike_stands)
+        print(av_bikes)
+        print(status)
+        print(name)
+        print(timestamp)
 
 relavent_bike_dict()
