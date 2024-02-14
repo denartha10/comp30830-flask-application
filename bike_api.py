@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 from ast import literal_eval
 
-def load_bike_data():
+def request_bike_data():
     load_dotenv()
     api_key = os.getenv('bike_key')
     contract = 'Dublin'
@@ -14,7 +14,7 @@ def load_bike_data():
     return api_request
 
 def relavent_bike_dict():
-    data = load_bike_data()
+    data = request_bike_data()
     j_data = data.json()
     for d in j_data:
         #ALL RELAVENT DATA
