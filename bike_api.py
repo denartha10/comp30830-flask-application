@@ -34,12 +34,11 @@ def api_call():
     return data_json
 
 def engine_params():
-    load_dotenv()
-    user = 'Adam'
-    password = os.getenv('rds_pswrd')
-    host = 'dublinbikesdb.cvy4qywa206q.eu-west-1.rds.amazonaws.com'
+    user = 'admin'
+    password = 'kukfiv-zubsyd-1Pejpu'
+    host = 'database-1.c38umsk2i6vi.eu-north-1.rds.amazonaws.com'
     port = '3306'
-    db_name = 'Dublin_Bikes'
+    db_name = ''
     return f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db_name}'
 
 engine = create_engine(engine_params())
