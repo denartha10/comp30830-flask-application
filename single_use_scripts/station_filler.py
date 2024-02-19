@@ -34,7 +34,7 @@ def engine_params():
     password = 'kukfiv-zubsyd-1Pejpu'
     host = 'database-1.c38umsk2i6vi.eu-north-1.rds.amazonaws.com'
     port = '3306'
-    db_name = ''
+    db_name = 'bike_db'
     return f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db_name}'
 
 engine = create_engine(engine_params())
