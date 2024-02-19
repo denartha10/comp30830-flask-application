@@ -39,7 +39,7 @@ def api_call():
 def engine_params():
     user = 'admin'
     password = 'kukfiv-zubsyd-1Pejpu'
-    host = 'database-1.c38umsk2i6vi.eu-north-1.rds.amazonaws.com'
+    host = 'comp30830.c38umsk2i6vi.eu-north-1.rds.amazonaws.com'
     port = '3306'
     db_name = 'bike_db'
     return f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db_name}'
@@ -59,11 +59,11 @@ def push_to_db():
     session.commit()
     session.close()
 
-def is_valid_time(now):
+def is_closed(now):
     return time(0, 30) <= now <= time(5, 0)
 
 dublin_timezone = pytz.timezone('Europe/Dublin') 
 current_time_dublin = datetime.now(dublin_timezone)
 
-if is_valid_time(current_time_dublin.time()):
+if not is_closed(current_time_dublin.time()):
     push_to_db()
