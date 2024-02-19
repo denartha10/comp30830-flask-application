@@ -1,5 +1,5 @@
 import requests
-from sqlalchemy import create_engine, Column, Integer, Float, String#, MetaData
+from sqlalchemy import create_engine, Column, Integer, Float, String
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 Base = declarative_base()
@@ -31,14 +31,13 @@ def api_call():
 
 def engine_params():
     user = 'admin'
-    password = 'Jybbex-pybqe8-noqfeb'
+    password = 'kukfiv-zubsyd-1Pejpu'
     host = 'database-1.c38umsk2i6vi.eu-north-1.rds.amazonaws.com'
     port = '3306'
-    db_name = 'database-1'
+    db_name = ''
     return f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db_name}'
 
 engine = create_engine(engine_params())
-#metadata = MetaData()
 
 Session = sessionmaker(bind=engine)
 session = Session()
