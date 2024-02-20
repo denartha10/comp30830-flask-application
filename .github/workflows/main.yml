@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     
-    name: Build Image
+    name: Build Image and Run Script
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
@@ -36,3 +36,16 @@ jobs:
       run: |
         docker build -t 891377120799.dkr.ecr.eu-north-1.amazonaws.com/comp30830-flask-project:version1 .
         docker push 891377120799.dkr.ecr.eu-north-1.amazonaws.com/comp30830-flask-project:version1
+
+    - name: Run script on EC2 instance
+      uses: aws-actions/aws-cli@v1
+      with:
+        script: |
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --instance-ids "i-04417fa01859da2d4" \
+            --parameters commands="run_latest_flask.sh" \
+            --region eu-north-1
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-north-1
