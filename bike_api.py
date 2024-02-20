@@ -1,6 +1,4 @@
-import os
 import requests
-from dotenv import load_dotenv
 
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
