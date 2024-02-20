@@ -37,14 +37,14 @@ jobs:
         docker build -t 891377120799.dkr.ecr.eu-north-1.amazonaws.com/comp30830-flask-project:version1 .
         docker push 891377120799.dkr.ecr.eu-north-1.amazonaws.com/comp30830-flask-project:version1
 
-    - name: Run script on EC2 instance
-      run: |
-        aws ssm send-command \
-          --document-name "AWS-RunShellScript" \
-          --instance-ids "i-04417fa01859da2d4" \
-          --parameters commands="run_latest_flask.sh" \
-          --region eu-north-1
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: eu-north-1
+    # - name: Run script on EC2 instance
+    #   run: |
+    #     aws ssm send-command \
+    #       --document-name "AWS-RunShellScript" \
+    #       --instance-ids "i-04417fa01859da2d4" \
+    #       --parameters commands="run_latest_flask.sh" \
+    #       --region eu-north-1
+    #   env:
+    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     AWS_REGION: eu-north-1
