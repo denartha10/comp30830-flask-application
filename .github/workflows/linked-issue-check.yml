@@ -13,8 +13,8 @@ jobs:
       id: check-issue
       run: |
         ISSUE_REGEX="(^|\s)#([0-9]+)($|\s)"
-        echo "Pull request body: ${GITHUB_EVENT_TEXT}"
-        if [[ true ]]; then
+        echo "Pull request body: ${{ github.event.pull_request.body }}"
+        if [[ ! ${{ github.event.pull_request.body }} =~ $ISSUE_REGEX ]]; then
           echo "No issue linked in the pull request description."
           echo "::error::No issue linked in the pull request description."
           exit   1
