@@ -1,59 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map</title>
-    <link rel="stylesheet" href="tailwind.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
-</head>
-<body class="bg-[#e5e3df] font-sans m-0 p-0">
-    <div class="absolute top-0 left-0 right-0 flex items-center p-2.5 bg-transparent z-10">
-        <button id="menuToggle" class="hamburger-button bg-transparent border-none text-[#5f6368] text-2xl cursor-pointer pr-1 ml-1">☰</button>
-        <div class="flex items-center bg-white rounded-full shadow-md ml-5" style="width: 350px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);">
-            <input type="text" id="searchBar" class="border-none outline-none pl-5 pr-10 py-2 text-base w-full rounded-full" placeholder="Search Maps For a Bike" oninput="showSearchPrompt()">
-            <div id="searchPrompt" class="hidden mt-2 text-sm text-gray-600"></div>
-        </div>        
-    </div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Map</title>
+		<link rel="stylesheet" href="tailwind.css" />
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+		<script src="https://www.gstatic.com/charts/loader.js"></script>
+		<script
+			src="https://unpkg.com/htmx.org@1.9.10"
+			integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+			crossorigin="anonymous"
+		></script>
+	</head>
+	<body class="bg-[#e5e3df] font-sans m-0 p-0">
+		<div id="map">
+			<iframe
+				src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d38116.29035369408!2d-6.296526096437527!3d53.33845599800749!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48670e80ea27ac2f%3A0xa00c7a9973171a0!2sDublin!5e0!3m2!1sen!2sie!4v1708421794731!5m2!1sen!2sie"
+				width="600"
+				height="450"
+				style="border: 0"
+				allowfullscreen=""
+				loading="lazy"
+				referrerpolicy="no-referrer-when-downgrade"
+			></iframe>
+		</div>
+		<div
+			class="absolute top-0 left-0 right-0 flex items-center p-2.5 bg-transparent z-10"
+		>
+			<button
+				id="menuToggle"
+				class="hamburger-button bg-transparent border-none text-[#5f6368] text-2xl cursor-pointer pr-1 ml-1"
+			>
+				☰
+			</button>
+			<div
+				class="flex items-center bg-white rounded-full shadow-md ml-5"
+				style="width: 350px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3)"
+			>
+				<input
+					type="text"
+					id="searchBar"
+					class="border-none outline-none pl-5 pr-10 py-2 text-base w-full rounded-full"
+					placeholder="Search Maps For a Bike"
+					oninput="showSearchPrompt()"
+				/>
+				<div id="searchPrompt" class="hidden mt-2 text-sm text-gray-600"></div>
+			</div>
+		</div>
 
-    <div class="absolute top-0 right-0 p-5 flex items-center space-x-4">
-        <button id="smallWeatherToggle" class="bg-no-repeat bg-center bg-contain h-12 w-12 rounded-full" style="background-image: url('images/WeatherFavicon.jpg');"></button>
-    </div>
-    
-    <div id="menu" class="hidden absolute top-[100px] left-5 p-5 bg-white text-black rounded-xl shadow-md z-10 w-[390px] h-[80vh] text-center">
-        <h2 class="text-xl mb-5">Plan Your Bike Trip</h2>
-        <div id="liveTimer" class="text-[#5f6368] text-lg mb-5"></div>
-        <input type="text" placeholder="Starting Destination" class="mt-2 p-2 border border-gray-300 rounded w-full">
-        <div class="mt-4"></div>
-        <input type="text" placeholder="End Destination" class="mt-2 p-2 border border-gray-300 rounded w-full">
-        <div class="mt-4"></div>
-        <input type="date" class="mt-2 p-2 border border-gray-300 rounded w-full">     
-        <div class="mt-4"></div>
-        <input type="time" class="mt-2 p-2 border border-gray-300 rounded w-full">
-        <div class="mt-4"></div>
-        <button id="weatherToggle" class="block mx-auto bg-no-repeat bg-center bg-contain h-36 w-36 rounded-full" style="background-image: url('images/WeatherFavicon.jpg');"></button>
-    </div>
-    
-    <div id="weatherMenu" class="hidden absolute top-[100px] right-5 p-5 bg-white text-black rounded-xl shadow-md z-10 w-[390px] h-[80vh] text-center overflow-auto transition-all duration-300">
-    <h2 class="text-xl mb-5">Weather Information</h2>
-    <div class="mock-graph my-5 group flex flex-col items-center">
-        <h3 class="mb-2">Temperature:</h3>
-        <div class="bar-temperature bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"></div>
-    </div>
-    <div class="mock-graph my-5 group flex flex-col items-center">
-        <h3 class="mb-2">Percipitation:</h3>
-        <div class="bar-humidity bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"></div>
-    </div>
-    <div class="mock-graph my-5 group flex flex-col items-center">
-        <h3 class="mb-2">Wind Speed:</h3>
-        <div class="bar-wind-speed bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"></div>
-    </div>
-    </div>
-    
-    
-    <script src="javascript.js"></script>
-</body>
+		<div class="absolute top-0 right-0 p-5 flex items-center space-x-4">
+			<button
+				id="smallWeatherToggle"
+				class="bg-no-repeat bg-center bg-contain h-12 w-12 rounded-full"
+				style="background-image: url('images/WeatherFavicon.jpg')"
+			></button>
+		</div>
+
+		<div
+			id="menu"
+			class="hidden absolute top-[100px] left-5 p-5 bg-white text-black rounded-xl shadow-md z-10 w-[390px] h-[80vh] text-center"
+		>
+			<h2 class="text-xl mb-5">Plan Your Bike Trip</h2>
+			<div id="liveTimer" class="text-[#5f6368] text-lg mb-5"></div>
+			<input
+				type="text"
+				placeholder="Starting Destination"
+				class="mt-2 p-2 border border-gray-300 rounded w-full"
+			/>
+			<div class="mt-4"></div>
+			<input
+				type="text"
+				placeholder="End Destination"
+				class="mt-2 p-2 border border-gray-300 rounded w-full"
+			/>
+			<div class="mt-4"></div>
+			<input
+				type="date"
+				class="mt-2 p-2 border border-gray-300 rounded w-full"
+			/>
+			<div class="mt-4"></div>
+			<input
+				type="time"
+				class="mt-2 p-2 border border-gray-300 rounded w-full"
+			/>
+			<div class="mt-4"></div>
+			<button
+				id="weatherToggle"
+				class="block mx-auto bg-no-repeat bg-center bg-contain h-36 w-36 rounded-full"
+				style="background-image: url('images/WeatherFavicon.jpg')"
+			></button>
+		</div>
+
+		<div
+			id="weatherMenu"
+			class="hidden absolute top-[100px] right-5 p-5 bg-white text-black rounded-xl shadow-md z-10 w-[390px] h-[80vh] text-center overflow-auto transition-all duration-300"
+		>
+			<h2 class="text-xl mb-5">Weather Information</h2>
+			<div class="mock-graph my-5 group flex flex-col items-center">
+				<h3 class="mb-2">Temperature:</h3>
+				<div
+					class="bar-temperature bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"
+				></div>
+			</div>
+			<div class="mock-graph my-5 group flex flex-col items-center">
+				<h3 class="mb-2">Percipitation:</h3>
+				<div
+					class="bar-humidity bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"
+				></div>
+			</div>
+			<div class="mock-graph my-5 group flex flex-col items-center">
+				<h3 class="mb-2">Wind Speed:</h3>
+				<div
+					class="bar-wind-speed bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"
+				></div>
+			</div>
+		</div>
+
+		<script src="javascript.js"></script>
+	</body>
 </html>
