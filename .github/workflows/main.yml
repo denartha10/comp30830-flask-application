@@ -41,7 +41,7 @@ jobs:
       run: |
         aws ssm send-command \
           --document-name "AWS-RunShellScript" \
-          --instance-ids "eeeeeee859da2d4" \
+          --instance-ids "i-04417fa01859da2d4" \
           --parameters commands="run_latest_flask.sh" \
           --region eu-north-1
       env:
