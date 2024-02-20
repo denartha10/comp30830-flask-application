@@ -2,11 +2,14 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from sqlalchemy import create_engine, Column, Integer, BIGINT, String, MetaData
+from sqlalchemy import create_engine, Column, Integer, BIGINT, String, MetaData, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 from datetime import datetime, time
 import pytz
+
+dublin_timezone = pytz.timezone('Europe/Dublin') 
+current_time_dublin = datetime.now(dublin_timezone)
 
 Base = declarative_base()
 
@@ -17,13 +20,15 @@ class Availability(Base):
     available_bikes = Column(Integer)
     available_stands = Column(Integer)
     status = Column(String)
+    date_time = Column(DateTime)
 
-    def __init__(self, id, up, bikes, stands, status):
+    def __init__(self, id, up, bikes, stands, status, date):
         self.id = id
         self.last_update = up
         self.available_bikes = bikes
         self.available_stands = stands
         self.status = status
+        self.date_time = date
 
 def api_call():
     load_dotenv()
@@ -53,7 +58,7 @@ def push_to_db():
 
     # Add new rows
     for d in api_call():
-        new_av = Availability(id = d['number'], up = d['last_update'], bikes = d['available_bikes'], stands = d['available_bike_stands'], status = d['status'])
+        new_av = Availability(id = d['number'], up = d['last_update'], bikes = d['available_bikes'], stands = d['available_bike_stands'], status = d['status'], date = current_time_dublin)
         session.add(new_av)
 
     session.commit()
@@ -61,9 +66,6 @@ def push_to_db():
 
 def is_closed(now):
     return time(0, 30) <= now <= time(5, 0)
-
-dublin_timezone = pytz.timezone('Europe/Dublin') 
-current_time_dublin = datetime.now(dublin_timezone)
 
 if not is_closed(current_time_dublin.time()):
     push_to_db()
