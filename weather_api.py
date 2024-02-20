@@ -1,8 +1,5 @@
 import openmeteo_requests
 
-import requests_cache
-from retry_requests import retry
-
 from sqlalchemy import create_engine, Column, DateTime, Float
 from sqlalchemy.orm import sessionmaker, declarative_base
 
@@ -34,9 +31,7 @@ def api_call():
 		"longitude": 6.26, #Dublin lng
 		"current": ["temperature_2m", "precipitation", "wind_speed_10m"]
 	}
-	cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
-	retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
-	openmeteo = openmeteo_requests.Client(session = retry_session)
+	openmeteo = openmeteo_requests.Client()
 	api_request = openmeteo.weather_api(url, params=params)
 	return api_request[0].Current()
 
@@ -56,10 +51,10 @@ def push_to_db():
 
     # Add new rows
     current = api_call()
-    current_temperature = current.Variables(0).Value()
-    current_precipitation = current.Variables(1).Value()
-    current_wind_speed = current.Variables(2).Value()
-    new_av = Weather(date = current_time_dublin, temp = current_temperature, prec = current_precipitation, wind = current_wind_speed)
+    c_temp = current.Variables(0).Value()
+    c_prec = current.Variables(1).Value()
+    c_wind = current.Variables(2).Value()
+    new_av = Weather(date = current_time_dublin, temp = c_temp, prec = c_prec, wind = c_wind)
     session.add(new_av)
 
     session.commit()

@@ -2,7 +2,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from sqlalchemy import create_engine, Column, Integer, BIGINT, String, MetaData, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 from datetime import datetime, time
@@ -16,23 +16,20 @@ Base = declarative_base()
 class Availability(Base):
     __tablename__ = 'availability'
     id = Column(Integer, primary_key=True)
-    last_update = Column(BIGINT, primary_key=True)
+    last_update = Column(DateTime, primary_key=True)
     available_bikes = Column(Integer)
     available_stands = Column(Integer)
     status = Column(String)
-    date_time = Column(DateTime)
 
-    def __init__(self, id, up, bikes, stands, status, date):
+    def __init__(self, id, up, bikes, stands, status):
         self.id = id
         self.last_update = up
         self.available_bikes = bikes
         self.available_stands = stands
         self.status = status
-        self.date_time = date
 
 def api_call():
-    load_dotenv()
-    api_key = os.getenv('bike_key')
+    api_key = 'c3888c0fb1578a56ea9015668577aa754fcbecd6'
     contract = 'Dublin'
     api_request = requests.get(f'https://api.jcdecaux.com/vls/v1/stations?contract={contract}&apiKey={api_key}')
     if api_request.status_code not in range(200, 299):
@@ -51,14 +48,13 @@ def engine_params():
 
 def push_to_db():
     engine = create_engine(engine_params())
-    metadata = MetaData()
 
     Session = sessionmaker(bind=engine)
     session = Session()
 
     # Add new rows
     for d in api_call():
-        new_av = Availability(id = d['number'], up = d['last_update'], bikes = d['available_bikes'], stands = d['available_bike_stands'], status = d['status'], date = current_time_dublin)
+        new_av = Availability(id = d['number'], up = datetime.utcfromtimestamp(d['last_update']/1000), bikes = d['available_bikes'], stands = d['available_bike_stands'], status = d['status'])
         session.add(new_av)
 
     session.commit()
