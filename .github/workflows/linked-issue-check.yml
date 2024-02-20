@@ -1,0 +1,21 @@
+name: Linked Issue Check
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  linked-issue-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Check for linked issue
+      run: |
+        ISSUE_REGEX="(^|\s)#([0-9]+)($|\s)"
+        if [[ ! ${{ github.event.pull_request.body }} =~ $ISSUE_REGEX ]]; then
+          echo "No issue linked in the pull request description."
+          exit  1
+        fi
+
