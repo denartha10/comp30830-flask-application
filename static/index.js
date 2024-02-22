@@ -1,136 +1,86 @@
 document.addEventListener('DOMContentLoaded', () => {
-	const menuToggle = document.getElementById('menuToggle');
-	const menu = document.getElementById('menu');
-	const weatherToggle = document.getElementById('weatherToggle');
-	const weatherMenu = document.getElementById('weatherMenu');
-	const searchBar = document.getElementById('searchBar');
-	const searchTripButton = document.getElementById('searchTrip');
-	const closeWeatherMenuButton = document.getElementById('closeWeatherMenu');
+    //Maps HTML IDs to elements
+    const elements = {
+        menu: document.getElementById('menu'),
+        menuToggle: document.getElementById('menuToggle'),
+        weatherMenu: document.getElementById('weatherMenu'),
+        weatherToggle: document.getElementById('weatherToggle'),
+        closeWeather: document.getElementById('closeWeather'),
+        searchBar: document.getElementById('searchBar'),
+        searchTrip: document.getElementById('searchTrip'),
+    };
 
-	searchBar.addEventListener('click', function () {
-		this.value = '';
-	});
+    //Toggles visibility of the main menu 
+    //When closed, will close weather menu 
+    elements.menuToggle?.addEventListener('click', () => {
+        toggleElementVisibility(elements.menu);
+        hideElement(elements.weatherMenu);
+        clearInput(); //Call clearInput function to clear specific input values
+    });
 
-	if (closeWeatherMenuButton) {
-		closeWeatherMenuButton.addEventListener('click', () => {
-			weatherMenu.classList.add('hidden');
-		});
-	}
+    elements.searchTrip?.addEventListener('click', () => {
+        toggleElementVisibility(elements.weatherMenu); //Toggles visibility of the weather menu
+        hideElement(elements.menu); //Hides the main menu when searching for a trip
+        performSearch();  //Calls performSearch() placeholder
+    });
 
-	if (searchTripButton) {
-		searchTripButton.addEventListener('click', () => {
-			toggleElementVisibility(weatherMenu);
-			hideElement(document.getElementById('menu'));
-		});
-	}
+    //Clears search bar when clicked, sets value to an empty string when clicked
+    elements.searchBar.addEventListener('click', () => elements.searchBar.value = '');
 
-	if (menuToggle) {
-		menuToggle.addEventListener('click', () => {
-			toggleElementVisibility(menu);
-			hideElement(weatherMenu);
+    //toggles visibility of the weather menu 
+    elements.weatherToggle?.addEventListener('click', () => toggleElementVisibility(elements.weatherMenu));
 
-			if (menu.classList.contains('hidden')) {
-				searchBar.value = '';
-				startingDestination.value = '';
-				endDestination.value = '';
-			}
-		});
-	}
-	if (weatherToggle) {
-		weatherToggle.addEventListener('click', () => {
-			toggleElementVisibility(weatherMenu);
-		});
-	}
-	updateLiveTimer();
-	setInterval(updateLiveTimer, 60000);
+    //Hides the weather menu when close button clicked
+    elements.closeWeather?.addEventListener('click', () => elements.weatherMenu.classList.add('hidden'));
+
+    //Calls displayClock() to display the current time
+    displayClock();
 });
 
+//Function to toggle visibility of an element
 function toggleElementVisibility(element) {
-	element.classList.toggle('hidden');
+    element?.classList.toggle('hidden'); //Toggles the class 'hidden' on the element if it exists
 }
 
+//Function to hide an element
 function hideElement(element) {
-	element.classList.add('hidden');
+    element?.classList.add('hidden'); //Adds the class 'hidden' to the element if it exists
 }
 
-function updateLiveTimer() {
-	const now = new Date();
-	const hours = now.getHours().toString().padStart(2, '0');
-	const minutes = now.getMinutes().toString().padStart(2, '0');
-	const timeString = `${hours}:${minutes}`;
-	document.getElementById('liveTimer').textContent = timeString;
+//Clears inputs when the menu is closed
+function clearInput() {
+    ['searchBar', 'startingDestination', 'endDestination'].forEach(id => {
+        const element = document.getElementById(id); //Gets the element by its ID
+        if (element && document.getElementById('menu').classList.contains('hidden')) { 
+            element.value = '';  //If element exists and menu is hidden, sets value of the element to an empty string
+        }
+    });
 }
 
-setInterval(updateLiveTimer, 6000);
+//function displays the current time
+function displayClock(){
+    var currentTime = new Date();
+    var hours = currentTime.getHours();
+    var minutes = currentTime.getMinutes();
+    var display = hours + ":" + minutes;
+    document.getElementById('liveTimer').textContent = display; 
+    setTimeout(displayClock, 1000); 
+}
 
+//placeholder for the actual search functionality - TBC
 function performSearch() {
-	const searchBar = document.getElementById('searchBar');
-	const searchPrompt = document.getElementById('searchPrompt');
-	const searchText = searchBar.value.trim();
-
-	if (searchText.length > 0) {
-		searchPrompt.textContent = `Searching for "${searchText}"...`;
-		searchPrompt.classList.remove('hidden');
-	} else {
-		searchPrompt.classList.add('hidden');
-	}
+    const searchBar = document.getElementById('searchBar');
+    const searchText = searchBar.value.trim();
 }
+
 
 function initMap() {
 	var map = new google.maps.Map(document.getElementById('map'), {
-		center: {lat: 53.347, lng: -6.26},
+		center: {lat: 53.347, lng: -6.27},
 		zoom: 14,
 		mapTypeControl: false,
     streetViewControl: false
 	});
-
-	var input = document.getElementById('searchBar');
-	var autocomplete = new google.maps.places.Autocomplete(input);
-
-	autocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
-
-	autocomplete.addListener('place_changed', function () {
-		marker.setVisible(false);
-		var place = autocomplete.getPlace();
-		if (!place.geometry) {
-			window.alert("No Information available for: '" + place.name + "'");
-			return;
-		}
-
-		if (place.geometry.viewport) {
-			map.fitBounds(place.geometry.viewport);
-		} else {
-			map.setCenter(place.geometry.location);
-			map.setZoom(17);
-		}
-		marker.setPosition(place.geometry.location);
-		marker.setVisible(true);
-	});
-
-	var startAutocomplete = new google.maps.places.Autocomplete(
-		document.getElementById('startingDestination'),
-		{types: ['geocode']}
-	);
-
-	var endAutocomplete = new google.maps.places.Autocomplete(
-		document.getElementById('endDestination'),
-		{types: ['geocode']}
-	);
-
-	google.maps.event.addListener(
-		startAutocomplete,
-		'place_changed',
-		function () {
-			var place = startAutocomplete.getPlace();
-			console.log('Start place selected: ', place.formatted_address);
-		}
-	);
-
-	google.maps.event.addListener(endAutocomplete, 'place_changed', function () {
-		var place = endAutocomplete.getPlace();
-		console.log('End place selected: ', place.formatted_address);
-	});
-
 	setMarkers(map);
 }
 
