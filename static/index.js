@@ -153,6 +153,7 @@ async function initMap(data) {
 	}
 }
 
+//can change what the icon click function does later
 function iconClick(stationInfo) {
 	console.log(stationInfo);
 }
