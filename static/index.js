@@ -83,6 +83,12 @@ function performSearch() {
 	const searchText = searchBar.value.trim();
 }
 
+//map and weather initialization called by map api key in index.html
+function init() {
+	pullBikeData();
+	pullWeatherData();
+}
+
 function pullBikeData() {
 	fetch('markers.json')
 		.then((response) => {
@@ -149,11 +155,35 @@ async function initMap(data) {
 			content: pinStyle.element,
 		});
 		markersArr.push(newMarker);
-		newMarker.addListener('click', function() {iconClick(d) });
+		newMarker.addListener('click', function () {
+			iconClick(d);
+		});
 	}
 }
 
 //can change what the icon click function does later
 function iconClick(stationInfo) {
 	console.log(stationInfo);
+}
+
+function pullWeatherData() {
+	fetch('weather.json')
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error('Error');
+			}
+			return response.json(); //parse JSON data
+		})
+		.then((data) => populateWeather(data)) //if everything is good send JSON objects to func
+		.catch((error) => {
+			console.error(error); //send the error to the console
+			alert(error);
+		});
+}
+
+//create weather JS object you can reference in front end
+function populateWeather(data) {
+	document.getElementById("tempNum").innerText = data['temp'];
+	document.getElementById("precNum").innerText = data['prec'];
+	document.getElementById("windNum").innerText = data['wind'];
 }

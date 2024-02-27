@@ -44,18 +44,21 @@
 			<div class="mock-graph my-5 group flex flex-col items-center">
 				<h3 class="mb-2">Temperature:</h3>
 				<div class="bar-temperature bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"></div>
+				<div id='tempNum'>N/A</div>
 			</div>
 			<div class="mock-graph my-5 group flex flex-col items-center">
 				<h3 class="mb-2">Percipitation:</h3>
 				<div class="bar-humidity bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"></div>
+				<div id='precNum'>N/A</div>
 			</div>
 			<div class="mock-graph my-5 group flex flex-col items-center">
 				<h3 class="mb-2">Wind Speed:</h3>
 				<div class="bar-wind-speed bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"></div>
+				<div id='windNum'>N/A</div>
 			</div>
 		</div>
 
 		<script src="index.js"></script>
-		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCGC5Xnd3kfnh59EExFU3_Vjv1tpGLxW0&&loading=async&callback=pullBikeData"></script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCGC5Xnd3kfnh59EExFU3_Vjv1tpGLxW0&&loading=async&callback=init"></script>
 	</body>
 </html>
