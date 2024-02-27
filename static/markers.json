@@ -1,116 +1,1028 @@
-[
-	{"id": 42, "lat": 53.349562, "lng": -6.278198},
-	{"id": 30, "lat": 53.3537415547453, "lng": -6.26530144781526},
-	{"id": 54, "lat": 53.336021, "lng": -6.26298},
-	{"id": 108, "lat": 53.359405, "lng": -6.276142},
-	{"id": 20, "lat": 53.336597, "lng": -6.248109},
-	{"id": 56, "lat": 53.33796, "lng": -6.24153},
-	{"id": 6, "lat": 53.343368, "lng": -6.27012},
-	{"id": 18, "lat": 53.334123, "lng": -6.265436},
-	{"id": 32, "lat": 53.344304, "lng": -6.250427},
-	{"id": 52, "lat": 53.338755, "lng": -6.262003},
-	{"id": 48, "lat": 53.347777, "lng": -6.244239},
-	{"id": 13, "lat": 53.336074, "lng": -6.252825},
-	{"id": 43, "lat": 53.330091, "lng": -6.268044},
-	{"id": 31, "lat": 53.350929, "lng": -6.265125},
-	{"id": 98, "lat": 53.341515, "lng": -6.256853},
-	{"id": 14, "lat": 53.344603, "lng": -6.263371},
-	{"id": 1, "lat": 53.340927, "lng": -6.262501},
-	{"id": 23, "lat": 53.348279, "lng": -6.254662},
-	{"id": 106, "lat": 53.35893, "lng": -6.280337},
-	{"id": 112, "lat": 53.357841, "lng": -6.251557},
-	{"id": 68, "lat": 53.344115, "lng": -6.237153},
-	{"id": 74, "lat": 53.343893, "lng": -6.280531},
-	{"id": 87, "lat": 53.347477, "lng": -6.28525},
-	{"id": 84, "lat": 53.339005, "lng": -6.300217},
-	{"id": 90, "lat": 53.344153, "lng": -6.233451},
-	{"id": 11, "lat": 53.334295, "lng": -6.258503},
-	{"id": 17, "lat": 53.340803, "lng": -6.267732},
-	{"id": 45, "lat": 53.351464, "lng": -6.255265},
-	{"id": 114, "lat": 53.333653, "lng": -6.248345},
-	{"id": 72, "lat": 53.343105, "lng": -6.277167},
-	{"id": 63, "lat": 53.341428, "lng": -6.24672},
-	{"id": 113, "lat": 53.338614, "lng": -6.248606},
-	{"id": 91, "lat": 53.341833, "lng": -6.231291},
-	{"id": 99, "lat": 53.346637, "lng": -6.246154},
-	{"id": 9, "lat": 53.343034, "lng": -6.263578},
-	{"id": 67, "lat": 53.346867, "lng": -6.230852},
-	{"id": 116, "lat": 53.3547, "lng": -6.272314},
-	{"id": 55, "lat": 53.33403, "lng": -6.260714},
-	{"id": 62, "lat": 53.346026, "lng": -6.243576},
-	{"id": 5, "lat": 53.330662, "lng": -6.260177},
-	{"id": 97, "lat": 53.342113, "lng": -6.310015},
-	{"id": 61, "lat": 53.357043, "lng": -6.263232},
-	{"id": 77, "lat": 53.348875, "lng": -6.267459},
-	{"id": 73, "lat": 53.342081, "lng": -6.275233},
-	{"id": 4, "lat": 53.346874, "lng": -6.272976},
-	{"id": 49, "lat": 53.347932, "lng": -6.240928},
-	{"id": 19, "lat": 53.334432, "lng": -6.245575},
-	{"id": 7, "lat": 53.343565, "lng": -6.275071},
-	{"id": 60, "lat": 53.359624, "lng": -6.260348},
-	{"id": 102, "lat": 53.354929, "lng": -6.269425},
-	{"id": 38, "lat": 53.350974, "lng": -6.25294},
-	{"id": 53, "lat": 53.337132, "lng": -6.26059},
-	{"id": 58, "lat": 53.339218, "lng": -6.240642},
-	{"id": 66, "lat": 53.347122, "lng": -6.234749},
-	{"id": 104, "lat": 53.355173, "lng": -6.278424},
-	{"id": 101, "lat": 53.350291, "lng": -6.273507},
-	{"id": 115, "lat": 53.354845, "lng": -6.247579},
-	{"id": 47, "lat": 53.335742, "lng": -6.24551},
-	{"id": 117, "lat": 53.343653, "lng": -6.231755},
-	{"id": 8, "lat": 53.347884, "lng": -6.248048},
-	{"id": 27, "lat": 53.341288, "lng": -6.258117},
-	{"id": 16, "lat": 53.347508, "lng": -6.252192},
-	{"id": 96, "lat": 53.341805, "lng": -6.305085},
-	{"id": 82, "lat": 53.341645, "lng": -6.29719},
-	{"id": 76, "lat": 53.342296, "lng": -6.287661},
-	{"id": 71, "lat": 53.337757, "lng": -6.267699},
-	{"id": 79, "lat": 53.358115, "lng": -6.265601},
-	{"id": 69, "lat": 53.342638, "lng": -6.238695},
-	{"id": 25, "lat": 53.339434, "lng": -6.246548},
-	{"id": 51, "lat": 53.339334, "lng": -6.264699},
-	{"id": 37, "lat": 53.337494, "lng": -6.26199},
-	{"id": 59, "lat": 53.35561, "lng": -6.261397},
-	{"id": 95, "lat": 53.343897, "lng": -6.29706},
-	{"id": 94, "lat": 53.346985, "lng": -6.297804},
-	{"id": 105, "lat": 53.355954, "lng": -6.278378},
-	{"id": 36, "lat": 53.337824, "lng": -6.256035},
-	{"id": 93, "lat": 53.346603, "lng": -6.296924},
-	{"id": 22, "lat": 53.345922, "lng": -6.254614},
-	{"id": 50, "lat": 53.35023, "lng": -6.279696},
-	{"id": 110, "lat": 53.356307, "lng": -6.273717},
-	{"id": 12, "lat": 53.359246, "lng": -6.269779},
-	{"id": 34, "lat": 53.330362, "lng": -6.265163},
-	{"id": 78, "lat": 53.359967, "lng": -6.264828},
-	{"id": 2, "lat": 53.356769, "lng": -6.26814},
-	{"id": 75, "lat": 53.343456, "lng": -6.287409},
-	{"id": 111, "lat": 53.356717, "lng": -6.256359},
-	{"id": 26, "lat": 53.339764, "lng": -6.251988},
-	{"id": 65, "lat": 53.34744, "lng": -6.238523},
-	{"id": 15, "lat": 53.355473, "lng": -6.264423},
-	{"id": 86, "lat": 53.347972, "lng": -6.291804},
-	{"id": 35, "lat": 53.347692, "lng": -6.278214},
-	{"id": 10, "lat": 53.344007, "lng": -6.266802},
-	{"id": 100, "lat": 53.347106, "lng": -6.292041},
-	{"id": 24, "lat": 53.352149, "lng": -6.260533},
-	{"id": 64, "lat": 53.345203, "lng": -6.247163},
-	{"id": 109, "lat": 53.353331, "lng": -6.249319},
-	{"id": 85, "lat": 53.338776, "lng": -6.30395},
-	{"id": 107, "lat": 53.359157, "lng": -6.281866},
-	{"id": 33, "lat": 53.349013, "lng": -6.260311},
-	{"id": 44, "lat": 53.358437, "lng": -6.260641},
-	{"id": 89, "lat": 53.335211, "lng": -6.2509},
-	{"id": 57, "lat": 53.339629, "lng": -6.243778},
-	{"id": 80, "lat": 53.341359, "lng": -6.292951},
-	{"id": 41, "lat": 53.332763, "lng": -6.257942},
-	{"id": 3, "lat": 53.351182, "lng": -6.269859},
-	{"id": 40, "lat": 53.3483, "lng": -6.266651},
-	{"id": 29, "lat": 53.346057, "lng": -6.268001},
-	{"id": 103, "lat": 53.354663, "lng": -6.278681},
-	{"id": 28, "lat": 53.356299, "lng": -6.258586},
-	{"id": 39, "lat": 53.332383, "lng": -6.252717},
-	{"id": 83, "lat": 53.340714, "lng": -6.308191},
-	{"id": 92, "lat": 53.347802, "lng": -6.292432},
-	{"id": 21, "lat": 53.34218, "lng": -6.254485},
-	{"id": 88, "lat": 53.3488, "lng": -6.281637}
-]
+{
+	"42": {
+		"id": 42,
+		"name": "Smithfield North",
+		"lat": 53.349562,
+		"lng": -6.278198,
+		"bikes_open": 1,
+		"stands_open": 29,
+		"status": "OPEN"
+	},
+	"30": {
+		"id": 30,
+		"name": "Parnell Square North",
+		"lat": 53.3537415547453,
+		"lng": -6.26530144781526,
+		"bikes_open": 18,
+		"stands_open": 2,
+		"status": "OPEN"
+	},
+	"54": {
+		"id": 54,
+		"name": "Clonmel Street",
+		"lat": 53.336021,
+		"lng": -6.26298,
+		"bikes_open": 24,
+		"stands_open": 9,
+		"status": "OPEN"
+	},
+	"108": {
+		"id": 108,
+		"name": "Avondale Road",
+		"lat": 53.359405,
+		"lng": -6.276142,
+		"bikes_open": 29,
+		"stands_open": 6,
+		"status": "OPEN"
+	},
+	"20": {
+		"id": 20,
+		"name": "James Street East",
+		"lat": 53.336597,
+		"lng": -6.248109,
+		"bikes_open": 30,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"56": {
+		"id": 56,
+		"name": "Mount Street Lower",
+		"lat": 53.33796,
+		"lng": -6.24153,
+		"bikes_open": 32,
+		"stands_open": 8,
+		"status": "OPEN"
+	},
+	"6": {
+		"id": 6,
+		"name": "Christchurch Place",
+		"lat": 53.343368,
+		"lng": -6.27012,
+		"bikes_open": 14,
+		"stands_open": 6,
+		"status": "OPEN"
+	},
+	"18": {
+		"id": 18,
+		"name": "Grantham Street",
+		"lat": 53.334123,
+		"lng": -6.265436,
+		"bikes_open": 4,
+		"stands_open": 26,
+		"status": "OPEN"
+	},
+	"32": {
+		"id": 32,
+		"name": "Pearse Street",
+		"lat": 53.344304,
+		"lng": -6.250427,
+		"bikes_open": 23,
+		"stands_open": 7,
+		"status": "OPEN"
+	},
+	"52": {
+		"id": 52,
+		"name": "York Street East",
+		"lat": 53.338755,
+		"lng": -6.262003,
+		"bikes_open": 17,
+		"stands_open": 15,
+		"status": "OPEN"
+	},
+	"48": {
+		"id": 48,
+		"name": "Excise Walk",
+		"lat": 53.347777,
+		"lng": -6.244239,
+		"bikes_open": 25,
+		"stands_open": 15,
+		"status": "OPEN"
+	},
+	"13": {
+		"id": 13,
+		"name": "Fitzwilliam Square West",
+		"lat": 53.336074,
+		"lng": -6.252825,
+		"bikes_open": 25,
+		"stands_open": 5,
+		"status": "OPEN"
+	},
+	"43": {
+		"id": 43,
+		"name": "Portobello Road",
+		"lat": 53.330091,
+		"lng": -6.268044,
+		"bikes_open": 3,
+		"stands_open": 27,
+		"status": "OPEN"
+	},
+	"31": {
+		"id": 31,
+		"name": "Parnell Street",
+		"lat": 53.350929,
+		"lng": -6.265125,
+		"bikes_open": 19,
+		"stands_open": 1,
+		"status": "OPEN"
+	},
+	"98": {
+		"id": 98,
+		"name": "Frederick Street South",
+		"lat": 53.341515,
+		"lng": -6.256853,
+		"bikes_open": 26,
+		"stands_open": 14,
+		"status": "OPEN"
+	},
+	"14": {
+		"id": 14,
+		"name": "Fownes Street Upper",
+		"lat": 53.344603,
+		"lng": -6.263371,
+		"bikes_open": 3,
+		"stands_open": 27,
+		"status": "OPEN"
+	},
+	"1": {
+		"id": 1,
+		"name": "Clarendon Row",
+		"lat": 53.340927,
+		"lng": -6.262501,
+		"bikes_open": 31,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"23": {
+		"id": 23,
+		"name": "Custom House",
+		"lat": 53.348279,
+		"lng": -6.254662,
+		"bikes_open": 3,
+		"stands_open": 27,
+		"status": "OPEN"
+	},
+	"106": {
+		"id": 106,
+		"name": "Rathdown Road",
+		"lat": 53.35893,
+		"lng": -6.280337,
+		"bikes_open": 19,
+		"stands_open": 21,
+		"status": "OPEN"
+	},
+	"112": {
+		"id": 112,
+		"name": "North Circular Road (O'Connell's)",
+		"lat": 53.357841,
+		"lng": -6.251557,
+		"bikes_open": 0,
+		"stands_open": 30,
+		"status": "OPEN"
+	},
+	"68": {
+		"id": 68,
+		"name": "Hanover Quay",
+		"lat": 53.344115,
+		"lng": -6.237153,
+		"bikes_open": 29,
+		"stands_open": 11,
+		"status": "OPEN"
+	},
+	"74": {
+		"id": 74,
+		"name": "Oliver Bond Street",
+		"lat": 53.343893,
+		"lng": -6.280531,
+		"bikes_open": 24,
+		"stands_open": 6,
+		"status": "OPEN"
+	},
+	"87": {
+		"id": 87,
+		"name": "Collins Barracks Museum",
+		"lat": 53.347477,
+		"lng": -6.28525,
+		"bikes_open": 25,
+		"stands_open": 13,
+		"status": "OPEN"
+	},
+	"84": {
+		"id": 84,
+		"name": "Brookfield Road",
+		"lat": 53.339005,
+		"lng": -6.300217,
+		"bikes_open": 14,
+		"stands_open": 16,
+		"status": "OPEN"
+	},
+	"90": {
+		"id": 90,
+		"name": "Benson Street",
+		"lat": 53.344153,
+		"lng": -6.233451,
+		"bikes_open": 39,
+		"stands_open": 1,
+		"status": "OPEN"
+	},
+	"11": {
+		"id": 11,
+		"name": "Earlsfort Terrace",
+		"lat": 53.334295,
+		"lng": -6.258503,
+		"bikes_open": 28,
+		"stands_open": 2,
+		"status": "OPEN"
+	},
+	"17": {
+		"id": 17,
+		"name": "Golden Lane",
+		"lat": 53.340803,
+		"lng": -6.267732,
+		"bikes_open": 19,
+		"stands_open": 1,
+		"status": "OPEN"
+	},
+	"45": {
+		"id": 45,
+		"name": "Deverell Place",
+		"lat": 53.351464,
+		"lng": -6.255265,
+		"bikes_open": 3,
+		"stands_open": 27,
+		"status": "OPEN"
+	},
+	"114": {
+		"id": 114,
+		"name": "Wilton Terrace (Park)",
+		"lat": 53.333653,
+		"lng": -6.248345,
+		"bikes_open": 40,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"72": {
+		"id": 72,
+		"name": "John Street West",
+		"lat": 53.343105,
+		"lng": -6.277167,
+		"bikes_open": 29,
+		"stands_open": 2,
+		"status": "OPEN"
+	},
+	"63": {
+		"id": 63,
+		"name": "Fenian Street",
+		"lat": 53.341428,
+		"lng": -6.24672,
+		"bikes_open": 15,
+		"stands_open": 20,
+		"status": "OPEN"
+	},
+	"113": {
+		"id": 113,
+		"name": "Merrion Square South",
+		"lat": 53.338614,
+		"lng": -6.248606,
+		"bikes_open": 27,
+		"stands_open": 13,
+		"status": "OPEN"
+	},
+	"91": {
+		"id": 91,
+		"name": "South Dock Road",
+		"lat": 53.341833,
+		"lng": -6.231291,
+		"bikes_open": 1,
+		"stands_open": 29,
+		"status": "OPEN"
+	},
+	"99": {
+		"id": 99,
+		"name": "City Quay",
+		"lat": 53.346637,
+		"lng": -6.246154,
+		"bikes_open": 14,
+		"stands_open": 16,
+		"status": "OPEN"
+	},
+	"9": {
+		"id": 9,
+		"name": "Exchequer Street",
+		"lat": 53.343034,
+		"lng": -6.263578,
+		"bikes_open": 20,
+		"stands_open": 4,
+		"status": "OPEN"
+	},
+	"67": {
+		"id": 67,
+		"name": "The Point",
+		"lat": 53.346867,
+		"lng": -6.230852,
+		"bikes_open": 21,
+		"stands_open": 19,
+		"status": "OPEN"
+	},
+	"116": {
+		"id": 116,
+		"name": "Broadstone",
+		"lat": 53.3547,
+		"lng": -6.272314,
+		"bikes_open": 30,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"55": {
+		"id": 55,
+		"name": "Hatch Street",
+		"lat": 53.33403,
+		"lng": -6.260714,
+		"bikes_open": 32,
+		"stands_open": 4,
+		"status": "OPEN"
+	},
+	"62": {
+		"id": 62,
+		"name": "Lime Street",
+		"lat": 53.346026,
+		"lng": -6.243576,
+		"bikes_open": 30,
+		"stands_open": 10,
+		"status": "OPEN"
+	},
+	"5": {
+		"id": 5,
+		"name": "Charlemont Street",
+		"lat": 53.330662,
+		"lng": -6.260177,
+		"bikes_open": 0,
+		"stands_open": 40,
+		"status": "OPEN"
+	},
+	"97": {
+		"id": 97,
+		"name": "Kilmainham Gaol",
+		"lat": 53.342113,
+		"lng": -6.310015,
+		"bikes_open": 20,
+		"stands_open": 20,
+		"status": "OPEN"
+	},
+	"61": {
+		"id": 61,
+		"name": "Hardwicke Place",
+		"lat": 53.357043,
+		"lng": -6.263232,
+		"bikes_open": 25,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"77": {
+		"id": 77,
+		"name": "Wolfe Tone Street",
+		"lat": 53.348875,
+		"lng": -6.267459,
+		"bikes_open": 15,
+		"stands_open": 14,
+		"status": "OPEN"
+	},
+	"73": {
+		"id": 73,
+		"name": "Francis Street",
+		"lat": 53.342081,
+		"lng": -6.275233,
+		"bikes_open": 26,
+		"stands_open": 4,
+		"status": "OPEN"
+	},
+	"4": {
+		"id": 4,
+		"name": "Greek Street",
+		"lat": 53.346874,
+		"lng": -6.272976,
+		"bikes_open": 5,
+		"stands_open": 15,
+		"status": "OPEN"
+	},
+	"49": {
+		"id": 49,
+		"name": "Guild Street",
+		"lat": 53.347932,
+		"lng": -6.240928,
+		"bikes_open": 27,
+		"stands_open": 13,
+		"status": "OPEN"
+	},
+	"19": {
+		"id": 19,
+		"name": "Herbert Place",
+		"lat": 53.334432,
+		"lng": -6.245575,
+		"bikes_open": 29,
+		"stands_open": 1,
+		"status": "OPEN"
+	},
+	"7": {
+		"id": 7,
+		"name": "High Street",
+		"lat": 53.343565,
+		"lng": -6.275071,
+		"bikes_open": 12,
+		"stands_open": 17,
+		"status": "OPEN"
+	},
+	"60": {
+		"id": 60,
+		"name": "North Circular Road",
+		"lat": 53.359624,
+		"lng": -6.260348,
+		"bikes_open": 3,
+		"stands_open": 27,
+		"status": "OPEN"
+	},
+	"102": {
+		"id": 102,
+		"name": "Western Way",
+		"lat": 53.354929,
+		"lng": -6.269425,
+		"bikes_open": 34,
+		"stands_open": 6,
+		"status": "OPEN"
+	},
+	"38": {
+		"id": 38,
+		"name": "Talbot Street",
+		"lat": 53.350974,
+		"lng": -6.25294,
+		"bikes_open": 8,
+		"stands_open": 32,
+		"status": "OPEN"
+	},
+	"53": {
+		"id": 53,
+		"name": "Newman House",
+		"lat": 53.337132,
+		"lng": -6.26059,
+		"bikes_open": 37,
+		"stands_open": 3,
+		"status": "OPEN"
+	},
+	"58": {
+		"id": 58,
+		"name": "Sir Patrick's Dun",
+		"lat": 53.339218,
+		"lng": -6.240642,
+		"bikes_open": 37,
+		"stands_open": 3,
+		"status": "OPEN"
+	},
+	"66": {
+		"id": 66,
+		"name": "New Central Bank",
+		"lat": 53.347122,
+		"lng": -6.234749,
+		"bikes_open": 32,
+		"stands_open": 8,
+		"status": "OPEN"
+	},
+	"104": {
+		"id": 104,
+		"name": "Grangegorman Lower (Central)",
+		"lat": 53.355173,
+		"lng": -6.278424,
+		"bikes_open": 40,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"101": {
+		"id": 101,
+		"name": "King Street North",
+		"lat": 53.350291,
+		"lng": -6.273507,
+		"bikes_open": 24,
+		"stands_open": 6,
+		"status": "OPEN"
+	},
+	"115": {
+		"id": 115,
+		"name": "Killarney Street",
+		"lat": 53.354845,
+		"lng": -6.247579,
+		"bikes_open": 2,
+		"stands_open": 28,
+		"status": "OPEN"
+	},
+	"47": {
+		"id": 47,
+		"name": "Herbert Street",
+		"lat": 53.335742,
+		"lng": -6.24551,
+		"bikes_open": 39,
+		"stands_open": 1,
+		"status": "OPEN"
+	},
+	"117": {
+		"id": 117,
+		"name": "Hanover Quay East",
+		"lat": 53.343653,
+		"lng": -6.231755,
+		"bikes_open": 27,
+		"stands_open": 13,
+		"status": "OPEN"
+	},
+	"8": {
+		"id": 8,
+		"name": "Custom House Quay",
+		"lat": 53.347884,
+		"lng": -6.248048,
+		"bikes_open": 6,
+		"stands_open": 24,
+		"status": "OPEN"
+	},
+	"27": {
+		"id": 27,
+		"name": "Molesworth Street",
+		"lat": 53.341288,
+		"lng": -6.258117,
+		"bikes_open": 18,
+		"stands_open": 2,
+		"status": "OPEN"
+	},
+	"16": {
+		"id": 16,
+		"name": "Georges Quay",
+		"lat": 53.347508,
+		"lng": -6.252192,
+		"bikes_open": 2,
+		"stands_open": 18,
+		"status": "OPEN"
+	},
+	"96": {
+		"id": 96,
+		"name": "Kilmainham Lane",
+		"lat": 53.341805,
+		"lng": -6.305085,
+		"bikes_open": 25,
+		"stands_open": 5,
+		"status": "OPEN"
+	},
+	"82": {
+		"id": 82,
+		"name": "Mount Brown",
+		"lat": 53.341645,
+		"lng": -6.29719,
+		"bikes_open": 15,
+		"stands_open": 7,
+		"status": "OPEN"
+	},
+	"76": {
+		"id": 76,
+		"name": "Market Street South",
+		"lat": 53.342296,
+		"lng": -6.287661,
+		"bikes_open": 28,
+		"stands_open": 10,
+		"status": "OPEN"
+	},
+	"71": {
+		"id": 71,
+		"name": "Kevin Street",
+		"lat": 53.337757,
+		"lng": -6.267699,
+		"bikes_open": 32,
+		"stands_open": 8,
+		"status": "OPEN"
+	},
+	"79": {
+		"id": 79,
+		"name": "Eccles Street East",
+		"lat": 53.358115,
+		"lng": -6.265601,
+		"bikes_open": 27,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"69": {
+		"id": 69,
+		"name": "Grand Canal Dock",
+		"lat": 53.342638,
+		"lng": -6.238695,
+		"bikes_open": 26,
+		"stands_open": 14,
+		"status": "OPEN"
+	},
+	"25": {
+		"id": 25,
+		"name": "Merrion Square East",
+		"lat": 53.339434,
+		"lng": -6.246548,
+		"bikes_open": 23,
+		"stands_open": 7,
+		"status": "OPEN"
+	},
+	"51": {
+		"id": 51,
+		"name": "York Street West",
+		"lat": 53.339334,
+		"lng": -6.264699,
+		"bikes_open": 27,
+		"stands_open": 13,
+		"status": "OPEN"
+	},
+	"37": {
+		"id": 37,
+		"name": "St. Stephen's Green South",
+		"lat": 53.337494,
+		"lng": -6.26199,
+		"bikes_open": 29,
+		"stands_open": 1,
+		"status": "OPEN"
+	},
+	"59": {
+		"id": 59,
+		"name": "Denmark Street Great",
+		"lat": 53.35561,
+		"lng": -6.261397,
+		"bikes_open": 20,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"95": {
+		"id": 95,
+		"name": "Royal Hospital",
+		"lat": 53.343897,
+		"lng": -6.29706,
+		"bikes_open": 14,
+		"stands_open": 26,
+		"status": "OPEN"
+	},
+	"94": {
+		"id": 94,
+		"name": "Heuston Station (Car Park)",
+		"lat": 53.346985,
+		"lng": -6.297804,
+		"bikes_open": 34,
+		"stands_open": 6,
+		"status": "OPEN"
+	},
+	"105": {
+		"id": 105,
+		"name": "Grangegorman Lower (North)",
+		"lat": 53.355954,
+		"lng": -6.278378,
+		"bikes_open": 31,
+		"stands_open": 5,
+		"status": "OPEN"
+	},
+	"36": {
+		"id": 36,
+		"name": "St. Stephen's Green East",
+		"lat": 53.337824,
+		"lng": -6.256035,
+		"bikes_open": 39,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"93": {
+		"id": 93,
+		"name": "Heuston Station (Central)",
+		"lat": 53.346603,
+		"lng": -6.296924,
+		"bikes_open": 0,
+		"stands_open": 40,
+		"status": "OPEN"
+	},
+	"22": {
+		"id": 22,
+		"name": "Townsend Street",
+		"lat": 53.345922,
+		"lng": -6.254614,
+		"bikes_open": 3,
+		"stands_open": 17,
+		"status": "OPEN"
+	},
+	"50": {
+		"id": 50,
+		"name": "George's Lane",
+		"lat": 53.35023,
+		"lng": -6.279696,
+		"bikes_open": 9,
+		"stands_open": 31,
+		"status": "OPEN"
+	},
+	"110": {
+		"id": 110,
+		"name": "Phibsborough Road",
+		"lat": 53.356307,
+		"lng": -6.273717,
+		"bikes_open": 34,
+		"stands_open": 6,
+		"status": "OPEN"
+	},
+	"12": {
+		"id": 12,
+		"name": "Eccles Street",
+		"lat": 53.359246,
+		"lng": -6.269779,
+		"bikes_open": 0,
+		"stands_open": 20,
+		"status": "OPEN"
+	},
+	"34": {
+		"id": 34,
+		"name": "Portobello Harbour",
+		"lat": 53.330362,
+		"lng": -6.265163,
+		"bikes_open": 4,
+		"stands_open": 26,
+		"status": "OPEN"
+	},
+	"78": {
+		"id": 78,
+		"name": "Mater Hospital",
+		"lat": 53.359967,
+		"lng": -6.264828,
+		"bikes_open": 39,
+		"stands_open": 1,
+		"status": "OPEN"
+	},
+	"2": {
+		"id": 2,
+		"name": "Blessington Street",
+		"lat": 53.356769,
+		"lng": -6.26814,
+		"bikes_open": 18,
+		"stands_open": 2,
+		"status": "OPEN"
+	},
+	"75": {
+		"id": 75,
+		"name": "James Street",
+		"lat": 53.343456,
+		"lng": -6.287409,
+		"bikes_open": 29,
+		"stands_open": 11,
+		"status": "OPEN"
+	},
+	"111": {
+		"id": 111,
+		"name": "Mountjoy Square East",
+		"lat": 53.356717,
+		"lng": -6.256359,
+		"bikes_open": 33,
+		"stands_open": 7,
+		"status": "OPEN"
+	},
+	"26": {
+		"id": 26,
+		"name": "Merrion Square West",
+		"lat": 53.339764,
+		"lng": -6.251988,
+		"bikes_open": 15,
+		"stands_open": 5,
+		"status": "OPEN"
+	},
+	"65": {
+		"id": 65,
+		"name": "Convention Centre",
+		"lat": 53.34744,
+		"lng": -6.238523,
+		"bikes_open": 39,
+		"stands_open": 1,
+		"status": "OPEN"
+	},
+	"15": {
+		"id": 15,
+		"name": "Hardwicke Street",
+		"lat": 53.355473,
+		"lng": -6.264423,
+		"bikes_open": 13,
+		"stands_open": 3,
+		"status": "OPEN"
+	},
+	"86": {
+		"id": 86,
+		"name": "Parkgate Street",
+		"lat": 53.347972,
+		"lng": -6.291804,
+		"bikes_open": 18,
+		"stands_open": 20,
+		"status": "OPEN"
+	},
+	"35": {
+		"id": 35,
+		"name": "Smithfield",
+		"lat": 53.347692,
+		"lng": -6.278214,
+		"bikes_open": 1,
+		"stands_open": 29,
+		"status": "OPEN"
+	},
+	"10": {
+		"id": 10,
+		"name": "Dame Street",
+		"lat": 53.344007,
+		"lng": -6.266802,
+		"bikes_open": 1,
+		"stands_open": 15,
+		"status": "OPEN"
+	},
+	"100": {
+		"id": 100,
+		"name": "Heuston Bridge (South)",
+		"lat": 53.347106,
+		"lng": -6.292041,
+		"bikes_open": 1,
+		"stands_open": 24,
+		"status": "OPEN"
+	},
+	"24": {
+		"id": 24,
+		"name": "Cathal Brugha Street",
+		"lat": 53.352149,
+		"lng": -6.260533,
+		"bikes_open": 5,
+		"stands_open": 15,
+		"status": "OPEN"
+	},
+	"64": {
+		"id": 64,
+		"name": "Sandwith Street",
+		"lat": 53.345203,
+		"lng": -6.247163,
+		"bikes_open": 25,
+		"stands_open": 15,
+		"status": "OPEN"
+	},
+	"109": {
+		"id": 109,
+		"name": "Buckingham Street Lower",
+		"lat": 53.353331,
+		"lng": -6.249319,
+		"bikes_open": 0,
+		"stands_open": 29,
+		"status": "OPEN"
+	},
+	"85": {
+		"id": 85,
+		"name": "Rothe Abbey",
+		"lat": 53.338776,
+		"lng": -6.30395,
+		"bikes_open": 13,
+		"stands_open": 22,
+		"status": "OPEN"
+	},
+	"107": {
+		"id": 107,
+		"name": "Charleville Road",
+		"lat": 53.359157,
+		"lng": -6.281866,
+		"bikes_open": 28,
+		"stands_open": 12,
+		"status": "OPEN"
+	},
+	"33": {
+		"id": 33,
+		"name": "Princes Street / O'Connell Street",
+		"lat": 53.349013,
+		"lng": -6.260311,
+		"bikes_open": 9,
+		"stands_open": 14,
+		"status": "OPEN"
+	},
+	"44": {
+		"id": 44,
+		"name": "Upper Sherrard Street",
+		"lat": 53.358437,
+		"lng": -6.260641,
+		"bikes_open": 16,
+		"stands_open": 14,
+		"status": "OPEN"
+	},
+	"89": {
+		"id": 89,
+		"name": "Fitzwilliam Square East",
+		"lat": 53.335211,
+		"lng": -6.2509,
+		"bikes_open": 40,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"57": {
+		"id": 57,
+		"name": "Grattan Street",
+		"lat": 53.339629,
+		"lng": -6.243778,
+		"bikes_open": 20,
+		"stands_open": 3,
+		"status": "OPEN"
+	},
+	"80": {
+		"id": 80,
+		"name": "St James Hospital (Luas)",
+		"lat": 53.341359,
+		"lng": -6.292951,
+		"bikes_open": 26,
+		"stands_open": 14,
+		"status": "OPEN"
+	},
+	"41": {
+		"id": 41,
+		"name": "Harcourt Terrace",
+		"lat": 53.332763,
+		"lng": -6.257942,
+		"bikes_open": 0,
+		"stands_open": 20,
+		"status": "OPEN"
+	},
+	"3": {
+		"id": 3,
+		"name": "Bolton Street",
+		"lat": 53.351182,
+		"lng": -6.269859,
+		"bikes_open": 19,
+		"stands_open": 1,
+		"status": "OPEN"
+	},
+	"40": {
+		"id": 40,
+		"name": "Jervis Street",
+		"lat": 53.3483,
+		"lng": -6.266651,
+		"bikes_open": 21,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"29": {
+		"id": 29,
+		"name": "Ormond Quay Upper",
+		"lat": 53.346057,
+		"lng": -6.268001,
+		"bikes_open": 3,
+		"stands_open": 26,
+		"status": "OPEN"
+	},
+	"103": {
+		"id": 103,
+		"name": "Grangegorman Lower (South)",
+		"lat": 53.354663,
+		"lng": -6.278681,
+		"bikes_open": 40,
+		"stands_open": 0,
+		"status": "OPEN"
+	},
+	"28": {
+		"id": 28,
+		"name": "Mountjoy Square West",
+		"lat": 53.356299,
+		"lng": -6.258586,
+		"bikes_open": 21,
+		"stands_open": 9,
+		"status": "OPEN"
+	},
+	"39": {
+		"id": 39,
+		"name": "Wilton Terrace",
+		"lat": 53.332383,
+		"lng": -6.252717,
+		"bikes_open": 13,
+		"stands_open": 7,
+		"status": "OPEN"
+	},
+	"83": {
+		"id": 83,
+		"name": "Emmet Road",
+		"lat": 53.340714,
+		"lng": -6.308191,
+		"bikes_open": 26,
+		"stands_open": 14,
+		"status": "OPEN"
+	},
+	"92": {
+		"id": 92,
+		"name": "Heuston Bridge (North)",
+		"lat": 53.347802,
+		"lng": -6.292432,
+		"bikes_open": 5,
+		"stands_open": 35,
+		"status": "OPEN"
+	},
+	"21": {
+		"id": 21,
+		"name": "Leinster Street South",
+		"lat": 53.34218,
+		"lng": -6.254485,
+		"bikes_open": 16,
+		"stands_open": 14,
+		"status": "OPEN"
+	},
+	"88": {
+		"id": 88,
+		"name": "Blackhall Place",
+		"lat": 53.3488,
+		"lng": -6.281637,
+		"bikes_open": 10,
+		"stands_open": 20,
+		"status": "OPEN"
+	}
+}
