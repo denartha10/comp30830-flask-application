@@ -1,5 +1,6 @@
+// Event listener for when the DOM content is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
-  //Maps HTML IDs to elements
+  // Mapping HTML IDs to elements
   const elements = {
     main: document.getElementById("mainContent"),
     menu: document.getElementById("sidebar"),
@@ -11,132 +12,120 @@ document.addEventListener("DOMContentLoaded", () => {
     searchTrip: document.getElementById("searchTrip"),
   };
 
-  // //Toggles visibility of the main menu
-  // //When closed, will close weather menu
-  // elements.menuToggle?.addEventListener('click', () => {
-  // 	toggleElementVisibility(elements.menu);
-  // 	hideElement(elements.weatherMenu);
-  // 	clearInput(); //Call clearInput function to clear specific input values
-  // });
-  //
-  // elements.searchTrip?.addEventListener('click', () => {
-  // 	toggleElementVisibility(elements.weatherMenu); //Toggles visibility of the weather menu
-  // 	hideElement(elements.menu); //Hides the main menu when searching for a trip
-  // 	performSearch(); //Calls performSearch() placeholder
-  // });
-
-  //Adds toggle for new sidebar
-  sidebarToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("-translate-x-full");
-    mainContent.classList.toggle("translate-x-96");
+  // Toggle sidebar visibility when the sidebar toggle button is clicked
+  elements.menuToggle.addEventListener("click", () => {
+    elements.menu.classList.toggle("-translate-x-96");
+    elements.main.classList.toggle("translate-x-96");
   });
 
-  //Clears search bar when clicked, sets value to an empty string when clicked
-  elements.searchBar.addEventListener(
-    "click",
-    () => (elements.searchBar.value = ""),
-  );
+  // Clear the search bar when clicked
+  elements.searchBar.addEventListener("click", () => {
+    elements.searchBar.value = "";
+  });
 
-  //toggles visibility of the weather menu
+  // Toggle visibility of the weather menu when weather toggle button is clicked
   elements.weatherToggle?.addEventListener("click", () =>
     toggleElementVisibility(elements.weatherMenu),
   );
 
-  //Hides the weather menu when close button clicked
+  // Hide the weather menu when the close button is clicked
   elements.closeWeather?.addEventListener("click", () =>
     elements.weatherMenu.classList.add("hidden"),
   );
 
-  //Calls displayClock() to display the current time
+  // Call the displayClock function to display the current time
   displayClock();
 });
 
-//Function to toggle visibility of an element
-function toggleElementVisibility(element) {
-  element?.classList.toggle("hidden"); //Toggles the class 'hidden' on the element if it exists
-}
+// Function to toggle visibility of an element
+const toggleElementVisibility = (element) => {
+  element?.classList.toggle("hidden");
+};
 
-//Function to hide an element
-function hideElement(element) {
-  element?.classList.add("hidden"); //Adds the class 'hidden' to the element if it exists
-}
+// Function to display the current time
+const displayClock = () => {
+  // Update the clock every second
+  const updateClock = () => {
+    const currentTime = new Date();
+    const hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes();
+    const display = `${hours}:${minutes}`;
+    document.getElementById("liveTimer").textContent = display;
+    setTimeout(updateClock, 1000);
+  };
+  // Initial call to update the clock
+  updateClock();
+};
 
-//Clears inputs when the menu is closed
-function clearInput() {
+// Function to clear inputs when the menu is closed
+const clearInput = () => {
   ["searchBar", "startingDestination", "endDestination"].forEach((id) => {
-    const element = document.getElementById(id); //Gets the element by its ID
+    const element = document.getElementById(id);
+    // If element exists and menu is hidden, sets value of the element to an empty string
     if (
       element &&
       document.getElementById("menu").classList.contains("hidden")
     ) {
-      element.value = ""; //If element exists and menu is hidden, sets value of the element to an empty string
+      element.value = "";
     }
   });
-}
+};
 
-//function displays the current time
-function displayClock() {
-  var currentTime = new Date();
-  var hours = currentTime.getHours();
-  var minutes = currentTime.getMinutes();
-  var display = hours + ":" + minutes;
-  document.getElementById("liveTimer").textContent = display;
-  setTimeout(displayClock, 1000);
-}
-
-//placeholder for the actual search functionality - TBC
-function performSearch() {
+// Placeholder for the actual search functionality - To be completed
+const performSearch = () => {
   const searchBar = document.getElementById("searchBar");
   const searchText = searchBar.value.trim();
-}
+};
 
-//map and weather initialization called by map api key in index.html
+// Initialization function
 function init() {
   pullBikeData();
   pullWeatherData();
 }
 
-function pullBikeData() {
-  fetch("markers.json")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error");
-      }
-      return response.json(); //parse JSON data
-    })
-    .then((data) => initMap(data)) //if everything is good send JSON objects to func
-    .catch((error) => {
-      console.error(error); //send the error to the console
-      alert(error);
-    });
-}
+// Function to fetch bike data from the server
+const pullBikeData = async () => {
+  try {
+    const response = await fetch("markers.json");
+    if (!response.ok) {
+      throw new Error("Error");
+    }
+    const data = await response.json();
+    initMap(data);
+  } catch (error) {
+    console.error(error);
+    alert(error);
+  }
+};
 
-// Initialize and add the map
+// Declaration of variables related to the map
 let map;
 let markersArr = [];
 
-async function initMap(data) {
-  // Request needed libraries.
+// Function to initialize the map with the received data
+const initMap = async (data) => {
+  // Import necessary libraries
   const { Map } = await google.maps.importLibrary("maps");
-  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-  const { PinElement } = await google.maps.importLibrary("marker");
+  const { AdvancedMarkerElement, PinElement } =
+    await google.maps.importLibrary("marker");
 
-  //Init the map
+  // Initialize the map
   map = new Map(document.getElementById("map"), {
     zoom: 14,
     center: { lat: 53.347, lng: -6.27 },
     mapTypeControl: false,
     streetViewControl: false,
     ClickableIcons: false,
-    //idk what the mapID is but wont load without one
     mapId: "dublin_bike_map_id",
   });
-  //iterate through data and populate the markers
+
+  // Iterate through data and populate the markers
   for (let dat in data) {
     let d = data[dat];
     let background;
     let border;
-    // Change the pin color depending on the bikes available and status.
+
+    // Determine pin color based on bikes available and status
     if (d.status != "OPEN") {
       background = "#00000000";
       border = "#00000000";
@@ -150,47 +139,55 @@ async function initMap(data) {
       background = "#D22D2F";
       border = "#6E1718";
     }
+
+    // Create pin style
     let pinStyle = new PinElement({
       background: background,
       borderColor: border,
       glyphColor: border,
     });
+
+    // Create marker
     let newMarker = new AdvancedMarkerElement({
       map: map,
       position: { lat: d.lat, lng: d.lng },
       title: d.id.toString(),
       content: pinStyle.element,
     });
+
+    // Add marker to the array
     markersArr.push(newMarker);
-    newMarker.addListener("click", function () {
+
+    // Add click event listener to the marker
+    newMarker.addListener("click", () => {
       iconClick(d);
     });
   }
-}
+};
 
-//can change what the icon click function does later
-function iconClick(stationInfo) {
+// Function called when a marker icon is clicked
+const iconClick = (stationInfo) => {
   console.log(stationInfo);
-}
+};
 
-function pullWeatherData() {
-  fetch("weather.json")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error");
-      }
-      return response.json(); //parse JSON data
-    })
-    .then((data) => populateWeather(data)) //if everything is good send JSON objects to func
-    .catch((error) => {
-      console.error(error); //send the error to the console
-      alert(error);
-    });
-}
+// Function to fetch weather data from the server
+const pullWeatherData = async () => {
+  try {
+    const response = await fetch("weather.json");
+    if (!response.ok) {
+      throw new Error("Error");
+    }
+    const data = await response.json();
+    populateWeather(data);
+  } catch (error) {
+    console.error(error);
+    alert(error);
+  }
+};
 
-//create weather JS object you can reference in front end
-function populateWeather(data) {
+// Function to populate weather data on the front end
+const populateWeather = (data) => {
   document.getElementById("tempNum").innerText = data["temp"];
   document.getElementById("precNum").innerText = data["prec"];
   document.getElementById("windNum").innerText = data["wind"];
-}
+};
