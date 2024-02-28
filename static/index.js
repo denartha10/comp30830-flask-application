@@ -140,12 +140,19 @@ async function initMap(data) {
     if (d.status != "OPEN") {
       background = "#00000000";
       border = "#00000000";
-    } else if (d.bikes_open > 3) {
+    //more than 5 bikes = green
+    } else if (d.bikes_open > 5) {
       background = "#2ED18A";
       border = "#137333";
+    //5-3 bikes = yellow
+    } else if (d.bikes_open > 2) {
+      background = "#FFFF00";
+      border = "#B3B300";
+    //1-2 bikes = orange
     } else if (d.bikes_open > 0) {
-      background = "#E8C54E";
-      border = "#B18E17";
+      background = "#FF9900";
+      border = "#995C00";
+    //no bikes = red
     } else {
       background = "#D22D2F";
       border = "#6E1718";
