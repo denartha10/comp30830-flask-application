@@ -147,6 +147,11 @@ const initMap = async (data) => {
       glyphColor: border,
     });
 
+    const infowindow = new google.maps.InfoWindow({
+      content: JSON.stringify(d),
+      ariaLabel: `Bikes ${d.id.toString()}`,
+    });
+
     // Create marker
     let newMarker = new AdvancedMarkerElement({
       map: map,
@@ -155,13 +160,20 @@ const initMap = async (data) => {
       content: pinStyle.element,
     });
 
+    newMarker.addListener("click", () => {
+      infowindow.open({
+        anchor: newMarker,
+        map,
+      });
+    });
+
     // Add marker to the array
     markersArr.push(newMarker);
 
     // Add click event listener to the marker
-    newMarker.addListener("click", () => {
-      iconClick(d);
-    });
+    // newMarker.addListener("click", () => {
+    //   iconClick(d);
+    // });
   }
 };
 
