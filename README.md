@@ -5,4 +5,7 @@
 
 EC2 does work with the flask app on EDU roam if you set the port to 8080. UCD block a bunch of ports, but this one seems to work.
 
-test test
+Building for production. Tailwind:
+
+`npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css`
+

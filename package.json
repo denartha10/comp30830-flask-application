@@ -1,0 +1,18 @@
+{
+  "name": "comp30830-flask-application",
+  "version": "1.0.0",
+  "description": "- Try out workflows - REMEMBER YOU CANNOT ACCESS THE PROGRAM ON UCD_WIRELESS or EDUROAM",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
