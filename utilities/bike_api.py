@@ -59,20 +59,12 @@ def api_call():
     return data_json
 
 #parameters to connect to RDS db
-def engine_tttttparams():
+def engine_params():
     user = 'admin'
     password = 'kukfiv-zubsyd-1Pejpu'
     host = 'comp30830.c38umsk2i6vi.eu-north-1.rds.amazonaws.com'
     port = '3306'
     db_name = 'bike_db'
-    return f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db_name}'
-
-def engine_params():
-    user = 'root'
-    password = 'Onion100$$'
-    host = 'localhost'
-    port = '3306'
-    db_name = 'alchemy_test'
     return f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db_name}'
 
 def push_to_db():
