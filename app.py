@@ -21,7 +21,7 @@ def index():
 def get_stations():
     engine = create_engine(engine_params())
     with engine.connect() as conn, conn.begin():
-        data = pd.read_sql_table("current_av", conn)
+        data = pd.read_sql_table("stations", conn)
         conn.close()
         data_t = data.transpose()
         return data_t.to_json()
@@ -41,7 +41,7 @@ def getttt_weather():
     engine = create_engine(engine_params())
     with engine.connect() as conn, conn.begin():
         weather = pd.read_sql_table("weather", conn)
-        bike_data = pd.read_sql_table("current_av", conn)
+        bike_data = pd.read_sql_table("stations", conn)
         conn.close()
         bike_data_t = bike_data.transpose()
         weather_t = weather.transpose()
