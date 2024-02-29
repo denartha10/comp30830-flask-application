@@ -1,1 +1,4 @@
 Flask
+flask_caching
+pandas
+sqlalchemy
