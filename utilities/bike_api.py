@@ -1,6 +1,6 @@
 import requests
 
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 from datetime import datetime, time
@@ -12,7 +12,7 @@ current_time_dublin = datetime.now(dublin_timezone)
 
 Base = declarative_base()
 
-#python object to push to db with alchemy
+#python objects to push to db with alchemy
 class Availability(Base):
     __tablename__ = 'availability'
     id = Column(Integer, primary_key=True)
@@ -27,6 +27,27 @@ class Availability(Base):
         self.available_bikes = bikes
         self.available_stands = stands
         self.status = status
+
+class Stations(Base):
+    __tablename__ = 'stations'
+    id = Column(Integer, primary_key=True)
+    last_update = Column(DateTime)
+    name = Column(String)
+    available_bikes = Column(Integer)
+    available_stands = Column(Integer)
+    status = Column(String)
+    lat = Column(Float)
+    lng = Column(Float)
+
+    def __init__(self, id, up, name, bikes, stands, status, lat, lng):
+        self.id = id
+        self.last_update = up
+        self.name = name
+        self.available_bikes = bikes
+        self.available_stands = stands
+        self.status = status
+        self.lat = lat
+        self.lng = lng
 
 #retuns json object array of bike stations
 def api_call():
@@ -55,13 +76,31 @@ def push_to_db():
     #session will allows us to push batches to db at once
     Session = sessionmaker(bind=engine)
     session = Session()
-
-    # Add new rows from api_call
-    for d in api_call():
+    data = api_call()
+    
+    #Delete current_av table so theres only ever one block of entries 
+    session.query(Stations).delete()
+    
+    #Add new rows from api_call
+    for d in data:
+        new_station = Stations(id = d['number'], up = datetime.utcfromtimestamp(d['last_update']/1000), name = d['address'], bikes = d['available_bikes'], stands = d['available_bike_stands'], status = d['status'], lat = d['position']['lat'], lng = d['position']['lng'])
+        session.add(new_station)
+    #Dont have the program crash if theres a duplicate primary key in there.
+    try:
+        session.commit()
+    except:
+        #change this to print error to file
+        pass
+    
+    for d in data:
         new_av = Availability(id = d['number'], up = datetime.utcfromtimestamp(d['last_update']/1000), bikes = d['available_bikes'], stands = d['available_bike_stands'], status = d['status'])
         session.add(new_av)
+    try:
+        session.commit()
+    except:
+        #change this to print error to file
+        pass
 
-    session.commit()
     session.close()
 
 #check if the stations are closed
