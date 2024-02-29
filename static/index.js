@@ -140,6 +140,22 @@ const initMap = async (data) => {
       border = "#6E1718";
     }
 
+    info_string = `
+      <div class="max-w-xs">
+        <div class="bg-white p-4 rounded-lg shadow-lg">
+            <h2 class="text-lg font-semibold mb-2">Bike Station Information</h2>
+            <div class="flex flex-col space-y-1">
+                <div><span class="font-semibold">ID:</span> <span class="text-gray-600">${d.id}</span></div>
+                <div><span class="font-semibold">Name:</span> <span class="text-gray-600">${d.name}</span></div>
+                <div><span class="font-semibold">Latitude:</span> <span class="text-gray-600">${d.lat}</span></div>
+                <div><span class="font-semibold">Longitude:</span> <span class="text-gray-600">${d.lng}</span></div>
+                <div><span class="font-semibold">Bikes Available:</span> <span class="${d.bikes_open === 0 ? "text-red-600" : "text-gray-600"}">${d.bikes_open}</span></div>
+                <div><span class="font-semibold">Stands Available:</span> <span class="text-gray-600">${d.stands_open}</span></div>
+                <div><span class="font-semibold">Status:</span> <span class="${d.status === "OPEN" ? "text-green-600" : "text-red-600"}">${d.status}</span></div>
+            </div>
+        </div>
+      </div>`;
+
     // Create pin style
     let pinStyle = new PinElement({
       background: background,
@@ -148,7 +164,7 @@ const initMap = async (data) => {
     });
 
     const infowindow = new google.maps.InfoWindow({
-      content: JSON.stringify(d),
+      content: info_string,
       ariaLabel: `Bikes ${d.id.toString()}`,
     });
 
@@ -160,13 +176,18 @@ const initMap = async (data) => {
       content: pinStyle.element,
     });
 
-    newMarker.addListener("click", () => {
+    //Add event listener not available for the AdvancedMarkerElement in the version of the API we are using
+    //We can use Marker element instead of AdvancedMarkerElement since that is the version of the API we are using
+    newMarker.addEventListener("mouseover", () => {
       infowindow.open({
         anchor: newMarker,
         map,
       });
     });
 
+    newMarker.addEventListener("mouseout", () => {
+      infowindow.close();
+    });
     // Add marker to the array
     markersArr.push(newMarker);
 
