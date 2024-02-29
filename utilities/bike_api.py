@@ -32,15 +32,17 @@ class Stations(Base):
     __tablename__ = 'stations'
     id = Column(Integer, primary_key=True)
     last_update = Column(DateTime)
+    name = Column(String)
     available_bikes = Column(Integer)
     available_stands = Column(Integer)
     status = Column(String)
     lat = Column(Float)
     lng = Column(Float)
 
-    def __init__(self, id, up, bikes, stands, status, lat, lng):
+    def __init__(self, id, up, name, bikes, stands, status, lat, lng):
         self.id = id
         self.last_update = up
+        self.name = name
         self.available_bikes = bikes
         self.available_stands = stands
         self.status = status
@@ -81,8 +83,8 @@ def push_to_db():
     
     #Add new rows from api_call
     for d in data:
-        new_current = Stations(id = d['number'], up = datetime.utcfromtimestamp(d['last_update']/1000), bikes = d['available_bikes'], stands = d['available_bike_stands'], status = d['status'], lat = d['position']['lat'], lng = d['position']['lng'])
-        session.add(new_current)
+        new_station = Stations(id = d['number'], up = datetime.utcfromtimestamp(d['last_update']/1000), name = d['address'], bikes = d['available_bikes'], stands = d['available_bike_stands'], status = d['status'], lat = d['position']['lat'], lng = d['position']['lng'])
+        session.add(new_station)
     #Dont have the program crash if theres a duplicate primary key in there.
     try:
         session.commit()
