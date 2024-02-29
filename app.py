@@ -1,7 +1,18 @@
 from flask import Flask
+from flask_caching import Cache
 import pandas as pd
 from sqlalchemy import create_engine
 import json
+
+config = {
+    "DEBUG": True,          # some Flask specific configs
+    "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
+    "CACHE_DEFAULT_TIMEOUT": 300
+}
+
+app = Flask(__name__, static_url_path='')
+app.config.from_mapping(config)
+cache = Cache(app)
 
 def engine_params():
     user = 'admin'
@@ -11,7 +22,6 @@ def engine_params():
     db_name = 'bike_db'
     return f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db_name}'
 
-app = Flask(__name__, static_url_path='')
 
 @app.route('/')
 def index():
