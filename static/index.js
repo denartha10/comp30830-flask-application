@@ -213,31 +213,31 @@ const initMap = async (data) => {
 		// Add marker to the array
 		markersArr.push(newMarker);
 	}
-};
 
-// Function called when a marker icon is clicked
-const iconClick = (stationInfo) => {
-	console.log(stationInfo);
-};
+	// Function called when a marker icon is clicked
+	const iconClick = (stationInfo) => {
+		console.log(stationInfo);
+	};
 
-// Function to fetch weather data from the server
-const pullWeatherData = async () => {
-	try {
-		const response = await fetch('/weather');
-		if (!response.ok) {
-			throw new Error('Error');
+	// Function to fetch weather data from the server
+	const pullWeatherData = async () => {
+		try {
+			const response = await fetch('/weather');
+			if (!response.ok) {
+				throw new Error('Error');
+			}
+			const data = await response.json();
+			populateWeather(data);
+		} catch (error) {
+			console.error(error);
+			alert(error);
 		}
-		const data = await response.json();
-		populateWeather(data);
-	} catch (error) {
-		console.error(error);
-		alert(error);
-	}
-};
+	};
 
-// Function to populate weather data on the front end
-const populateWeather = (data) => {
-	document.getElementById('tempNum').innerText = data['0']['temperature'];
-	document.getElementById('precNum').innerText = data['0']['precipitation'];
-	document.getElementById('windNum').innerText = data['0']['wind'];
+	// Function to populate weather data on the front end
+	const populateWeather = (data) => {
+		document.getElementById('tempNum').innerText = data['0']['temperature'];
+		document.getElementById('precNum').innerText = data['0']['precipitation'];
+		document.getElementById('windNum').innerText = data['0']['wind'];
+	};
 };
