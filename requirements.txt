@@ -2,3 +2,7 @@ Flask
 flask_caching
 pandas
 sqlalchemy
+mysql
+openmeteo_requests
+pytz
+requests
