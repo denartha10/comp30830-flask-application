@@ -1,1 +1,8 @@
 Flask
+flask_caching
+pandas
+sqlalchemy
+openmeteo_requests
+pytz
+requests
+mysql-connector-python
