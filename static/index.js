@@ -71,11 +71,28 @@ const clearInput = () => {
 	});
 };
 
-// Placeholder for the actual search functionality - To be completed
-const performSearch = () => {
+//when search bar clicked
+function searchBarClick() {
+	//i want it to open the station list but idk if that exists yet
+}
+
+//this is what typing into the search bar actually calls
+function showSearchPrompt() {
 	const searchBar = document.getElementById('searchBar');
-	const searchText = searchBar.value.trim();
-};
+	const searchText = searchBar.value.trim().toLowerCase();
+	for (id in sationDict) {
+		let station = sationDict[id];
+		let stationName = station['info']['name'];
+		let stationNameLower = stationName.toLowerCase();
+		if (
+			searchText.localeCompare(stationNameLower.slice(0, searchText.length)) ==
+			0
+		) {
+			// add in the html changes here
+			console.log(stationName);
+		}
+	}
+}
 
 // Initialization function
 function init() {
@@ -100,7 +117,7 @@ const pullData = async () => {
 
 // Declaration of variables related to the map
 let map;
-let markersArr = [];
+let sationDict = {};
 
 // Function to initialize the map with the received data
 const initMap = async (data) => {
@@ -151,29 +168,14 @@ const initMap = async (data) => {
 		info_string = `
       <div class="max-w-xs">
         <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h2 class="text-lg font-semibold mb-2">Bike Station Information</h2>
+            <h2 class="text-lg font-semibold mb-2">${d.name}</h2>
             <div class="flex flex-col space-y-1">
-                <div><span class="font-semibold">ID:</span> <span class="text-gray-600">${
-									d.id
-								}</span></div>
-                <div><span class="font-semibold">Name:</span> <span class="text-gray-600">${
-									d.name
-								}</span></div>
-                <div><span class="font-semibold">Latitude:</span> <span class="text-gray-600">${
-									d.lat
-								}</span></div>
-                <div><span class="font-semibold">Longitude:</span> <span class="text-gray-600">${
-									d.lng
-								}</span></div>
                 <div><span class="font-semibold">Bikes Available:</span> <span class="${
-									d.bikes_open === 0 ? 'text-red-600' : 'text-gray-600'
-								}">${d.bikes_open}</span></div>
+									d.available_bikes === 0 ? 'text-red-600' : 'text-gray-600'
+								}">${d.available_bikes}</span></div>
                 <div><span class="font-semibold">Stands Available:</span> <span class="text-gray-600">${
-									d.stands_open
+									d.available_stands
 								}</span></div>
-                <div><span class="font-semibold">Status:</span> <span class="${
-									d.status === 'OPEN' ? 'text-green-600' : 'text-red-600'
-								}">${d.status}</span></div>
             </div>
         </div>
       </div>`;
@@ -213,21 +215,24 @@ const initMap = async (data) => {
 		});
 
 		newMarker.addEventListener('gmp-click', () => {
+			//change for actual station select function
 			console.log(d);
 		});
 
 		// Add marker to the array
-		markersArr.push(newMarker);
+		sationDict[d.id] = {
+			marker: newMarker,
+			info: d,
+		};
 	}
 };
 
 // Function to populate weather data on the front end
 const populateWeather = (data) => {
-  //we dont know what the key will be bc its the last row number in db
-  //so we have to use a for loop that only runs once
+	//we dont know what the key will be bc its the last row number in db
+	//so we have to use a for loop that only runs once
 	for (let dat in data) {
 		let d = data[dat];
-		console.log(d);
 		document.getElementById('tempNum').innerText = d['temperature'];
 		document.getElementById('precNum').innerText = d['precipitation'];
 		document.getElementById('windNum').innerText = d['wind'];
