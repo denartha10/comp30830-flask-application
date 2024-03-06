@@ -145,29 +145,29 @@ const initMap = async (data) => {
 
 		// Determine pin color based on bikes available and status
 		if (d.status != 'OPEN') {
-			background = '#00000000';
-			border = '#00000000';
+			background = 'rgba(077, 077, 077)';
+			border = 'rgba(041, 041, 041)';
 			//more than 5 bikes = green
 		} else if (d.available_bikes > 5) {
-			background = '#2ED18A';
-			border = '#137333';
+			background = 'rgba(046, 209, 138)';
+			border = 'rgba(019, 115, 051)';
 			//5-3 bikes = yellow
 		} else if (d.available_bikes > 2) {
-			background = '#FFFF00';
-			border = '#B3B300';
+			background = 'rgba(255, 255, 000)';
+			border = 'rgba(179, 179, 000)';
 			//1-2 bikes = orange
 		} else if (d.available_bikes > 0) {
-			background = '#FF9900';
-			border = '#995C00';
+			background = 'rgba(255, 153, 000)';
+			border = 'rgba(153, 092, 000)';
 			//no bikes = red
 		} else {
-			background = '#D22D2F';
-			border = '#6E1718';
+			background = 'rgba(217, 098, 099)';
+			border = 'rgba(110, 023, 024)';
 		}
 
 		info_string = `
       <div class="max-w-xs">
-        <div class="bg-white p-4 rounded-lg shadow-lg">
+        <div class="bg-white p-2 rounded-lg shadow-lg">
             <h2 class="text-lg font-semibold mb-2">${d.name}</h2>
             <div class="flex flex-col space-y-1">
                 <div><span class="font-semibold">Bikes Available:</span> <span class="${
@@ -181,10 +181,17 @@ const initMap = async (data) => {
       </div>`;
 
 		// Create pin style
+		//glyph DOM element
+		const glyphDiv = document.createElement('div');
+		glyphDiv.className = 'font-bold';
+		glyphDiv.style.fontSize = '14px';
+		glyphDiv.textContent = d.available_bikes.toString();
+		//pin element
 		let pinStyle = new PinElement({
 			background: background,
 			borderColor: border,
 			glyphColor: border,
+			glyph: glyphDiv,
 		});
 
 		const infowindow = new google.maps.InfoWindow({
@@ -196,7 +203,7 @@ const initMap = async (data) => {
 		let newMarker = new AdvancedMarkerElement({
 			map: map,
 			position: {lat: d.lat, lng: d.lng},
-			title: d.id.toString(),
+			title: 'not selected',
 			content: pinStyle.element,
 			gmpClickable: true,
 		});
@@ -204,10 +211,13 @@ const initMap = async (data) => {
 		//Add event listener not available for the AdvancedMarkerElement in the version of the API we are using
 		//We can use Marker element instead of AdvancedMarkerElement since that is the version of the API we are using
 		newMarker.addEventListener('mouseover', () => {
-			infowindow.open({
-				anchor: newMarker,
-				map,
-			});
+			//hover box doesn't open if its selected
+			if (newMarker.title != 'selected') {
+				infowindow.open({
+					anchor: newMarker,
+					map,
+				});
+			}
 		});
 
 		newMarker.addEventListener('mouseout', () => {
@@ -215,14 +225,55 @@ const initMap = async (data) => {
 		});
 
 		newMarker.addEventListener('gmp-click', () => {
-			//change for actual station select function
-			console.log(d);
+			if (newMarker.title != 'selected') {
+				//unselect all other pins;
+				for (id in sationDict) {
+					let pin = sationDict[id]['pin'];
+					let marker = sationDict[id]['marker'];
+					let tr_back = pin.background.slice(0, 18) + ', 0.4)';
+					let tr_bord = pin.borderColor.slice(0, 18) + ', 0.4)';
+					let tr_glyph = pin.borderColor.slice(0, 18) + ', 0.2)';
+					pin.background = tr_back;
+					pin.borderColor = tr_bord;
+					pin.glyphColor = tr_glyph;
+					pin.scale = 1;
+					marker.zIndex = 1;
+					marker.title = 'not selected';
+				}
+				let sel_back = pinStyle.background.slice(0, 18) + ', 1)';
+				let sel_bord = pinStyle.borderColor.slice(0, 18) + ', 1)';
+				pinStyle.background = sel_back;
+				pinStyle.borderColor = sel_bord;
+				pinStyle.glyphColor = sel_bord;
+				pinStyle.scale = 1.3;
+				newMarker.zIndex = 2;
+				newMarker.title = 'selected';
+				infowindow.close();
+				//select function
+				console.log(d);
+			} else {
+				//reshow all pins;
+				for (id in sationDict) {
+					let pin = sationDict[id]['pin'];
+					let marker = sationDict[id]['marker'];
+					let back = pin.background.slice(0, 18) + ', 1)';
+					let bord = pin.borderColor.slice(0, 18) + ', 1)';
+					pin.background = back;
+					pin.borderColor = bord;
+					pin.glyphColor = bord;
+					pin.scale = 1;
+					marker.zIndex = 1;
+					marker.title = 'not selected';
+				}
+				//unselect all function
+			}
 		});
 
 		// Add marker to the array
 		sationDict[d.id] = {
 			marker: newMarker,
 			info: d,
+			pin: pinStyle,
 		};
 	}
 };
