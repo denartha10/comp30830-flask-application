@@ -4,15 +4,19 @@ export const menuElement = document.getElementById("sidebar");
 export const clockElement = document.getElementById("liveTimer");
 export const weatherMenuElement = document.getElementById("weatherMenu");
 export const searchBarElement = document.getElementById("searchBar");
-export const menuToggleElement = document.getElementById("sidebarToggle");
-export const weatherToggleElement = document.getElementById("weatherToggle");
 export const closeWeatherElement = document.getElementById("closeWeather");
 export const searchTripElement = document.getElementById("searchTrip");
 export const mapElement = document.getElementById("map");
 
-// Code for initializing DOM elements
+//intercative
+export const menuToggleElement = document.getElementById("sidebarToggle");
+export const weatherToggleElement = document.getElementById("weatherToggle");
+
+// Code for initializing DOM elements intercativity
+// If you need to add event listeners define functions separetly and do that here
 const initializeDOM = () => {
     setTimeout(writeCurrentTimeToClock, 1000);
+    menuToggleElement.addEventListener("click", toggleSidebarVisibility);
 };
 
 // Code for toggling sidebar visibility
@@ -26,14 +30,9 @@ const clearSearchBar = () => {
     searchBarElement.value = "";
 };
 
-// Code for toggling weather menu visibility
-const toggleWeatherMenuVisibility = () => {
-    weatherMenuElement.classList.toggle("hidden");
-};
-
 const writeCurrentTimeToClock = () => {
     const currentTime = new Date();
     clockElement.textContent = `${currentTime.getHours()}:${currentTime.getMinutes()}`;
 };
 
-export { initializeDOM, toggleSidebarVisibility, clearSearchBar, toggleWeatherMenuVisibility, writeCurrentTimeToClock };
+export { initializeDOM, toggleSidebarVisibility, clearSearchBar, writeCurrentTimeToClock };
