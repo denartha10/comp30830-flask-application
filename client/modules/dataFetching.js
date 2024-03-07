@@ -27,3 +27,5 @@ const populateWeather = data => {
         document.getElementById("windNum").innerText = d["wind"];
     }
 };
+
+export { fetchData };

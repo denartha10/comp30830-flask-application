@@ -1,5 +1,5 @@
 // mapInteraction.js
-
+import { fetchData } from "./dataFetching";
 import { mapElement } from "./domInteraction";
 import { Loader } from "@googlemaps/js-api-loader";
 

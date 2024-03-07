@@ -1,8 +1,9 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  build: {
-    outDir: "../static/",
-    emptyOutDir: true,
-  },
+    build: {
+        outDir: "../static/",
+        emptyOutDir: true,
+        target: "esnext"
+    }
 });
