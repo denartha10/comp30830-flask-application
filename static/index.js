@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Call the displayClock function to display the current time
 	displayClock();
+
+	// Call the weather function to fetch live weather data
+	populateWeather();
 });
 
 // Function to toggle visibility of an element
@@ -48,7 +51,7 @@ const displayClock = () => {
 	const updateClock = () => {
 		const currentTime = new Date();
 		const hours = currentTime.getHours();
-		const minutes = currentTime.getMinutes();
+		const minutes = currentTime.getMinutes().toString().padStart(2, '0');
 		const display = `${hours}:${minutes}`;
 		document.getElementById('liveTimer').textContent = display;
 		setTimeout(updateClock, 1000);
@@ -279,13 +282,34 @@ const initMap = async (data) => {
 };
 
 // Function to populate weather data on the front end
-const populateWeather = (data) => {
-	//we dont know what the key will be bc its the last row number in db
-	//so we have to use a for loop that only runs once
-	for (let dat in data) {
-		let d = data[dat];
-		document.getElementById('tempNum').innerText = d['temperature'];
-		document.getElementById('precNum').innerText = d['precipitation'];
-		document.getElementById('windNum').innerText = d['wind'];
-	}
+const populateWeather = async () => {
+    try {
+        const response = await fetch('/data');
+        const data = await response.json();
+        const weatherData = JSON.parse(data.weather);
+
+        //we dont know what the key will be bc its the last row number in db
+        //so we have to use a for loop that only runs once
+        for (let dat in weatherData) {
+            let d = weatherData[dat];
+
+			let weatherIconSrc = "images/clouds.png";
+			if (d.main === "Clouds") {
+				weatherIconSrc = "images/clouds.png";
+			} else if (d.main === "Rain") {
+				weatherIconSrc = "images/rain.png";
+			} 
+            document.getElementById('weatherIcon').src = weatherIconSrc;
+			document.getElementById('temp').innerText = Math.round(d['temperature']); 
+            document.getElementById('prec').innerText = Math.round(d['precipitation']); 
+            document.getElementById('wind').innerText = Math.round(d['wind']);
+        }
+
+        if (document.getElementById('weatherMenu')) {
+            document.getElementById('weatherMenu').classList.remove('hidden');
+        }
+
+    } catch (error) {
+        console.error('Fetch Weather Error:', error);
+    }
 };
