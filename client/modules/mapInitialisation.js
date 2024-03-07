@@ -6,8 +6,8 @@ import { Loader } from "@googlemaps/js-api-loader";
 // Initialize the Google Maps API
 const initializeGoogleMaps = async () => {
     const loader = new Loader({
-        apiKey: "YOUR_API_KEY",
-        version: "weekly"
+        apiKey: "AIzaSyApT0xMbM9WAc0irn4JMDw1Ayb53B7Q1p8",
+        version: "beta"
     });
 
     await loader.load();
