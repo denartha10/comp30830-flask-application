@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Map</title>
+        <link rel="stylesheet" href="style.css" />
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="main.js" type="module" defer="true"></script>
+        <script src="./modules/mapInitialisation.js" type="module" defer="true"></script>
+    </head>
+    <body class="bg-[#e5e3df] font-sans m-0 p-0">
+        <div class="overflow-hidden transition-all duration-300 ease-in-out" id="mainContent">
+            <div id="map" class="h-screen w-screen"></div>
+
+            <div class="absolute top-0 left-0 right-0 flex items-center p-2.5 bg-transparent z-10">
+                <button id="sidebarToggle" class="hamburger-button bg-transparent border-none text-black text-2xl cursor-pointer pr-1 ml-1 rounded"> ☰ </button>
+                <div class="flex items-center bg-white rounded-full shadow-md ml-5" style="width: 350px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3)">
+                    <input type="text" id="searchBar" class="border-none outline-none pl-5 pr-10 py-2 text-base w-full rounded-full" placeholder="Search Map For Nearest Bike Station" onclick="searchBarClick()" oninput="showSearchPrompt()" />
+                    <div id="searchPrompt" class="hidden mt-2 text-sm text-gray-600"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white text-black text-center p-9 shadow-md w-96 h-screen fixed top-0 left-0 overflow-y-auto transition duration-300 ease-in-out transform -translate-x-96 z-30" id="sidebar">
+            <h2 class="text-xl mb-5">Plan Your Dublin Bike Trip</h2>
+            <div id="liveTimer" class="text-[#5f6368] text-lg mb-5"></div>
+            <input type="text" id="startingDestination" placeholder="Starting Destination" class="mt-2 p-2 border border-gray-300 rounded w-full" />
+            <div class="mt-4"></div>
+            <input type="text" id="endDestination" placeholder="End Destination" class="mt-2 p-2 border border-gray-300 rounded w-full" />
+            <div class="mt-4"></div>
+            <input type="date" class="mt-2 p-2 border border-gray-300 rounded w-full" />
+            <div class="mt-4"></div>
+            <input type="time" class="mt-2 p-2 border border-gray-300 rounded w-full" />
+            <div class="mt-4"></div>
+            <button id="searchTrip" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"> Search Trip </button>
+            <div class="mt-4"></div>
+        </div>
+
+        <div id="weatherMenu" class="hidden absolute top-[100px] right-5 p-5 bg-white text-black rounded-xl shadow-md z-10 w-[390px] h-[80vh] text-center overflow-auto transition-all duration-300">
+            <button id="closeWeather" class="absolute top-0 right-3 text-2xl text-black hover:text-gray-600"> &times; </button>
+            <h2 class="text-xl mb-5">Weather Information</h2>
+            <div class="mock-graph my-5 group flex flex-col items-center">
+                <h3 class="mb-2">Temperature:</h3>
+                <div class="bar-temperature bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"></div>
+                <div id="tempNum">N/A</div>
+            </div>
+            <div class="mock-graph my-5 group flex flex-col items-center">
+                <h3 class="mb-2">Percipitation:</h3>
+                <div class="bar-humidity bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"></div>
+                <div id="precNum">N/A</div>
+            </div>
+            <div class="mock-graph my-5 group flex flex-col items-center">
+                <h3 class="mb-2">Wind Speed:</h3>
+                <div class="bar-wind-speed bg-[#af4c4c] h-5 w-3/5 transition-all duration-300 group-hover:scale-110"></div>
+                <div id="windNum">N/A</div>
+            </div>
+        </div>
+    </body>
+</html>
