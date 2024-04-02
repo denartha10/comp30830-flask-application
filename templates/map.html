@@ -1,0 +1,75 @@
+<div id="dublin_bike_map_id" class="h-screen w-screen"></div>
+<script type="module">
+    const importGoogleMapsLibraries = async () => {
+        const { Map } = await google.maps.importLibrary("maps");
+        const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+
+        return { Map, AdvancedMarkerElement, PinElement };
+    };
+
+    const { Map, AdvancedMarkerElement, PinElement } = await importGoogleMapsLibraries();
+
+    const mapSettings = {
+        zoom: 14,
+        center: { lat: 53.347, lng: -6.27 },
+        mapTypeControl: false,
+        streetViewControl: false,
+        ClickableIcons: false,
+        mapId: "dublin_bike_map_id"
+    };
+
+    const fetchProcessedStations = async () => {
+        const response = await fetch("/stations"); // Assuming '/stations' is your Flask endpoint
+        const stations = await response.json();
+        return stations;
+    };
+
+    function createInfoWindow(station, content) {
+        return new google.maps.InfoWindow({
+            content: content,
+            ariaLabel: `Bike Stand ${station.id.toString()}`
+        });
+    }
+
+    function createAdvancedMarker(map, pin, station) {
+        return new AdvancedMarkerElement({
+            map: map,
+            position: { lat: station.lat, lng: station.lng },
+            title: "not selected",
+            content: pin.element,
+            gmpClickable: true
+        });
+    }
+
+    function createPin(station, pinColors) {
+        const div = document.createElement("div");
+        div.className = "font-bold";
+        div.style.fontSize = "14px";
+        div.textContent = station.available_bikes.toString();
+
+        return new PinElement({
+            background: pinColors.background,
+            borderColor: pinColors.border,
+            glyphColor: pinColors.border,
+            glyph: div
+        });
+    }
+
+    const mapElement = document.getElementById("dublin_bike_map_id");
+    const map = new Map(mapElement, mapSettings);
+
+    // Fetch and process the stations data
+    fetchProcessedStations().then(stations => {
+        stations.forEach(station => {
+            // Assuming the Flask API returns pin colors and other necessary information
+            const pin = createPin(station, station.pin_colors);
+            const infoWindow = createInfoWindow(station, station.info_html);
+            const marker = createAdvancedMarker(map, pin, station);
+
+            // Add the marker to the map
+            marker.addListener("click", () => {
+                infoWindow.open(map, marker);
+            });
+        });
+    });
+</script>

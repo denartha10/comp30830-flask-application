@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bike Map</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
+        <script defer src="https://unpkg.com/@victoryoalli/alpinejs-timeout@1.0.0/dist/timeout.min.js"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApT0xMbM9WAc0irn4JMDw1Ayb53B7Q1p8"></script>
+    </head>
+    <body x-data="{open: false}" class="bg-stone-200 font-sans m-0 p-0">
+        <!-- sidebar section -->
+        <div
+            x-bind:class="open ? '' : '-translate-x-96'"
+            class="bg-white text-black text-center p-9 shadow-md w-96 h-screen fixed top-0 left-0 overflow-y-auto transition duration-300 ease-in-out transform z-30"
+            id="sidebar"
+        >
+            <!-- this is the sidebar section -->
+            {% include "sidebar.html" %}
+        </div>
+
+        <!-- main section -->
+        <div x-bind:class="open ? 'translate-x-96' : '' " class="overflow-hidden transition-all duration-300 ease-in-out" id="mainContent">
+            <!-- this is the main section -->
+            {% include "main.html" %}
+        </div>
+    </body>
+</html>
