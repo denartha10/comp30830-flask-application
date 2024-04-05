@@ -1,10 +1,10 @@
-<form class="space-y-4">
+<div class="space-y-4">
     <h2 class="text-xl mb-5">Plan Your Dublin Bike Trip</h2>
 
     <div x-timeout:1000="t = new Date(); $el.textContent = `${t.getHours()}:${t.getMinutes()}`" class="text-gray-600 text-lg mb-5"></div>
-    <input type="text" name="startingDestination" placeholder="Starting Destination" class="mt-2 p-2 border border-gray-300 rounded w-full" />
-    <input type="text" name="endDestination" placeholder="End Destination" class="mt-2 p-2 border border-gray-300 rounded w-full" />
+    <input id="startPoint" type="text" name="startPoint" placeholder="Starting Destination" class="mt-2 p-2 border border-gray-300 rounded w-full" />
+    <input id="endPoint" type="text" name="endPoint" placeholder="End Destination" class="mt-2 p-2 border border-gray-300 rounded w-full" />
     <input type="date" name="date" class="mt-2 p-2 border border-gray-300 rounded w-full" />
     <input type="time" name="time" class="mt-2 p-2 border border-gray-300 rounded w-full" />
-    <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Search Trip</button>
-</form>
+    <button class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onclick="getTrip()">Search Trip</button>
+</div>

@@ -28,6 +28,8 @@ app.config.from_mapping(configuration_dictionary)
 db = SQLAlchemy(app)
 cache = Cache(app)
 
+stations_dict = {}
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -40,6 +42,12 @@ def get_stations():
     bike_data["info_html"] = bike_data.apply(createInfoWindowContent, axis=1)
     json_data = bike_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
+
+@app.route('/select', methods=['GET'])
+def select_station():
+    #USE THIS to POPULATE SIDE FIELD
+    #station = db.session.query(Station).
+    pass 
 
 if __name__ == '__main__':
     app.run(port=5000)

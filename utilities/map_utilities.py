@@ -15,8 +15,6 @@ def determinePinColors(station):
 
 
 
-
-
 def createInfoWindowContent(station):
     available_bikes = station["available_bikes"]
     available_stands = station["available_stands"]
