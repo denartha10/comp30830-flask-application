@@ -59,6 +59,7 @@
 	}
 
 	let stationDict = {};
+	let tripDisplayed = false;
 
 	function selectPin(selectedMarker, selectedPin, selectedInfo) {
 		if (selectedMarker.title != 'selected') {
@@ -193,11 +194,13 @@
 	let endM = null;
 
 	function startEndMarker(start, end) {
+		//all other times after first
 		if (startM != null) {
 			startM.position = start;
 			endM.position = end;
 			return;
 		}
+		//first time usiing this feature
 		startM = new AdvancedMarkerElement({
 			map: map,
 			position: start,
@@ -220,6 +223,8 @@
 		let closeStationStart = closestStation(startPlace);
 		let closeStationEnd = closestStation(endPlace);
 
+		hideMarkers(closeStationStart, closeStationEnd);
+
 		let StationOnelatLng = new google.maps.LatLng(
 			closeStationStart['lat'],
 			closeStationStart['lng']
@@ -239,8 +244,9 @@
 			location: StationTwolatLng,
 			stopover: true,
 		});
-
+		directionsRenderer.setMap(map);
 		setDirection(startLatLng, endLatLng, waypts);
+		tripDisplayed = true;
 	}
 	window.getTrip = getTrip;
 
@@ -266,4 +272,29 @@
 			Math.pow(Math.abs(ax - bx), 2) + Math.pow(Math.abs(ay - by), 2)
 		);
 	}
+
+	function hideMarkers(marker1, marker2) {
+		for (let id in stationDict) {
+			if (stationDict[id] == marker1 || stationDict[id] == marker2) {
+				continue;
+			}
+			stationDict[id]['stationMarker'].setMap(null);
+		}
+	}
+
+	function resetMap() {
+		if (!tripDisplayed) {
+			return;
+		}
+		directionsRenderer.setMap(null);
+		startM.setMap(null);
+		endM.setMap(null);
+		map.setZoom(14);
+		map.setCenter({lat: 53.347, lng: -6.27});
+		for (let id in stationDict) {
+			stationDict[id]['stationMarker'].setMap(map);
+		}
+		tripDisplayed = false;
+	}
+	window.resetMap = resetMap;
 </script>
