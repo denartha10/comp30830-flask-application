@@ -88,6 +88,9 @@
 			selectedMarker.zIndex = 2;
 			selectedMarker.title = 'selected';
 			selectedInfo.open(map, selectedMarker);
+			if (leftSideBarOpen) {
+				map.setCenter({lat: 53.347, lng: selectedMarker.position['lng'] + 0.04});
+			}
 		} else {
 			//reshow all pins;
 			for (let id in stationDict) {
@@ -282,10 +285,23 @@
 		}
 	}
 
-	function resetMap() {
-		if (!tripDisplayed) {
-			return;
+	let leftSideBarOpen = false;
+	function leftSideBar() {
+		if (leftSideBarOpen) {
+			map.setCenter({lat: 53.347, lng: -6.27});
+			if (tripDisplayed) {
+				console.log('test');
+				resetMap();
+				tripDisplayed = false;
+			}
+		} else {
+			map.setCenter({lat: 53.347, lng: -6.25});
 		}
+		leftSideBarOpen = !leftSideBarOpen;
+	}
+	window.leftSideBar = leftSideBar;
+
+	function resetMap() {
 		directionsRenderer.setMap(null);
 		startM.setMap(null);
 		endM.setMap(null);
@@ -294,7 +310,6 @@
 		for (let id in stationDict) {
 			stationDict[id]['stationMarker'].setMap(map);
 		}
-		tripDisplayed = false;
 	}
-	window.resetMap = resetMap;
+	//window.resetMap = resetMap;
 </script>
