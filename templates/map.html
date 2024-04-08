@@ -146,6 +146,8 @@
 				stationInfoWindow: infoWindow,
 				lat: station.lat,
 				lng: station.lng,
+				av_bikes: station.available_bikes,
+				av_stands: station.available_stands,
 			};
 			// Add the marker to the map
 			marker.addListener('click', () => {
@@ -237,8 +239,8 @@
 		let endLng = endPlace.geometry.location.lng();
 		let endLatLng = new google.maps.LatLng(endLat, endLng);
 
-		let closeStationStart = closestStation(startPlace);
-		let closeStationEnd = closestStation(endPlace);
+		let closeStationStart = closestStation(startPlace, true);
+		let closeStationEnd = closestStation(endPlace, false);
 
 		hideMarkers(closeStationStart, closeStationEnd);
 
@@ -267,12 +269,18 @@
 	}
 	window.getTrip = getTrip;
 
-	function closestStation(place) {
+	function closestStation(place, start) {
 		let lat = place.geometry.location.lat();
 		let lng = place.geometry.location.lng();
 		let closestStation = null;
 		let minDist = 1000;
 		for (let id in stationDict) {
+			if (start && stationDict[id]['av_bikes'] == 0) {
+				continue;
+			}
+			if (!start && stationDict[id]['av_stands'] == 0) {
+				continue;
+			}
 			let stLat = stationDict[id]['lat'];
 			let stLng = stationDict[id]['lng'];
 			let dist = distanceTo(lat, lng, stLat, stLng);
