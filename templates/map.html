@@ -1,0 +1,327 @@
+<div id="dublin_bike_map_id" class="h-screen w-screen"></div>
+<script type="module">
+	const importGoogleMapsLibraries = async () => {
+		const {Map} = await google.maps.importLibrary('maps');
+		const {AdvancedMarkerElement, PinElement} = await google.maps.importLibrary(
+			'marker'
+		);
+		const {Autocomplete} = await google.maps.importLibrary('places');
+		return {Map, AdvancedMarkerElement, PinElement, Autocomplete};
+	};
+
+	const {Map, AdvancedMarkerElement, PinElement, Autocomplete} =
+		await importGoogleMapsLibraries();
+
+	const mapSettings = {
+		zoom: 14,
+		center: {lat: 53.347, lng: -6.27},
+		mapTypeControl: false,
+		streetViewControl: false,
+		ClickableIcons: false,
+		zoomControlOptions: {
+			style: google.maps.ZoomControlStyle.SMALL,
+			position: google.maps.ControlPosition.LEFT_BOTTOM,
+		},
+		mapId: 'dublin_bike_map_id',
+	};
+
+	const fetchProcessedStations = async () => {
+		const response = await fetch('/stations'); // Assuming '/stations' is your Flask endpoint
+		const stations = await response.json();
+		return stations;
+	};
+
+	function createInfoWindow(station, content) {
+		return new google.maps.InfoWindow({
+			content: content,
+			ariaLabel: `Bike Stand ${station.id.toString()}`,
+		});
+	}
+
+	function createAdvancedMarker(map, pin, station) {
+		return new AdvancedMarkerElement({
+			map: map,
+			position: {lat: station.lat, lng: station.lng},
+			title: 'not selected',
+			content: pin.element,
+			gmpClickable: true,
+		});
+	}
+
+	function createPin(station, pinColors) {
+		const div = document.createElement('div');
+		div.className = 'font-bold';
+		div.style.fontSize = '14px';
+		div.textContent = station.available_bikes.toString();
+
+		return new PinElement({
+			background: pinColors.background,
+			borderColor: pinColors.border,
+			glyphColor: pinColors.border,
+			glyph: div,
+		});
+	}
+
+	let stationDict = {};
+	let tripDisplayed = false;
+	let rightSideBarOpen = false;
+	let leftSideBarOpen = false;
+
+	function setRightSideBarOpen() {
+		rightSideBarOpen = !rightSideBarOpen;
+	}
+	window.setRightSideBarOpen = setRightSideBarOpen;
+
+	function selectPin(selectedMarker, selectedPin, selectedInfo) {
+		if (selectedMarker.title != 'selected') {
+			//unselect all other pins;
+			for (let id in stationDict) {
+				let pin = stationDict[id]['stationPin'];
+				let marker = stationDict[id]['stationMarker'];
+				let infoWindow = stationDict[id]['stationInfoWindow'];
+				let tr_back = pin.background.slice(0, 18) + ', 0.4)';
+				let tr_bord = pin.borderColor.slice(0, 18) + ', 0.4)';
+				let tr_glyph = pin.borderColor.slice(0, 18) + ', 0.2)';
+				pin.background = tr_back;
+				pin.borderColor = tr_bord;
+				pin.glyphColor = tr_glyph;
+				pin.scale = 1;
+				marker.zIndex = 1;
+				marker.title = 'not selected';
+				infoWindow.close();
+			}
+			let sel_back = selectedPin.background.slice(0, 18) + ', 1)';
+			let sel_bord = selectedPin.borderColor.slice(0, 18) + ', 1)';
+			selectedPin.background = sel_back;
+			selectedPin.borderColor = sel_bord;
+			selectedPin.glyphColor = sel_bord;
+			selectedPin.scale = 1.3;
+			selectedMarker.zIndex = 2;
+			selectedMarker.title = 'selected';
+			selectedInfo.open(map, selectedMarker);
+			if (leftSideBarOpen && rightSideBarOpen) {
+				map.setCenter({
+					lat: 53.347,
+					lng: selectedMarker.position['lng'] + 0.04,
+				});
+			}
+		} else {
+			//reshow all pins;
+			for (let id in stationDict) {
+				let pin = stationDict[id]['stationPin'];
+				let marker = stationDict[id]['stationMarker'];
+				let infoWindow = stationDict[id]['stationInfoWindow'];
+				let back = pin.background.slice(0, 18) + ', 1)';
+				let bord = pin.borderColor.slice(0, 18) + ', 1)';
+				pin.background = back;
+				pin.borderColor = bord;
+				pin.glyphColor = bord;
+				pin.scale = 1;
+				marker.zIndex = 1;
+				marker.title = 'not selected';
+				infoWindow.close();
+			}
+		}
+	}
+
+	const mapElement = document.getElementById('dublin_bike_map_id');
+	const map = new Map(mapElement, mapSettings);
+	let directionsService = new google.maps.DirectionsService();
+	let directionsRenderer = new google.maps.DirectionsRenderer({
+		suppressMarkers: true,
+	});
+	directionsRenderer.setMap(map);
+
+	// Fetch and process the stations data
+	fetchProcessedStations().then((stations) => {
+		stations.forEach((station) => {
+			// Assuming the Flask API returns pin colors and other necessary information
+			const pin = createPin(station, station.pin_colors);
+			const infoWindow = createInfoWindow(station, station.info_html);
+			const marker = createAdvancedMarker(map, pin, station);
+			marker.title = 'not selected';
+			stationDict[station.id] = {
+				stationMarker: marker,
+				stationPin: pin,
+				stationInfoWindow: infoWindow,
+				lat: station.lat,
+				lng: station.lng,
+			};
+			// Add the marker to the map
+			marker.addListener('click', () => {
+				selectPin(marker, pin, infoWindow);
+			});
+		});
+	});
+
+	let startPlace;
+	let endPlace;
+
+	const center = {lat: 53.347, lng: -6.27};
+	// Create a bounding box with sides ~10km away from the center point
+	const defaultBounds = {
+		north: center.lat + 0.1,
+		south: center.lat - 0.1,
+		east: center.lng + 0.1,
+		west: center.lng - 0.1,
+	};
+	const options = {
+		bounds: defaultBounds,
+		strictBounds: false,
+	};
+	const startPoint = new Autocomplete(
+		document.getElementById('startPoint'),
+		options
+	);
+
+	startPoint.addListener('place_changed', () => {
+		startPlace = startPoint.getPlace();
+	});
+
+	const endPoint = new Autocomplete(
+		document.getElementById('endPoint'),
+		options
+	);
+
+	endPoint.addListener('place_changed', () => {
+		endPlace = endPoint.getPlace();
+	});
+
+	function setDirection(startLatLng, endLatLng, waypts) {
+		directionsService.route(
+			{
+				origin: startLatLng,
+				destination: endLatLng,
+				waypoints: waypts,
+				optimizeWaypoints: false,
+				travelMode: google.maps.TravelMode.WALKING,
+			},
+			(response, status) => {
+				if (status === 'OK') {
+					directionsRenderer.setDirections(response);
+					startEndMarker(startLatLng, endLatLng);
+				} else {
+					window.alert('Directions request failed due to ' + status);
+				}
+			}
+		);
+	}
+
+	let startM = null;
+	let endM = null;
+
+	function startEndMarker(start, end) {
+		//all other times after first
+		if (startM != null) {
+			startM.position = start;
+			endM.position = end;
+			return;
+		}
+		//first time usiing this feature
+		startM = new AdvancedMarkerElement({
+			map: map,
+			position: start,
+		});
+		endM = new AdvancedMarkerElement({
+			map: map,
+			position: end,
+		});
+	}
+
+	function getTrip() {
+		let startLat = startPlace.geometry.location.lat();
+		let startLng = startPlace.geometry.location.lng();
+		let startLatLng = new google.maps.LatLng(startLat, startLng);
+
+		let endLat = endPlace.geometry.location.lat();
+		let endLng = endPlace.geometry.location.lng();
+		let endLatLng = new google.maps.LatLng(endLat, endLng);
+
+		let closeStationStart = closestStation(startPlace);
+		let closeStationEnd = closestStation(endPlace);
+
+		hideMarkers(closeStationStart, closeStationEnd);
+
+		let StationOnelatLng = new google.maps.LatLng(
+			closeStationStart['lat'],
+			closeStationStart['lng']
+		);
+		let StationTwolatLng = new google.maps.LatLng(
+			closeStationEnd['lat'],
+			closeStationEnd['lng']
+		);
+
+		const waypts = [];
+
+		waypts.push({
+			location: StationOnelatLng,
+			stopover: true,
+		});
+		waypts.push({
+			location: StationTwolatLng,
+			stopover: true,
+		});
+		directionsRenderer.setMap(map);
+		setDirection(startLatLng, endLatLng, waypts);
+		tripDisplayed = true;
+	}
+	window.getTrip = getTrip;
+
+	function closestStation(place) {
+		let lat = place.geometry.location.lat();
+		let lng = place.geometry.location.lng();
+		let closestStation = null;
+		let minDist = 1000;
+		for (let id in stationDict) {
+			let stLat = stationDict[id]['lat'];
+			let stLng = stationDict[id]['lng'];
+			let dist = distanceTo(lat, lng, stLat, stLng);
+			if (dist < minDist || closestStation == null) {
+				closestStation = stationDict[id];
+				minDist = dist;
+			}
+		}
+		return closestStation;
+	}
+
+	function distanceTo(ax, ay, bx, by) {
+		return Math.sqrt(
+			Math.pow(Math.abs(ax - bx), 2) + Math.pow(Math.abs(ay - by), 2)
+		);
+	}
+
+	function hideMarkers(marker1, marker2) {
+		for (let id in stationDict) {
+			if (stationDict[id] == marker1 || stationDict[id] == marker2) {
+				continue;
+			}
+			stationDict[id]['stationMarker'].setMap(null);
+		}
+	}
+
+	function leftSideBar() {
+		if (leftSideBarOpen) {
+			map.setCenter({lat: 53.347, lng: -6.27});
+			if (tripDisplayed) {
+				console.log('test');
+				resetMap();
+				tripDisplayed = false;
+			}
+		} else {
+			map.setCenter({lat: 53.347, lng: -6.25});
+		}
+		leftSideBarOpen = !leftSideBarOpen;
+	}
+	window.leftSideBar = leftSideBar;
+
+	function resetMap() {
+		directionsRenderer.setMap(null);
+		startM.setMap(null);
+		endM.setMap(null);
+		map.setZoom(14);
+		map.setCenter({lat: 53.347, lng: -6.27});
+		for (let id in stationDict) {
+			stationDict[id]['stationMarker'].setMap(map);
+		}
+	}
+</script>

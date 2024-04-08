@@ -1,46 +1,54 @@
-from flask import Flask, jsonify
+from flask import Flask, Response, render_template
 from flask_caching import Cache
+from flask_sqlalchemy import SQLAlchemy
+from utilities.models import Station
+from utilities.map_utilities import determinePinColors, createInfoWindowContent
 import pandas as pd
-from sqlalchemy import create_engine
+from dotenv import load_dotenv
+import os
 
-config = {
+# Load .env file
+load_dotenv()
+
+# decide database for prod or dev
+database_uri = os.getenv('DEV_DATABASE_URI')
+# database_uri = os.getenv('PROD_DATABASE_URI')
+
+configuration_dictionary = {
     "DEBUG": True,          # some Flask specific configs
-    "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 300
+    "CACHE_TYPE": "SimpleCache", # Flask-Caching related configs
+    "CACHE_DEFAULT_TIMEOUT": 300,
+    "SQLALCHEMY_DATABASE_URI": database_uri,
+    "SQLALCHEMY_TRACK_MODIFICATIONS": False # to suppress a warning
 }
 
 app = Flask(__name__, static_url_path='')
-app.config.from_mapping(config)
+app.config.from_mapping(configuration_dictionary)
+
+db = SQLAlchemy(app)
 cache = Cache(app)
 
-def engine_params():
-    user = 'admin'
-    password = 'kukfiv-zubsyd-1Pejpu'
-    host = 'database-1.c38umsk2i6vi.eu-north-1.rds.amazonaws.com'
-    port = '3306'
-    db_name = 'bike_db'
-    return f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db_name}'
+stations_dict = {}
 
 @app.route('/')
 def index():
-    return app.send_static_file('index.html')
- 
-@app.route('/data')
-def pull_data():
-    engine = create_engine(engine_params())
-    with engine.connect() as conn, conn.begin():
-        weather = pd.read_sql_table("weather", conn)
-        #only use the most recent weather entry bc thats current
-        weather_last = weather.tail(1)
-        bike_data = pd.read_sql_table("stations", conn)
-        conn.close()
-        bike_data_t = bike_data.transpose()
-        weather_t = weather_last.transpose()
-        dict = {
-            'bike' : bike_data_t.to_json(),
-            'weather' : weather_t.to_json()
-        }
-        return jsonify(dict)
+    return render_template("index.html")
+
+@app.route('/stations', methods=['GET'])
+def get_stations():
+    stations = db.session.query(Station).all()
+    bike_data = pd.DataFrame(stations)
+    bike_data["pin_colors"] = bike_data.apply(determinePinColors, axis=1)
+    bike_data["info_html"] = bike_data.apply(createInfoWindowContent, axis=1)
+    json_data = bike_data.to_json(orient='records', date_format='iso')
+    return Response(json_data, mimetype='application/json')
+
+@app.route('/select/<int:id>', methods=['GET'])
+def select_station(id):
+    select_station = db.session.query.filter_by(id=id).all()
+    select_station_data = pd.DataFrame(select_station)
+    json_data = select_station_data.to_json(orient='records', date_format='iso')
+    return Response(json_data, mimetype='application/json')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5000)
