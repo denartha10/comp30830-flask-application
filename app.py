@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, request
 from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy
 from utilities.models import Station
@@ -45,10 +45,20 @@ def get_stations():
 
 @app.route('/select/id', methods=['GET'])
 def select_station(id):
-    select_station = db.session.query.filter_by(id=id).all()
+    print(f"WE FETCHED THE {id}")
+    select_station = db.session.query.filter_by(id=id).all() # Getting a warning about the filter by here??
     select_station_data = pd.DataFrame(select_station)
     json_data = select_station_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
+
+
+@app.route('/predict', methods=['GET'])
+def get_prediction():
+    day = request.args.get("day")
+    hour = request.args.get("hour")
+
+    print(hour, day)
+    return f"{hour}, {day}"
 
 if __name__ == '__main__':
     app.run(port=5000)

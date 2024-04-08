@@ -1,11 +1,7 @@
 <script>
-	const fetchSelectedStation = async (id) => {
-		const response = await fetch('/select/id');
-		const station = await response.json();
-		return station;
-	};
-
-	fetchSelectedStation().then((station) => {
-		console.log(station);
-	});
+  const fetchSelectedStation = async (id) => {
+    const response = await fetch(`/select/${id}`);
+    const station = await response.json();
+    return station;
+  };
 </script>
