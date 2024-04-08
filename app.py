@@ -1,7 +1,7 @@
 from flask import Flask, Response, render_template
 from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy
-from utilities.models import Station
+from utilities.models import Station, Weather
 from utilities.map_utilities import determinePinColors, createInfoWindowContent
 import pandas as pd
 from dotenv import load_dotenv
@@ -43,6 +43,13 @@ def get_stations():
     json_data = bike_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
 
+@app.route('/weather', methods=['GET'])
+def get_weather():
+    weather = db.session.query(Weather).all()
+    weather_data = pd.DataFrame(weather)
+    json_data = weather_data.to_json(orient='records', date_format='iso')
+    return Response(json_data, mimetype='application/json')
+
 @app.route('/select/<id>', methods=['GET'])
 def select_station(id : int):
     print(id)
@@ -51,6 +58,5 @@ def select_station(id : int):
     json_data = select_station_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
         
-
 if __name__ == '__main__':
     app.run(port=5000)

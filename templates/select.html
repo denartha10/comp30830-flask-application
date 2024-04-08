@@ -1,12 +1,12 @@
 <script>
 	const fetchSelectedStation = async (id) => {
-        console.log(id);
+        //console.log(id);
 		const response = await fetch(`/select/${id}`);
 		const station = await response.json();
 		return station;
 	};
 
 	fetchSelectedStation().then((station) => {
-		console.log(station);
+		//console.log(station);
 	});
 </script>
