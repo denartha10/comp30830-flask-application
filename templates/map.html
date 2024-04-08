@@ -18,6 +18,10 @@
 		mapTypeControl: false,
 		streetViewControl: false,
 		ClickableIcons: false,
+		zoomControlOptions: {
+			style: google.maps.ZoomControlStyle.SMALL,
+			position: google.maps.ControlPosition.LEFT_BOTTOM,
+		},
 		mapId: 'dublin_bike_map_id',
 	};
 
@@ -59,6 +63,14 @@
 	}
 
 	let stationDict = {};
+	let tripDisplayed = false;
+	let rightSideBarOpen = false;
+	let leftSideBarOpen = false;
+
+	function setRightSideBarOpen() {
+		rightSideBarOpen = !rightSideBarOpen;
+	}
+	window.setRightSideBarOpen = setRightSideBarOpen;
 
 	function selectPin(selectedMarker, selectedPin, selectedInfo) {
 		if (selectedMarker.title != 'selected') {
@@ -87,6 +99,12 @@
 			selectedMarker.zIndex = 2;
 			selectedMarker.title = 'selected';
 			selectedInfo.open(map, selectedMarker);
+			if (leftSideBarOpen && rightSideBarOpen) {
+				map.setCenter({
+					lat: 53.347,
+					lng: selectedMarker.position['lng'] + 0.04,
+				});
+			}
 		} else {
 			//reshow all pins;
 			for (let id in stationDict) {
@@ -193,11 +211,13 @@
 	let endM = null;
 
 	function startEndMarker(start, end) {
+		//all other times after first
 		if (startM != null) {
 			startM.position = start;
 			endM.position = end;
 			return;
 		}
+		//first time usiing this feature
 		startM = new AdvancedMarkerElement({
 			map: map,
 			position: start,
@@ -220,6 +240,8 @@
 		let closeStationStart = closestStation(startPlace);
 		let closeStationEnd = closestStation(endPlace);
 
+		hideMarkers(closeStationStart, closeStationEnd);
+
 		let StationOnelatLng = new google.maps.LatLng(
 			closeStationStart['lat'],
 			closeStationStart['lng']
@@ -239,8 +261,9 @@
 			location: StationTwolatLng,
 			stopover: true,
 		});
-
+		directionsRenderer.setMap(map);
 		setDirection(startLatLng, endLatLng, waypts);
+		tripDisplayed = true;
 	}
 	window.getTrip = getTrip;
 
@@ -265,5 +288,40 @@
 		return Math.sqrt(
 			Math.pow(Math.abs(ax - bx), 2) + Math.pow(Math.abs(ay - by), 2)
 		);
+	}
+
+	function hideMarkers(marker1, marker2) {
+		for (let id in stationDict) {
+			if (stationDict[id] == marker1 || stationDict[id] == marker2) {
+				continue;
+			}
+			stationDict[id]['stationMarker'].setMap(null);
+		}
+	}
+
+	function leftSideBar() {
+		if (leftSideBarOpen) {
+			map.setCenter({lat: 53.347, lng: -6.27});
+			if (tripDisplayed) {
+				console.log('test');
+				resetMap();
+				tripDisplayed = false;
+			}
+		} else {
+			map.setCenter({lat: 53.347, lng: -6.25});
+		}
+		leftSideBarOpen = !leftSideBarOpen;
+	}
+	window.leftSideBar = leftSideBar;
+
+	function resetMap() {
+		directionsRenderer.setMap(null);
+		startM.setMap(null);
+		endM.setMap(null);
+		map.setZoom(14);
+		map.setCenter({lat: 53.347, lng: -6.27});
+		for (let id in stationDict) {
+			stationDict[id]['stationMarker'].setMap(map);
+		}
 	}
 </script>
