@@ -43,12 +43,14 @@ def get_stations():
     json_data = bike_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
 
-@app.route('/select/<int:id>', methods=['GET'])
-def select_station(id):
-    select_station = db.session.query.filter_by(id=id).all()
+@app.route('/select/<id>', methods=['GET'])
+def select_station(id : int):
+    print(id)
+    select_station = db.session.query(Station).filter_by(id=id).all()
     select_station_data = pd.DataFrame(select_station)
     json_data = select_station_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
+        
 
 if __name__ == '__main__':
     app.run(port=5000)
