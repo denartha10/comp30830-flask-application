@@ -49,6 +49,26 @@
 	</button>
 
 	<script>
+		let temp;
+        let rain;
+        let wind;
+
+		const fetchWeather = async () => {
+			const response = await fetch('/weather');
+			const weather = await response.json();
+			return weather;
+		};
+
+		fetchWeather().then((weather) => {
+			//this will need to b changed dependng on how we have our weather DB set up
+			temp = weather[0]['temperature'];
+            rain = weather[0]['precipitation'];
+            wind = weather[0]['wind'];
+            console.log(temp);
+            console.log(rain);
+            console.log(wind);
+		});
+
 		let future = false;
 		document.getElementById('futureInputs').style.display = 'none';
 
@@ -80,11 +100,11 @@
 		function futureBtn() {
 			if (future) {
 				document.getElementById('futureBtn').innerHTML = 'Plan a Future Trip';
-                document.getElementById('futureInputs').style.display = 'none';
-                future = false;
-                return;
+				document.getElementById('futureInputs').style.display = 'none';
+				future = false;
+				return;
 			}
-            document.getElementById('futureBtn').innerHTML = 'Cancel';
+			document.getElementById('futureBtn').innerHTML = 'Cancel';
 			let current = new Date();
 			const currentDate =
 				current.getFullYear() +
