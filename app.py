@@ -65,9 +65,11 @@ def get_prediction():
 
         if params:
             (temp, wind, rain) = params
-            prediction = str( get_predictions(day, hour, temp, rain, wind, 4) )
+            print(day,hour, temp, wind, rain )
+            prediction = get_predictions(day, hour, temp, rain, wind, 4)
             
-            return prediction
+            print(prediction)
+            return f"{prediction}"
         else:
             return f"{date}, {time}, {params} GOT TO PARAMS"
     else:

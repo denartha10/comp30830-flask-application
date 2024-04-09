@@ -1,4 +1,5 @@
 import pickle
+import os
 import requests
 import pandas as pd
 from datetime import datetime
@@ -32,7 +33,6 @@ def get_temp_rain_wind(date: str, time: int) -> Tuple[temp, wind, rain] | None:
         "end_date": date
     }
     response = requests.get(url, params=params)
-
     if response.status_code == 200:
         data_unprocessed = response.json()
         hourly_forecast = data_unprocessed["hourly"]
@@ -47,15 +47,14 @@ def get_temp_rain_wind(date: str, time: int) -> Tuple[temp, wind, rain] | None:
 
         # Select the first row and specific columns
         result = filtered_data.iloc[0][["temperature_2m", "rain", "wind_speed_10m"]]
-        # return result["temperature_2m"], result["rain"], result["wind_speed_10m"]
-        return 10, 1, 12
+        return result["temperature_2m"], result["rain"], result["wind_speed_10m"]
     else:
         print("Error fetching weather data")
 
 
 # Create a function called get prediction with the named parameters above and station ID
 def get_predictions(day: float, hour: float, temp: float, rain: float, wind: float, station_id: int):
-    root='../comp30830-app/app/model_files/'
+    root='./model_files/'
     file=f"model_{station_id}.pkl"
     
     # Example input data
@@ -81,4 +80,7 @@ def get_predictions(day: float, hour: float, temp: float, rain: float, wind: flo
         print(f"No model of name {file} found")
     except IndexError:
         print("Model returned no usable data")
+
+
+
 
