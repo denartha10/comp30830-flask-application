@@ -33,10 +33,12 @@ cache = Cache(app)
 stations_dict = {}
 
 @app.route('/')
+@cache.cached()
 def index():
     return render_template("index.html")
 
 @app.route('/stations', methods=['GET'])
+@cache.cached()
 def get_stations():
     stations = db.session.query(Station).all()
     bike_data = pd.DataFrame(stations)
@@ -46,6 +48,7 @@ def get_stations():
     return Response(json_data, mimetype='application/json')
 
 @app.route('/select/id', methods=['GET'])
+@cache.cached()
 def select_station(id):
     print(f"WE FETCHED THE {id}")
     select_station = db.session.query.filter_by(id=id).all() # Getting a warning about the filter by here??
@@ -55,6 +58,7 @@ def select_station(id):
 
 
 @app.route('/predict', methods=['GET'])
+@cache.cached()
 def get_prediction():
     date = request.args.get("day")
     time = request.args.get("time")
