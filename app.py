@@ -12,9 +12,7 @@ from utilities.prediction_utilities import convert_date_and_time_to_day_hour, ge
 # Load .env file
 load_dotenv()
 
-# decide database for prod or dev
 database_uri = os.getenv('DEV_DATABASE_URI')
-# database_uri = os.getenv('PROD_DATABASE_URI')
 
 configuration_dictionary = {
     "DEBUG": True,          # some Flask specific configs
@@ -47,6 +45,12 @@ def get_stations():
     json_data = bike_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
 
+@app.route('/weather', methods=['GET'])
+def get_weather():
+    weather = db.session.query(Weather).all()
+    weather_data = pd.DataFrame(weather)
+    json_data = weather_data.to_json(orient='records', date_format='iso')
+    return Response(json_data, mimetype='application/json')
 
 @app.route('/select/id', methods=['GET'])
 @cache.cached()
@@ -56,7 +60,6 @@ def select_station(id):
     select_station_data = pd.DataFrame(select_station)
     json_data = select_station_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
-
 
 @app.route('/predict', methods=['GET'])
 @cache.cached()
@@ -79,7 +82,6 @@ def get_prediction():
             return f"{date}, {time}, {params} GOT TO PARAMS"
     else:
         return f"{date}, {time}, GOT TO DATETIME"
-
 
 
 if __name__ == '__main__':
