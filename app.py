@@ -22,7 +22,7 @@ configuration_dictionary = {
     "SQLALCHEMY_TRACK_MODIFICATIONS": False # to suppress a warning
 }
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__, static_url_path='', static_folder='public')
 app.config.from_mapping(configuration_dictionary)
 
 db = SQLAlchemy(app)
