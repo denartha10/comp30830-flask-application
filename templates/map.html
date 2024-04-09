@@ -230,7 +230,7 @@
 		});
 	}
 
-	function getTrip() {
+	function getTrip(future) {
 		let startLat = startPlace.geometry.location.lat();
 		let startLng = startPlace.geometry.location.lng();
 		let startLatLng = new google.maps.LatLng(startLat, startLng);
@@ -239,8 +239,39 @@
 		let endLng = endPlace.geometry.location.lng();
 		let endLatLng = new google.maps.LatLng(endLat, endLng);
 
-		let closeStationStart = closestStation(startPlace, true);
-		let closeStationEnd = closestStation(endPlace, false);
+		let closeStationStart;
+		let closeStationEnd;
+
+		if (!future) {
+			closeStationStart = closestStation(startPlace, true, []);
+			closeStationEnd = closestStation(endPlace, false, []);
+		} else {
+			alert('WELCOME TO THE FUTIRE');
+			let failedModel = [];
+			while (true) {
+				closeStationStart = closestStation(startPlace, true, failedModel);
+				//code about model check goes here
+				//set variable passed = true when it passes the model bike check
+				let passed = true;
+				if (passed) {
+					break;
+				}
+				failedModel.push(closeStationStart);
+			}
+
+			failedModel = [];
+
+			while (true) {
+				closeStationEnd = closestStation(endPlace, false, failedModel);
+				//code about model check goes here
+				//set variable passed = true when it passes the model bike check
+				let passed = true;
+				if (passed) {
+					break;
+				}
+				failedModel.push(closeStationStart);
+			}
+		}
 
 		hideMarkers(closeStationStart, closeStationEnd);
 
@@ -269,12 +300,15 @@
 	}
 	window.getTrip = getTrip;
 
-	function closestStation(place, start) {
+	function closestStation(place, start, blackListArr) {
 		let lat = place.geometry.location.lat();
 		let lng = place.geometry.location.lng();
 		let closestStation = null;
 		let minDist = 1000;
 		for (let id in stationDict) {
+			if (blackListArr.includes(stationDict[id])) {
+				continue;
+			}
 			if (start && stationDict[id]['av_bikes'] == 0) {
 				continue;
 			}
@@ -301,6 +335,7 @@
 	function hideMarkers(marker1, marker2) {
 		for (let id in stationDict) {
 			if (stationDict[id] == marker1 || stationDict[id] == marker2) {
+				stationDict[id]['stationMarker'].setMap(map);
 				continue;
 			}
 			stationDict[id]['stationMarker'].setMap(null);
