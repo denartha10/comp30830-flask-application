@@ -81,7 +81,7 @@
 				return;
 			}
 			if (!future) {
-				getTrip();
+				getTrip(false);
 				return;
 			}
 			let timeValue = document.getElementById('timeInput').value;
@@ -94,7 +94,7 @@
 				);
 				return;
 			}
-			console.log('oredict');
+			getTrip(true);
 		}
 
 		function futureBtn() {
