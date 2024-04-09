@@ -10,3 +10,4 @@ requests
 mysql-connector-python
 gunicorn
 requests
+scikit-learn
