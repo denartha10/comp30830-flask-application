@@ -7,6 +7,8 @@ import pandas as pd
 from dotenv import load_dotenv
 import os
 
+from utilities.prediction_utilities import convert_date_and_time_to_day_hour, get_predictions, get_temp_rain_wind
+
 # Load .env file
 load_dotenv()
 
@@ -54,11 +56,24 @@ def select_station(id):
 
 @app.route('/predict', methods=['GET'])
 def get_prediction():
-    day = request.args.get("day")
-    hour = request.args.get("hour")
+    date = request.args.get("day")
+    time = request.args.get("time")
 
-    print(hour, day)
-    return f"{hour}, {day}"
+    if date and time:
+        (day, hour) = convert_date_and_time_to_day_hour(date, time)
+        params = get_temp_rain_wind(date, hour)
+
+        if params:
+            (temp, wind, rain) = params
+            prediction = str( get_predictions(day, hour, temp, rain, wind, 4) )
+            
+            return prediction
+        else:
+            return f"{date}, {time}, {params} GOT TO PARAMS"
+    else:
+        return f"{date}, {time}, GOT TO DATETIME"
+
+
 
 if __name__ == '__main__':
     app.run(port=5000)
