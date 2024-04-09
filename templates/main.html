@@ -2,7 +2,7 @@
 
 <div class="absolute top-0 left-0 right-0 flex items-center p-2.5 bg-transparent z-10">
     <button @click="open = !open" id="sidebarToggle" class="hamburger-button bg-transparent border-none text-black text-2xl cursor-pointer pr-1 ml-1 rounded" onclick="leftSideBar()"> ☰ </button>
-    <div class="flex items-center bg-white rounded-full shadow-md ml-5" style="width: 350px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3)">
+    <div class="flex items-center bg-white rounded-full shadow-md ml-5 relative" style="width: 350px;">
         <input
             type="text"
             id="searchBar"
@@ -11,6 +11,7 @@
             onclick="searchBarClick()"
             oninput="showSearchPrompt()"
         />
-        <div id="searchPrompt" class="hidden mt-2 text-sm text-gray-600"></div>
+        <div id="searchPrompt" class="hidden absolute top-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-20 overflow-auto max-h-60" style="width: 100%;">        </div>
     </div>
 </div>
+

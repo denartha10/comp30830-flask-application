@@ -1,44 +1,144 @@
 <div class="space-y-4">
-  <h2 class="text-xl mb-5">Plan Your Dublin Bike Trip</h2>
+	<h2 class="text-xl mb-5">Plan Your Dublin Bike Trip</h2>
 
-  <!-- <div -->
-  <!--   x-timeout:1000="t = new Date(); $el.textContent = `${t.getHours()}:${t.getMinutes()}`" -->
-  <!--   class="text-gray-600 text-lg mb-5" -->
-  <!-- ></div> -->
-  <!-- <input -->
-  <!--   id="startPoint" -->
-  <!--   type="text" -->
-  <!--   name="startPoint" -->
-  <!--   placeholder="Starting Destination" -->
-  <!--   class="mt-2 p-2 border border-gray-300 rounded w-full" -->
-  <!-- /> -->
-  <!-- <input -->
-  <!--   id="endPoint" -->
-  <!--   type="text" -->
-  <!--   name="endPoint" -->
-  <!--   placeholder="End Destination" -->
-  <!--   class="mt-2 p-2 border border-gray-300 rounded w-full" -->
-  <!-- /> -->
-  <!-- <input -->
-  <!--   type="date" -->
-  <!--   name="date" -->
-  <!--   class="mt-2 p-2 border border-gray-300 rounded w-full" -->
-  <!-- /> -->
-  <!-- <input -->
-  <!--   type="time" -->
-  <!--   name="time" -->
-  <!--   class="mt-2 p-2 border border-gray-300 rounded w-full" -->
-  <!-- /> -->
-  <!-- <button -->
-  <!--   class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" -->
-  <!--   onclick="getTrip()" -->
-  <!-- > -->
-  <!--   Search Trip -->
-  <!-- </button> -->
+	<div
+		x-timeout:1000="t = new Date(); $el.textContent = `${t.getHours()}:${t.getMinutes().toString().padStart(2, '0')}`"
+		class="text-gray-600 text-lg mb-5"
+	></div>
+	<input
+		id="startPoint"
+		type="text"
+		name="startPoint"
+		placeholder="Starting Destination"
+		class="mt-2 p-2 border border-gray-300 rounded w-full"
+	/>
+	<input
+		id="endPoint"
+		type="text"
+		name="endPoint"
+		placeholder="End Destination"
+		class="mt-2 p-2 border border-gray-300 rounded w-full"
+	/>
+	<div id="futureInputs">
+		<input
+			id="dateInput"
+			type="date"
+			name="date"
+			class="mt-2 p-2 border border-gray-300 rounded w-full"
+		/>
+		<input
+			id="timeInput"
+			type="time"
+			name="time"
+			class="mt-2 p-2 border border-gray-300 rounded w-full"
+		/>
+	</div>
+	<button
+		class="mt-2 bg-blue-500 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full"
+		onclick="searchTripBtn()"
+	>
+		Search Trip
+	</button>
+	<br />
+	<button
+		id="futureBtn"
+		class="mt-2 bg-blue-500 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full"
+		onclick="futureBtn()"
+	>
+		Plan a Future Trip
+	</button>
 
-  <form action="/predict" method="GET">
-    <input type="date" name="day" />
-    <input type="time" name="hour" />
-    <button type="submit">Predict</button>
-  </form>
+	<div id="weatherMenu" class="bg-gradient-to-br from-cyan-500 to-purple-600 text-white rounded-xl shadow-md p-4 mx-auto text-center" style="margin-top: 32px; box-sizing: border-box; font-family: 'Poppins', sans-serif; height: 45vh;">
+        <img id="weatherIcon" class="w-24 mx-auto mt-0" style="width: 100px;"> 
+        <h1 id="City" class="text-5xl font-semibold mt-2">Dublin</h1>
+        <div class="flex justify-center items-baseline mt-2">
+            <h1 id="temp" class="text-5xl font-medium"></h1>
+            <span class="text-3xl" style= "margin-top: 15px;">°C</span>
+        </div>
+        <div class="flex flex-wrap justify-around mt-4 px-2">
+            <div class="text-center" style= "margin-top: 40px;">
+                <img src="images/perc.png" alt="rain Icon" class="w-8 h-8 mr-2 mb-2 inline"><p id="rain" class="text-2xl font-medium inline"></p><span class="text-lg">%</span>
+                <p class="text-l">Precipitation</p>
+            </div>
+            <div class="text-center" style= "margin-top: 40px;">
+                <img src="images/wind.png" alt="Wind Icon" class="w-5 h-5 mr-2 mb-2 inline"> <p id="wind" class="text-2xl font-medium inline"></p><span class="text-1xl">km/h</span>
+                <p class="text-l mt-1.5" >Wind Speed</p>
+            </div>
+        </div>
+    </div>
+
+	<script>
+		let temp;
+        let rain;
+        let wind;
+
+		const fetchWeather = async () => {
+			const response = await fetch('/weather');
+			const weather = await response.json();
+			return weather;
+		};
+
+		fetchWeather().then((weather) => {
+			//this will need to b changed dependng on how we have our weather DB set up
+			temp = weather[0]['temperature'];
+            rain = weather[0]['precipitation'];
+            wind = weather[0]['wind'];
+            console.log(temp);
+            console.log(rain);
+            console.log(wind);
+		});
+
+		let future = false;
+		document.getElementById('futureInputs').style.display = 'none';
+
+		function searchTripBtn() {
+			if (
+				document.getElementById('startPoint').value == '' ||
+				document.getElementById('endPoint').value == ''
+			) {
+				alert('Please enter a start and end location.');
+				return;
+			}
+			if (!future) {
+				getTrip(false);
+				return;
+			}
+			let timeValue = document.getElementById('timeInput').value;
+			let dateValue = document.getElementById('dateInput').value;
+			let dateTimeString = dateValue + 'T' + timeValue;
+			let selectedDateTime = new Date(dateTimeString);
+			if (selectedDateTime < current) {
+				alert(
+					'The selected date and time is in the past. Please select a future date'
+				);
+				return;
+			}
+			getTrip(true);
+		}
+
+		function futureBtn() {
+			if (future) {
+				document.getElementById('futureBtn').innerHTML = 'Plan a Future Trip';
+				document.getElementById('futureInputs').style.display = 'none';
+				future = false;
+				return;
+			}
+			document.getElementById('futureBtn').innerHTML = 'Cancel';
+			let current = new Date();
+			const currentDate =
+				current.getFullYear() +
+				'-' +
+				('0' + (current.getMonth() + 1)).slice(-2) +
+				'-' +
+				('0' + current.getDate()).slice(-2);
+			const currentTime =
+				('0' + current.getHours()).slice(-2) +
+				':' +
+				('0' + current.getMinutes()).slice(-2);
+			document.getElementById('dateInput').value = currentDate;
+			document.getElementById('timeInput').value = currentTime;
+			future = true;
+			document.getElementById('futureInputs').style.display = 'block';
+		}
+	</script>
 </div>

@@ -122,8 +122,27 @@
 				infoWindow.close();
 			}
 		}
+		
+		//event handler for closing pins when clicking on map
+		map.addListener('click', function() {
+			// Deselect all pins and close info windows
+			for (let id in stationDict) {
+				let pin = stationDict[id]['stationPin'];
+				let marker = stationDict[id]['stationMarker'];
+				let infoWindow = stationDict[id]['stationInfoWindow'];
+				let back = pin.background.slice(0, 18) + ', 1)';
+				let bord = pin.borderColor.slice(0, 18) + ', 1)';
+				pin.background = back;
+				pin.borderColor = bord;
+				pin.glyphColor = bord;
+				pin.scale = 1;
+				marker.zIndex = 1;
+				marker.title = 'not selected';
+				infoWindow.close();
+			}
+		});
 	}
-
+	
 	const mapElement = document.getElementById('dublin_bike_map_id');
 	const map = new Map(mapElement, mapSettings);
 	let directionsService = new google.maps.DirectionsService();
@@ -146,12 +165,16 @@
 				stationInfoWindow: infoWindow,
 				lat: station.lat,
 				lng: station.lng,
+				av_bikes: station.available_bikes,
+				av_stands: station.available_stands,
+				name: station.name,
 			};
 			// Add the marker to the map
 			marker.addListener('click', () => {
-				selectPin(marker, pin, infoWindow);
+                selectPin(marker, pin, infoWindow);
 			});
 		});
+		updateSearchBar();
 	});
 
 	let startPlace;
@@ -228,7 +251,7 @@
 		});
 	}
 
-	function getTrip() {
+	function getTrip(future) {
 		let startLat = startPlace.geometry.location.lat();
 		let startLng = startPlace.geometry.location.lng();
 		let startLatLng = new google.maps.LatLng(startLat, startLng);
@@ -237,8 +260,39 @@
 		let endLng = endPlace.geometry.location.lng();
 		let endLatLng = new google.maps.LatLng(endLat, endLng);
 
-		let closeStationStart = closestStation(startPlace);
-		let closeStationEnd = closestStation(endPlace);
+		let closeStationStart;
+		let closeStationEnd;
+
+		if (!future) {
+			closeStationStart = closestStation(startPlace, true, []);
+			closeStationEnd = closestStation(endPlace, false, []);
+		} else {
+			alert('WELCOME TO THE FUTIRE');
+			let failedModel = [];
+			while (true) {
+				closeStationStart = closestStation(startPlace, true, failedModel);
+				//code about model check goes here
+				//set variable passed = true when it passes the model bike check
+				let passed = true;
+				if (passed) {
+					break;
+				}
+				failedModel.push(closeStationStart);
+			}
+
+			failedModel = [];
+
+			while (true) {
+				closeStationEnd = closestStation(endPlace, false, failedModel);
+				//code about model check goes here
+				//set variable passed = true when it passes the model bike check
+				let passed = true;
+				if (passed) {
+					break;
+				}
+				failedModel.push(closeStationStart);
+			}
+		}
 
 		hideMarkers(closeStationStart, closeStationEnd);
 
@@ -267,12 +321,21 @@
 	}
 	window.getTrip = getTrip;
 
-	function closestStation(place) {
+	function closestStation(place, start, blackListArr) {
 		let lat = place.geometry.location.lat();
 		let lng = place.geometry.location.lng();
 		let closestStation = null;
 		let minDist = 1000;
 		for (let id in stationDict) {
+			if (blackListArr.includes(stationDict[id])) {
+				continue;
+			}
+			if (start && stationDict[id]['av_bikes'] == 0) {
+				continue;
+			}
+			if (!start && stationDict[id]['av_stands'] == 0) {
+				continue;
+			}
 			let stLat = stationDict[id]['lat'];
 			let stLng = stationDict[id]['lng'];
 			let dist = distanceTo(lat, lng, stLat, stLng);
@@ -293,6 +356,7 @@
 	function hideMarkers(marker1, marker2) {
 		for (let id in stationDict) {
 			if (stationDict[id] == marker1 || stationDict[id] == marker2) {
+				stationDict[id]['stationMarker'].setMap(map);
 				continue;
 			}
 			stationDict[id]['stationMarker'].setMap(null);
@@ -303,7 +367,6 @@
 		if (leftSideBarOpen) {
 			map.setCenter({lat: 53.347, lng: -6.27});
 			if (tripDisplayed) {
-				console.log('test');
 				resetMap();
 				tripDisplayed = false;
 			}
@@ -324,4 +387,50 @@
 			stationDict[id]['stationMarker'].setMap(map);
 		}
 	}
+
+	function updateSearchBar() {
+		const searchBar = document.getElementById('searchBar');
+		const searchPrompt = document.getElementById('searchPrompt');
+	
+		// initially clears the search bar when clicked
+		searchBar.addEventListener('focus', function() {
+			this.value = ''; 
+			searchPrompt.classList.add('hidden'); 
+		});
+	
+		searchBar.addEventListener('input', function() {
+			const searchText = this.value.trim().toLowerCase();
+			searchPrompt.innerHTML = '';
+			if (searchText.length > 0) {
+				for (let id in stationDict) {
+					const stationName = stationDict[id].name.toLowerCase();
+					if (stationName.includes(searchText)) {
+						const suggestion = document.createElement('div');
+						suggestion.textContent = stationDict[id].name;
+						suggestion.className = 'p-2 hover:bg-gray-100 cursor-pointer';
+						suggestion.addEventListener('click', function() {
+							searchBar.value = stationDict[id].name; 
+							searchPrompt.innerHTML = '';  	
+							searchPrompt.classList.add('hidden'); 
+							selectPin(stationDict[id].stationMarker, stationDict[id].stationPin, stationDict[id].stationInfoWindow);
+							openRightSidebar(id);
+						});
+						searchPrompt.appendChild(suggestion);
+					}
+				}
+				searchPrompt.classList.remove('hidden');
+			} else {
+				searchPrompt.classList.add('hidden');
+			}
+		});
+	
+		// hides search prompt when clicking outside the search bar (i.e. clears when clicking on the map)
+		document.addEventListener('click', function(event) {
+			const target = event.target;
+			if (target !== searchBar && target !== searchPrompt) {
+				searchPrompt.classList.add('hidden');
+			}
+		});
+	}
+	window.updateSearchBar = updateSearchBar;
 </script>

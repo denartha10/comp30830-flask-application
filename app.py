@@ -1,7 +1,7 @@
 from flask import Flask, Response, render_template, request
 from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy
-from utilities.models import Station
+from utilities.models import Station, Weather
 from utilities.map_utilities import determinePinColors, createInfoWindowContent
 import pandas as pd
 from dotenv import load_dotenv
@@ -46,6 +46,7 @@ def get_stations():
     bike_data["info_html"] = bike_data.apply(createInfoWindowContent, axis=1)
     json_data = bike_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
+
 
 @app.route('/select/id', methods=['GET'])
 @cache.cached()
