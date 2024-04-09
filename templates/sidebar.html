@@ -2,7 +2,7 @@
 	<h2 class="text-xl mb-5">Plan Your Dublin Bike Trip</h2>
 
 	<div
-		x-timeout:1000="t = new Date(); $el.textContent = `${t.getHours()}:${t.getMinutes()}`"
+		x-timeout:1000="t = new Date(); $el.textContent = `${t.getHours()}:${t.getMinutes().toString().padStart(2, '0')}`"
 		class="text-gray-600 text-lg mb-5"
 	></div>
 	<input
@@ -47,6 +47,25 @@
 	>
 		Plan a Future Trip
 	</button>
+
+	<div id="weatherMenu" class="bg-gradient-to-br from-cyan-500 to-purple-600 text-white rounded-xl shadow-md p-4 mx-auto text-center" style="margin-top: 32px; box-sizing: border-box; font-family: 'Poppins', sans-serif; height: 45vh;">
+        <img id="weatherIcon" class="w-24 mx-auto mt-0" style="width: 100px;"> 
+        <h1 id="City" class="text-5xl font-semibold mt-2">Dublin</h1>
+        <div class="flex justify-center items-baseline mt-2">
+            <h1 id="temp" class="text-5xl font-medium"></h1>
+            <span class="text-3xl" style= "margin-top: 15px;">°C</span>
+        </div>
+        <div class="flex flex-wrap justify-around mt-4 px-2">
+            <div class="text-center" style= "margin-top: 40px;">
+                <img src="images/perc.png" alt="rain Icon" class="w-8 h-8 mr-2 mb-2 inline"><p id="rain" class="text-2xl font-medium inline"></p><span class="text-lg">%</span>
+                <p class="text-l">Precipitation</p>
+            </div>
+            <div class="text-center" style= "margin-top: 40px;">
+                <img src="images/wind.png" alt="Wind Icon" class="w-5 h-5 mr-2 mb-2 inline"> <p id="wind" class="text-2xl font-medium inline"></p><span class="text-1xl">km/h</span>
+                <p class="text-l mt-1.5" >Wind Speed</p>
+            </div>
+        </div>
+    </div>
 
 	<script>
 		let temp;

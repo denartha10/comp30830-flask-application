@@ -122,8 +122,27 @@
 				infoWindow.close();
 			}
 		}
+		
+		//event handler for closing pins when clicking on map
+		map.addListener('click', function() {
+			// Deselect all pins and close info windows
+			for (let id in stationDict) {
+				let pin = stationDict[id]['stationPin'];
+				let marker = stationDict[id]['stationMarker'];
+				let infoWindow = stationDict[id]['stationInfoWindow'];
+				let back = pin.background.slice(0, 18) + ', 1)';
+				let bord = pin.borderColor.slice(0, 18) + ', 1)';
+				pin.background = back;
+				pin.borderColor = bord;
+				pin.glyphColor = bord;
+				pin.scale = 1;
+				marker.zIndex = 1;
+				marker.title = 'not selected';
+				infoWindow.close();
+			}
+		});
 	}
-
+	
 	const mapElement = document.getElementById('dublin_bike_map_id');
 	const map = new Map(mapElement, mapSettings);
 	let directionsService = new google.maps.DirectionsService();
@@ -148,12 +167,14 @@
 				lng: station.lng,
 				av_bikes: station.available_bikes,
 				av_stands: station.available_stands,
+				name: station.name,
 			};
 			// Add the marker to the map
 			marker.addListener('click', () => {
-				selectPin(marker, pin, infoWindow);
+                selectPin(marker, pin, infoWindow);
 			});
 		});
+		updateSearchBar();
 	});
 
 	let startPlace;
@@ -331,4 +352,50 @@
 			stationDict[id]['stationMarker'].setMap(map);
 		}
 	}
+
+	function updateSearchBar() {
+		const searchBar = document.getElementById('searchBar');
+		const searchPrompt = document.getElementById('searchPrompt');
+	
+		// initially clears the search bar when clicked
+		searchBar.addEventListener('focus', function() {
+			this.value = ''; 
+			searchPrompt.classList.add('hidden'); 
+		});
+	
+		searchBar.addEventListener('input', function() {
+			const searchText = this.value.trim().toLowerCase();
+			searchPrompt.innerHTML = '';
+			if (searchText.length > 0) {
+				for (let id in stationDict) {
+					const stationName = stationDict[id].name.toLowerCase();
+					if (stationName.includes(searchText)) {
+						const suggestion = document.createElement('div');
+						suggestion.textContent = stationDict[id].name;
+						suggestion.className = 'p-2 hover:bg-gray-100 cursor-pointer';
+						suggestion.addEventListener('click', function() {
+							searchBar.value = stationDict[id].name; 
+							searchPrompt.innerHTML = '';  	
+							searchPrompt.classList.add('hidden'); 
+							selectPin(stationDict[id].stationMarker, stationDict[id].stationPin, stationDict[id].stationInfoWindow);
+							openRightSidebar(id);
+						});
+						searchPrompt.appendChild(suggestion);
+					}
+				}
+				searchPrompt.classList.remove('hidden');
+			} else {
+				searchPrompt.classList.add('hidden');
+			}
+		});
+	
+		// hides search prompt when clicking outside the search bar (i.e. clears when clicking on the map)
+		document.addEventListener('click', function(event) {
+			const target = event.target;
+			if (target !== searchBar && target !== searchPrompt) {
+				searchPrompt.classList.add('hidden');
+			}
+		});
+	}
+	window.updateSearchBar = updateSearchBar;
 </script>

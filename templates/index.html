@@ -21,6 +21,19 @@
             {% include "sidebar.html" %}
         </div>
         
+        <div x-data="{rightSidebarOpen: false}">
+            <!-- Right sidebar -->
+            <div
+                x-bind:class="rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'"
+                class="fixed top-0 right-0 h-screen w-96 bg-white overflow-auto transition-all duration-300 ease-in-out transform z-50"
+                id="rightSidebar"
+            >
+                <div class="p-4">
+                    <h2 class="text-lg font-semibold mb-4">Station Information</h2>
+                    <div id="stationInfo"></div>
+                </div>
+            </div>
+
         <!-- main section -->
         <div x-bind:class="open ? 'translate-x-96' : '' " class="overflow-hidden transition-all duration-300 ease-in-out" id="mainContent">
             <!-- this is the main section -->
