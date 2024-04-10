@@ -64,8 +64,9 @@ def select_station(id):
 @app.route('/predict', methods=['GET'])
 @cache.cached()
 def get_prediction():
-    date = request.args.get("day")
+    date = request.args.get("date")
     time = request.args.get("time")
+    station_id = request.args.get("id")
 
     if date and time:
         (day, hour) = convert_date_and_time_to_day_hour(date, time)
@@ -73,10 +74,7 @@ def get_prediction():
 
         if params:
             (temp, wind, rain) = params
-            print(day,hour, temp, wind, rain )
-            prediction = get_predictions(day, hour, temp, rain, wind, 4)
-            
-            print(prediction)
+            prediction = get_predictions(day, hour, temp, rain, wind, station_id)
             return f"{prediction}"
         else:
             return f"{date}, {time}, {params} GOT TO PARAMS"

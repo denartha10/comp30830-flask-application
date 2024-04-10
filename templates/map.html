@@ -26,7 +26,7 @@
 	};
 
 	const fetchProcessedStations = async () => {
-		const response = await fetch('/stations'); // Assuming '/stations' is your Flask endpoint
+		const response = await fetch('/stations');
 		const stations = await response.json();
 		return stations;
 	};
@@ -66,11 +66,6 @@
 	let tripDisplayed = false;
 	let rightSideBarOpen = false;
 	let leftSideBarOpen = false;
-
-	function setRightSideBarOpen() {
-		rightSideBarOpen = !rightSideBarOpen;
-	}
-	window.setRightSideBarOpen = setRightSideBarOpen;
 
 	function selectPin(selectedMarker, selectedPin, selectedInfo) {
 		if (selectedMarker.title != 'selected') {
@@ -122,9 +117,9 @@
 				infoWindow.close();
 			}
 		}
-		
+
 		//event handler for closing pins when clicking on map
-		map.addListener('click', function() {
+		map.addListener('click', function () {
 			// Deselect all pins and close info windows
 			for (let id in stationDict) {
 				let pin = stationDict[id]['stationPin'];
@@ -142,7 +137,8 @@
 			}
 		});
 	}
-	
+	window.selectPin = selectPin;
+
 	const mapElement = document.getElementById('dublin_bike_map_id');
 	const map = new Map(mapElement, mapSettings);
 	let directionsService = new google.maps.DirectionsService();
@@ -171,14 +167,11 @@
 			};
 			// Add the marker to the map
 			marker.addListener('click', () => {
-                selectPin(marker, pin, infoWindow);
+				selectPin(marker, pin, infoWindow);
 			});
 		});
 		updateSearchBar();
 	});
-
-	let startPlace;
-	let endPlace;
 
 	const center = {lat: 53.347, lng: -6.27};
 	// Create a bounding box with sides ~10km away from the center point
@@ -192,13 +185,14 @@
 		bounds: defaultBounds,
 		strictBounds: false,
 	};
+
 	const startPoint = new Autocomplete(
 		document.getElementById('startPoint'),
 		options
 	);
 
 	startPoint.addListener('place_changed', () => {
-		startPlace = startPoint.getPlace();
+		setStartPlace(startPoint.getPlace());
 	});
 
 	const endPoint = new Autocomplete(
@@ -207,7 +201,7 @@
 	);
 
 	endPoint.addListener('place_changed', () => {
-		endPlace = endPoint.getPlace();
+		setEndPlace(endPoint.getPlace());
 	});
 
 	function setDirection(startLatLng, endLatLng, waypts) {
@@ -230,17 +224,20 @@
 		);
 	}
 
+	//start and end markers for trips
 	let startM = null;
 	let endM = null;
 
 	function startEndMarker(start, end) {
 		//all other times after first
 		if (startM != null) {
+			startM.setMap(map);
+			endM.setMap(map);
 			startM.position = start;
 			endM.position = end;
 			return;
 		}
-		//first time usiing this feature
+		//first time using this feature
 		startM = new AdvancedMarkerElement({
 			map: map,
 			position: start,
@@ -251,7 +248,7 @@
 		});
 	}
 
-	function getTrip(future) {
+	function callDirections(closeIDStart, closeIDEnd) {
 		let startLat = startPlace.geometry.location.lat();
 		let startLng = startPlace.geometry.location.lng();
 		let startLatLng = new google.maps.LatLng(startLat, startLng);
@@ -260,49 +257,18 @@
 		let endLng = endPlace.geometry.location.lng();
 		let endLatLng = new google.maps.LatLng(endLat, endLng);
 
-		let closeStationStart;
-		let closeStationEnd;
+		let stationStart = stationDict[closeIDStart];
+		let stationEnd = stationDict[closeIDEnd];
 
-		if (!future) {
-			closeStationStart = closestStation(startPlace, true, []);
-			closeStationEnd = closestStation(endPlace, false, []);
-		} else {
-			alert('WELCOME TO THE FUTIRE');
-			let failedModel = [];
-			while (true) {
-				closeStationStart = closestStation(startPlace, true, failedModel);
-				//code about model check goes here
-				//set variable passed = true when it passes the model bike check
-				let passed = true;
-				if (passed) {
-					break;
-				}
-				failedModel.push(closeStationStart);
-			}
-
-			failedModel = [];
-
-			while (true) {
-				closeStationEnd = closestStation(endPlace, false, failedModel);
-				//code about model check goes here
-				//set variable passed = true when it passes the model bike check
-				let passed = true;
-				if (passed) {
-					break;
-				}
-				failedModel.push(closeStationStart);
-			}
-		}
-
-		hideMarkers(closeStationStart, closeStationEnd);
+		hideMarkers(stationStart, stationEnd);
 
 		let StationOnelatLng = new google.maps.LatLng(
-			closeStationStart['lat'],
-			closeStationStart['lng']
+			stationStart['lat'],
+			stationStart['lng']
 		);
 		let StationTwolatLng = new google.maps.LatLng(
-			closeStationEnd['lat'],
-			closeStationEnd['lng']
+			stationEnd['lat'],
+			stationEnd['lng']
 		);
 
 		const waypts = [];
@@ -319,39 +285,7 @@
 		setDirection(startLatLng, endLatLng, waypts);
 		tripDisplayed = true;
 	}
-	window.getTrip = getTrip;
-
-	function closestStation(place, start, blackListArr) {
-		let lat = place.geometry.location.lat();
-		let lng = place.geometry.location.lng();
-		let closestStation = null;
-		let minDist = 1000;
-		for (let id in stationDict) {
-			if (blackListArr.includes(stationDict[id])) {
-				continue;
-			}
-			if (start && stationDict[id]['av_bikes'] == 0) {
-				continue;
-			}
-			if (!start && stationDict[id]['av_stands'] == 0) {
-				continue;
-			}
-			let stLat = stationDict[id]['lat'];
-			let stLng = stationDict[id]['lng'];
-			let dist = distanceTo(lat, lng, stLat, stLng);
-			if (dist < minDist || closestStation == null) {
-				closestStation = stationDict[id];
-				minDist = dist;
-			}
-		}
-		return closestStation;
-	}
-
-	function distanceTo(ax, ay, bx, by) {
-		return Math.sqrt(
-			Math.pow(Math.abs(ax - bx), 2) + Math.pow(Math.abs(ay - by), 2)
-		);
-	}
+	window.callDirections = callDirections;
 
 	function hideMarkers(marker1, marker2) {
 		for (let id in stationDict) {
@@ -388,49 +322,8 @@
 		}
 	}
 
-	function updateSearchBar() {
-		const searchBar = document.getElementById('searchBar');
-		const searchPrompt = document.getElementById('searchPrompt');
-	
-		// initially clears the search bar when clicked
-		searchBar.addEventListener('focus', function() {
-			this.value = ''; 
-			searchPrompt.classList.add('hidden'); 
-		});
-	
-		searchBar.addEventListener('input', function() {
-			const searchText = this.value.trim().toLowerCase();
-			searchPrompt.innerHTML = '';
-			if (searchText.length > 0) {
-				for (let id in stationDict) {
-					const stationName = stationDict[id].name.toLowerCase();
-					if (stationName.includes(searchText)) {
-						const suggestion = document.createElement('div');
-						suggestion.textContent = stationDict[id].name;
-						suggestion.className = 'p-2 hover:bg-gray-100 cursor-pointer';
-						suggestion.addEventListener('click', function() {
-							searchBar.value = stationDict[id].name; 
-							searchPrompt.innerHTML = '';  	
-							searchPrompt.classList.add('hidden'); 
-							selectPin(stationDict[id].stationMarker, stationDict[id].stationPin, stationDict[id].stationInfoWindow);
-							openRightSidebar(id);
-						});
-						searchPrompt.appendChild(suggestion);
-					}
-				}
-				searchPrompt.classList.remove('hidden');
-			} else {
-				searchPrompt.classList.add('hidden');
-			}
-		});
-	
-		// hides search prompt when clicking outside the search bar (i.e. clears when clicking on the map)
-		document.addEventListener('click', function(event) {
-			const target = event.target;
-			if (target !== searchBar && target !== searchPrompt) {
-				searchPrompt.classList.add('hidden');
-			}
-		});
+	function getStationDict() {
+		return stationDict;
 	}
-	window.updateSearchBar = updateSearchBar;
+	window.getStationDict = getStationDict;
 </script>
