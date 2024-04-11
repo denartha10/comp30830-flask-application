@@ -1,0 +1,33 @@
+<div id="rightSidebar" class="fixed top-0 right-0 h-full bg-white overflow-hidden shadow-lg p-5 transform translate-x-full transition-all duration-300 ease-in-out" style="width:0;">
+    <h2 id="stationName" class="text-xl font-semibold">Station Name</h2>
+    <p id="bikeAvailability" class="mt-4">Bikes Available: </p>
+    <p id="standAvailability" class="mt-2">Stands Available: </p>
+    <button onclick="closeRightSidebar()">Close</button> 
+</div>
+
+<script>
+    function openRightSidebar(stationId) {
+        console.log("Trying to open sidebar for station ID:", stationId);
+        const stationDict = getStationDict();
+        const sidebar = document.getElementById('rightSidebar');
+        sidebar.style.width = "300px";
+    
+        const stationName = document.getElementById('stationName');
+        const bikeAvailability = document.getElementById('bikeAvailability');
+        const standAvailability = document.getElementById('standAvailability');
+    
+        const station = stationDict[stationId];
+        console.log('Station:', station);
+        stationName.textContent = station.name;
+        bikeAvailability.textContent = `Bikes Available: ${station.av_bikes}`;
+        standAvailability.textContent = `Stands Available: ${station.av_stands}`;
+    }
+    window.openRightSidebar = openRightSidebar;
+    
+    function closeRightSidebar() {
+        const sidebar = document.getElementById('rightSidebar');
+        sidebar.style.width = "0";
+    }
+    window.closeRightSidebar = closeRightSidebar;
+</script>
+

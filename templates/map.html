@@ -168,6 +168,7 @@
 			// Add the marker to the map
 			marker.addListener('click', () => {
 				selectPin(marker, pin, infoWindow);
+				openRightSidebar(id);
 			});
 		});
 		updateSearchBar();
