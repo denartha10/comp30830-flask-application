@@ -80,17 +80,9 @@
 		};
 
 		fetchWeather().then((weather) => {
-			if(weather.length > 0) {
-				const temperature = Math.round(weather[0]['temperature']);
-				const precipitation = Math.round(weather[0]['precipitation']);
-				const windSpeed = Math.round(weather[0]['wind']);
-		
-				document.getElementById('temp').textContent = temperature;
-				document.getElementById('rain').textContent = precipitation;
-				document.getElementById('wind').textContent = windSpeed;
-			} else {
-				console.log("No weather data available.");
-			}
+			temp = weather[0]['temperature'];
+            rain = weather[0]['precipitation'];
+            wind = weather[0]['wind'];
 		});
 
 		let future = false;
@@ -111,6 +103,7 @@
 			let timeValue = document.getElementById('timeInput').value;
 			let dateValue = document.getElementById('dateInput').value;
 			let dateTimeString = dateValue + 'T' + timeValue;
+			let current = new Date();
 			let selectedDateTime = new Date(dateTimeString);
 			if (selectedDateTime < current) {
 				alert(
