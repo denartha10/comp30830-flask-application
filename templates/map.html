@@ -204,7 +204,7 @@
 		setEndPlace(endPoint.getPlace());
 	});
 
-	function setDirection(startLatLng, endLatLng, waypts) {
+	function setDirection(startLatLng, endLatLng, waypts, wayptPositions, startMarkerNum, endMarkerNum) {
 		directionsService.route(
 			{
 				origin: startLatLng,
@@ -216,7 +216,7 @@
 			(response, status) => {
 				if (status === 'OK') {
 					directionsRenderer.setDirections(response);
-					startEndMarker(startLatLng, endLatLng);
+					directionServiceMarkers(startLatLng, endLatLng, wayptPositions[0], wayptPositions[1], startMarkerNum, endMarkerNum);
 				} else {
 					window.alert('Directions request failed due to ' + status);
 				}
@@ -224,31 +224,62 @@
 		);
 	}
 
+	//pin elements for markers below
+	const waypt1Pin = new PinElement({
+		background: '#9cf6f7',
+		borderColor: '#0f6a6b',
+		glyphColor: '#0f6a6b',
+		glyph: "0",
+		scale: 1.3,
+	});
+	const waypt2Pin = new PinElement({
+		background: '#9cf6f7',
+		borderColor: '#0f6a6b',
+		glyphColor: '#0f6a6b',
+		glyph: "0",
+		scale: 1.3,
+	});
 	//start and end markers for trips
-	let startM = null;
-	let endM = null;
+	const startM = new AdvancedMarkerElement({
+		map: null,
+		position: null,
+	});
+	const endM = new AdvancedMarkerElement({
+		map: null,
+		position: null,
+	});
+	const waypt1 = new AdvancedMarkerElement({
+		map: null,
+		position: null,
+		content: waypt1Pin.element,
+	});
+	const waypt2 = new AdvancedMarkerElement({
+		map: null,
+		position: null,
+		content: waypt2Pin.element,
+	});
 
-	function startEndMarker(start, end) {
-		//all other times after first
-		if (startM != null) {
-			startM.setMap(map);
-			endM.setMap(map);
-			startM.position = start;
-			endM.position = end;
-			return;
+	function directionServiceMarkers(start, end, w1, w2, startMarkerNum, endMarkerNum) {
+		startM.setMap(map);
+		endM.setMap(map);
+		startM.position = start;
+		endM.position = end;
+		if (startMarkerNum != null) {
+			waypt1.setMap(map);
+			waypt2.setMap(map);
+			waypt1.position = w1;
+			waypt2.position = w2;
+			waypt1Pin.glyph = Math.round(startMarkerNum).toString();
+			waypt2Pin.glyph = Math.round(endMarkerNum).toString();
+		} else {
+			waypt1.setMap(null);
+			waypt2.setMap(null);
 		}
-		//first time using this feature
-		startM = new AdvancedMarkerElement({
-			map: map,
-			position: start,
-		});
-		endM = new AdvancedMarkerElement({
-			map: map,
-			position: end,
-		});
+		
+		
 	}
 
-	function callDirections(closeIDStart, closeIDEnd) {
+	function callDirections(closeIDStart, closeIDEnd, startMarkerNum, endMarkerNum) {
 		let startLat = startPlace.geometry.location.lat();
 		let startLng = startPlace.geometry.location.lng();
 		let startLatLng = new google.maps.LatLng(startLat, startLng);
@@ -260,7 +291,12 @@
 		let stationStart = stationDict[closeIDStart];
 		let stationEnd = stationDict[closeIDEnd];
 
-		hideMarkers(stationStart, stationEnd);
+		let all = false;
+		if (startMarkerNum != null){
+			all = true;
+		}
+
+		hideMarkers(stationStart, stationEnd, all);
 
 		let StationOnelatLng = new google.maps.LatLng(
 			stationStart['lat'],
@@ -272,6 +308,7 @@
 		);
 
 		const waypts = [];
+		const wayptPosition = [StationOnelatLng, StationTwolatLng];
 
 		waypts.push({
 			location: StationOnelatLng,
@@ -282,14 +319,14 @@
 			stopover: true,
 		});
 		directionsRenderer.setMap(map);
-		setDirection(startLatLng, endLatLng, waypts);
+		setDirection(startLatLng, endLatLng, waypts, wayptPosition, startMarkerNum, endMarkerNum);
 		tripDisplayed = true;
 	}
 	window.callDirections = callDirections;
 
-	function hideMarkers(marker1, marker2) {
+	function hideMarkers(marker1, marker2, all) {
 		for (let id in stationDict) {
-			if (stationDict[id] == marker1 || stationDict[id] == marker2) {
+			if (!all && (stationDict[id] == marker1 || stationDict[id] == marker2)) {
 				stationDict[id]['stationMarker'].setMap(map);
 				continue;
 			}
@@ -315,6 +352,8 @@
 		directionsRenderer.setMap(null);
 		startM.setMap(null);
 		endM.setMap(null);
+		waypt1.setMap(null);
+		waypt2.setMap(null);
 		map.setZoom(14);
 		map.setCenter({lat: 53.347, lng: -6.27});
 		for (let id in stationDict) {
