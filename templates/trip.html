@@ -17,12 +17,13 @@
 		}
 		let closeIDStart = closestStation(startPlace, true, [], false);
 		let closeIDEnd = closestStation(endPlace, false, [], false);
-		callDirections(closeIDStart, closeIDEnd, startPlace, endPlace);
+		callDirections(closeIDStart, closeIDEnd, null, null);
 	}
 
-	let failedPredictions = [];
+	let failedPredictions;
 
 	function predictionSystem() {
+		failedPredictions = [];
 		let dateValue = document.getElementById('dateInput').value;
 
 		//check if time frame is in limits
@@ -41,13 +42,15 @@
 	    fetchPredict(closeIDStart).then((predBikeNum) => {
 	        //predicted to have at least 2 bikes (for saftey)
 	        if (predBikeNum > 2) {
-	            alert("start Passed");
 	            failedPredictions = [];
-	            predictionEnd(closeIDStart);
+	            predictionEnd(closeIDStart, predBikeNum);
 	            return;
 	        }
 	        //if its predicted to have no bikes we add it to the failed predictions array and try again
 	        failedPredictions.push(closeIDStart);
+			////////
+			console.log('failed start pred:');
+			console.log(closeIDStart);
 	        if (failedPredictions.length >= 114) {
 	            alert('All Stations predicted to be empty');
 	            return;
@@ -56,7 +59,7 @@
 	    });
 	}
 
-    function predictionEnd(closeIDStart) {
+    function predictionEnd(closeIDStart, startMarkerNum) {
         let closeIDEnd = closestStation(endPlace, false, failedPredictions, true);
 
         const stationDict = getStationDict();
@@ -65,19 +68,24 @@
 
 	    fetchPredict(closeIDEnd).then((predBikeNum) => {
 	        //predicted to have at least 2 bikes (for saftey)
-	        if (totalStands - predBikeNum > 2) {
-	            alert("end Passed");
+            let openStands = totalStands - predBikeNum;
+	        if (openStands > 2) {
 	            failedPredictions = [];
-	            callDirections(closeIDStart, closeIDEnd, startPlace, endPlace);
+	            callDirections(closeIDStart, closeIDEnd, startMarkerNum, openStands);
 	            return;
 	        }
 	        //if its predicted to have no bikes we add it to the failed predictions array and try again
 	        failedPredictions.push(closeIDEnd);
+			////////
+			console.log('failed end pred:');
+			console.log(closeIDStart);
+			console.log("predicted stands:");
+			console.log(openStands);
 	        if (failedPredictions.length >= 114) {
-	            alert('All Stations predicted to be empty');
+	            alert('All Stations predicted to have no avaialble stands');
 	            return;
 	        }
-	        predictionEnd(closeIDStart);
+	        predictionEnd(closeIDStart, startMarkerNum);
 	    });
 	}
 
@@ -126,6 +134,8 @@
 		}
 		let timeValue = document.getElementById('timeInput').value;
 		let dateValue = document.getElementById('dateInput').value;
+		console.log(timeValue);
+		console.log(dateValue);
 		try {
 			const response = await fetch(
 				`/predict?date=${dateValue}&time=${timeValue}&id=${id}`
