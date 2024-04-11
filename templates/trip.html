@@ -1,0 +1,145 @@
+<script>
+	let startPlace;
+	let endPlace;
+
+	function setStartPlace(place) {
+		startPlace = place;
+	}
+
+	function setEndPlace(place) {
+		endPlace = place;
+	}
+
+	function getTrip(future) {
+		if (future) {
+			predictionSystem();
+			return;
+		}
+		let closeIDStart = closestStation(startPlace, true, [], false);
+		let closeIDEnd = closestStation(endPlace, false, [], false);
+		callDirections(closeIDStart, closeIDEnd, startPlace, endPlace);
+	}
+
+	let failedPredictions = [];
+
+	function predictionSystem() {
+		let dateValue = document.getElementById('dateInput').value;
+
+		//check if time frame is in limits
+		if (compareDates(dateValue) > 16) {
+			alert(
+				'That is too far in the future. Please select a date within 16 days of today.'
+			);
+			return;
+		}
+		predictionStart();
+	}
+
+	function predictionStart() {
+	    let closeIDStart = closestStation(startPlace, true, failedPredictions, true);
+
+	    fetchPredict(closeIDStart).then((predBikeNum) => {
+	        //predicted to have at least 2 bikes (for saftey)
+	        if (predBikeNum > 2) {
+	            alert("start Passed");
+	            failedPredictions = [];
+	            predictionEnd(closeIDStart);
+	            return;
+	        }
+	        //if its predicted to have no bikes we add it to the failed predictions array and try again
+	        failedPredictions.push(closeIDStart);
+	        if (failedPredictions.length >= 114) {
+	            alert('All Stations predicted to be empty');
+	            return;
+	        }
+	        predictionStart();
+	    });
+	}
+
+    function predictionEnd(closeIDStart) {
+        let closeIDEnd = closestStation(endPlace, false, failedPredictions, true);
+
+        const stationDict = getStationDict();
+        const station = stationDict[closeIDEnd];
+        const totalStands = station.av_stands + station.av_bikes;
+
+	    fetchPredict(closeIDEnd).then((predBikeNum) => {
+	        //predicted to have at least 2 bikes (for saftey)
+	        if (totalStands - predBikeNum > 2) {
+	            alert("end Passed");
+	            failedPredictions = [];
+	            callDirections(closeIDStart, closeIDEnd, startPlace, endPlace);
+	            return;
+	        }
+	        //if its predicted to have no bikes we add it to the failed predictions array and try again
+	        failedPredictions.push(closeIDEnd);
+	        if (failedPredictions.length >= 114) {
+	            alert('All Stations predicted to be empty');
+	            return;
+	        }
+	        predictionEnd(closeIDStart);
+	    });
+	}
+
+
+	function closestStation(place, start, blackListArr, future) {
+		const stationDict = getStationDict();
+		let lat = place.geometry.location.lat();
+		let lng = place.geometry.location.lng();
+		let closestStationID = null;
+		let minDist = 1000;
+		for (let id in stationDict) {
+			if (future) {
+				if (blackListArr.includes(id)) {
+					continue;
+				}
+			} else {
+				if (start && stationDict[id]['av_bikes'] == 0) {
+					continue;
+				} else if (!start && stationDict[id]['av_stands'] == 0) {
+					continue;
+				}
+			}
+			let stLat = stationDict[id]['lat'];
+			let stLng = stationDict[id]['lng'];
+			let dist = distanceTo(lat, lng, stLat, stLng);
+			if (dist < minDist || closestStationID == null) {
+				closestStationID = id;
+				minDist = dist;
+			}
+		}
+		return closestStationID;
+	}
+
+	function compareDates(dateValue) {
+		const date1 = new Date();
+		const date2 = new Date(dateValue);
+		const differenceMs = Math.abs(date1 - date2);
+		const millisecondsPerDay = 1000 * 60 * 60 * 24;
+		const differenceDays = Math.floor(differenceMs / millisecondsPerDay);
+		return differenceDays;
+	}
+
+	const fetchPredict = async (id) => {
+		if (id == null) {
+			return;
+		}
+		let timeValue = document.getElementById('timeInput').value;
+		let dateValue = document.getElementById('dateInput').value;
+		try {
+			const response = await fetch(
+				`/predict?date=${dateValue}&time=${timeValue}&id=${id}`
+			);
+			const prediction = await response.json();
+			return prediction;
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	};
+
+	function distanceTo(ax, ay, bx, by) {
+		return Math.sqrt(
+			Math.pow(Math.abs(ax - bx), 2) + Math.pow(Math.abs(ay - by), 2)
+		);
+	}
+</script>

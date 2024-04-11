@@ -79,13 +79,9 @@
 		};
 
 		fetchWeather().then((weather) => {
-			//this will need to b changed dependng on how we have our weather DB set up
 			temp = weather[0]['temperature'];
             rain = weather[0]['precipitation'];
             wind = weather[0]['wind'];
-            console.log(temp);
-            console.log(rain);
-            console.log(wind);
 		});
 
 		let future = false;
@@ -106,6 +102,7 @@
 			let timeValue = document.getElementById('timeInput').value;
 			let dateValue = document.getElementById('dateInput').value;
 			let dateTimeString = dateValue + 'T' + timeValue;
+			let current = new Date();
 			let selectedDateTime = new Date(dateTimeString);
 			if (selectedDateTime < current) {
 				alert(
