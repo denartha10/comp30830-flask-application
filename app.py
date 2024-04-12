@@ -61,6 +61,8 @@ def get_weather():
 @cache.cached()
 def select_station(id):
     select_station = db.session.query.filter_by(id=id).all() # Getting a warning about the filter by here??
+    if select_station is None:
+        abort(404) 
     select_station_data = pd.DataFrame(select_station)
     json_data = select_station_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
