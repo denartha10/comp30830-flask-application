@@ -1,4 +1,4 @@
-from flask import Flask, Response, abort, render_template, request
+from flask import Flask, Response, abort, render_template, request, send_from_directory
 from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy
 from utilities.models import Station, Weather
@@ -85,6 +85,11 @@ def get_prediction():
              abort(404)
     else:
          abort(404) 
+         
+@app.route('/bike_data/bike_avg.json')
+def serve_bike_avg_json():
+    bike_data_dir = os.path.join(app.root_path, 'bike_data')
+    return send_from_directory(bike_data_dir, 'bike_avg.json')
     
 @app.errorhandler(404)
 def page_not_found(e):
