@@ -121,6 +121,9 @@
 			let currentDateInput = document.getElementById('dateInput');
 			let currentTimeInput = document.getElementById('timeInput');
 			
+			startPoint.value = '';
+        	endPoint.value = '';
+
 			if (future) {
 				futureBtn.textContent = 'Plan a Future Trip';
 				futureInputs.style.display = 'none';
@@ -139,6 +142,12 @@
 				weatherMenu.classList.replace('h-64', 'h-32');
 			}
 		}
-		
+
+		document.getElementById('startPoint').addEventListener('focus', function() {
+			this.value = '';
+		});
+		document.getElementById('endPoint').addEventListener('focus', function() {
+			this.value = '';
+		});
 	</script>
 </div>
