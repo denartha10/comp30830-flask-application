@@ -55,14 +55,13 @@ def get_weather():
 @app.route('/select/id', methods=['GET'])
 @cache.cached()
 def select_station(id):
-    print(f"WE FETCHED THE {id}")
     select_station = db.session.query.filter_by(id=id).all() # Getting a warning about the filter by here??
     select_station_data = pd.DataFrame(select_station)
     json_data = select_station_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
 
 @app.route('/predict', methods=['GET'])
-@cache.cached()
+#@cache.cached()
 def get_prediction():
     date = request.args.get("date")
     time = request.args.get("time")
