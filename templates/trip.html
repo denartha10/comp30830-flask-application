@@ -37,58 +37,54 @@
 	}
 
 	function predictionStart() {
-	    let closeIDStart = closestStation(startPlace, true, failedPredictions, true);
+		let closeIDStart = closestStation(
+			startPlace,
+			true,
+			failedPredictions,
+			true
+		);
 
-	    fetchPredict(closeIDStart).then((predBikeNum) => {
-	        //predicted to have at least 2 bikes (for saftey)
-	        if (predBikeNum > 2) {
-	            failedPredictions = [];
-	            predictionEnd(closeIDStart, predBikeNum);
-	            return;
-	        }
-	        //if its predicted to have no bikes we add it to the failed predictions array and try again
-	        failedPredictions.push(closeIDStart);
-			////////
-			console.log('failed start pred:');
-			console.log(closeIDStart);
-	        if (failedPredictions.length >= 114) {
-	            alert('All Stations predicted to be empty');
-	            return;
-	        }
-	        predictionStart();
-	    });
+		fetchPredict(closeIDStart).then((predBikeNum) => {
+			//predicted to have at least 2 bikes (for saftey)
+			if (predBikeNum > 2) {
+				failedPredictions = [];
+				predictionEnd(closeIDStart, predBikeNum);
+				return;
+			}
+			//if its predicted to have no bikes we add it to the failed predictions array and try again
+			failedPredictions.push(closeIDStart);
+			if (failedPredictions.length >= 114) {
+				alert('All Stations predicted to be empty');
+				return;
+			}
+			predictionStart();
+		});
 	}
 
-    function predictionEnd(closeIDStart, startMarkerNum) {
-        let closeIDEnd = closestStation(endPlace, false, failedPredictions, true);
+	function predictionEnd(closeIDStart, startMarkerNum) {
+		let closeIDEnd = closestStation(endPlace, false, failedPredictions, true);
 
-        const stationDict = getStationDict();
-        const station = stationDict[closeIDEnd];
-        const totalStands = station.av_stands + station.av_bikes;
+		const stationDict = getStationDict();
+		const station = stationDict[closeIDEnd];
+		const totalStands = station.av_stands + station.av_bikes;
 
-	    fetchPredict(closeIDEnd).then((predBikeNum) => {
-	        //predicted to have at least 2 bikes (for saftey)
-            let openStands = totalStands - predBikeNum;
-	        if (openStands > 2) {
-	            failedPredictions = [];
-	            callDirections(closeIDStart, closeIDEnd, startMarkerNum, openStands);
-	            return;
-	        }
-	        //if its predicted to have no bikes we add it to the failed predictions array and try again
-	        failedPredictions.push(closeIDEnd);
-			////////
-			console.log('failed end pred:');
-			console.log(closeIDStart);
-			console.log("predicted stands:");
-			console.log(openStands);
-	        if (failedPredictions.length >= 114) {
-	            alert('All Stations predicted to have no avaialble stands');
-	            return;
-	        }
-	        predictionEnd(closeIDStart, startMarkerNum);
-	    });
+		fetchPredict(closeIDEnd).then((predBikeNum) => {
+			//predicted to have at least 2 bikes (for saftey)
+			let openStands = totalStands - predBikeNum;
+			if (openStands > 2) {
+				failedPredictions = [];
+				callDirections(closeIDStart, closeIDEnd, startMarkerNum, openStands);
+				return;
+			}
+			//if its predicted to have no bikes we add it to the failed predictions array and try again
+			failedPredictions.push(closeIDEnd);
+			if (failedPredictions.length >= 114) {
+				alert('All Stations predicted to have no avaialble stands');
+				return;
+			}
+			predictionEnd(closeIDStart, startMarkerNum);
+		});
 	}
-
 
 	function closestStation(place, start, blackListArr, future) {
 		const stationDict = getStationDict();
@@ -134,8 +130,6 @@
 		}
 		let timeValue = document.getElementById('timeInput').value;
 		let dateValue = document.getElementById('dateInput').value;
-		console.log(timeValue);
-		console.log(dateValue);
 		try {
 			const response = await fetch(
 				`/predict?date=${dateValue}&time=${timeValue}&id=${id}`
