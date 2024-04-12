@@ -116,6 +116,7 @@
 				marker.title = 'not selected';
 				infoWindow.close();
 			}
+			closeRightSidebar(); 
 		}
 
 		//event handler for closing pins when clicking on map
@@ -135,6 +136,7 @@
 				marker.title = 'not selected';
 				infoWindow.close();
 			}
+			closeRightSidebar();
 		});
 	}
 	window.selectPin = selectPin;
@@ -147,6 +149,7 @@
 	});
 	directionsRenderer.setMap(map);
 
+	let selectedMarker = null;
 	// Fetch and process the stations data
 	fetchProcessedStations().then((stations) => {
 		stations.forEach((station) => {
@@ -167,7 +170,18 @@
 			};
 			// Add the marker to the map
 			marker.addListener('click', () => {
-				selectPin(marker, pin, infoWindow);
+				if (selectedMarker === marker) {
+					// If the clicked marker is already selected, unselect it and close the right sidebar
+					selectPin(marker, pin, infoWindow, true);
+					closeRightSidebar();
+					selectedMarker = null;
+				} else {
+					// If a different marker is clicked, select it and open the right sidebar
+					selectPin(marker, pin, infoWindow, false);
+					openRightSidebar(station.id);
+					selectedMarker = marker;
+				}
+				event.stopPropagation();
 			});
 		});
 		updateSearchBar();

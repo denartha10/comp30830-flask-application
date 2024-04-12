@@ -10,7 +10,10 @@
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApT0xMbM9WAc0irn4JMDw1Ayb53B7Q1p8&libraries=places"></script>
     </head>
-    <body x-data="{open: false}" class="bg-stone-200 font-sans m-0 p-0">
+    <body x-data="{introOpen: true, open: false, rightSidebarOpen: false}" class="bg-stone-200 font-sans m-0 p-0 relative">  
+        <!-- Include the Intro Screen -->
+        {% include "intro_screen.html" %}        
+        
         <!-- sidebar section -->
         <div
             x-bind:class="open ? '' : '-translate-x-96'"
@@ -21,17 +24,14 @@
             {% include "sidebar.html" %}
         </div>
         
-        <div x-data="{rightSidebarOpen: false}">
-            <!-- Right sidebar -->
+        <div x-data="{ rightSidebarOpen: false }">
             <div
-                x-bind:class="rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'"
-                class="fixed top-0 right-0 h-screen w-96 bg-white overflow-auto transition-all duration-300 ease-in-out transform z-50"
+                :class="rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'"
+                class="fixed top-0 right-0 h-full text-center w-80 bg-white overflow-hidden shadow-lg p-5 transition-transform duration-300 ease-in-out transform z-30"
                 id="rightSidebar"
             >
-                <div class="p-4">
-                    <h2 class="text-lg font-semibold mb-4">Station Information</h2>
-                    <div id="stationInfo"></div>
-                </div>
+                <!-- this is the right sidebar section -->
+                {% include "right_sidebar.html" %}
             </div>
 
         <!-- main section -->

@@ -1,0 +1,54 @@
+<div id="rightSidebar">
+    <h2 id="stationName" class="text-2xl font-bold mt-2">Station Name</h2>
+    <p id="bikeAvailability" class="text-1xl font-semibold mt-2">Bikes Available: </p>
+    <p id="standAvailability" class="text-1xl font-semibold mt-2">Stands Available: </p>
+
+    <div class="text-center"> 
+        <label for="daySelect" class="block mt-4 font-bold text-center">Select a day to view predicted bike availability:</label>
+        <select id="daySelect" class="block mt-1 mb-4 mx-auto">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+        </select>
+    </div>
+    <button class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="closeRightSidebar()">Close</button>
+</div>
+
+<script>
+    function openRightSidebar(stationId) {
+        const stationDict = getStationDict();
+        const sidebar = document.getElementById('rightSidebar');
+    
+        const stationName = document.getElementById('stationName');
+        const bikeAvailability = document.getElementById('bikeAvailability');
+        const standAvailability = document.getElementById('standAvailability');
+    
+        const station = stationDict[stationId];
+        stationName.textContent = station.name;
+        bikeAvailability.textContent = `Bikes Available: ${station.av_bikes}`;
+        standAvailability.textContent = `Stands Available: ${station.av_stands}`;
+
+        sidebar.style.transform = "translateX(0)";   
+        
+        sidebar.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    }
+    window.openRightSidebar = openRightSidebar;
+    
+    function closeRightSidebar() {
+        const sidebar = document.getElementById('rightSidebar');
+        sidebar.style.transform = "translateX(100%)";
+    }
+    window.closeRightSidebar = closeRightSidebar;
+
+    function updateBikeUsageData(stationId, selectedDay) {
+        //to fetch when adam has the data
+    }
+    window.updateBikeUsageData = updateBikeUsageData;
+</script>
+

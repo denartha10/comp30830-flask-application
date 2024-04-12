@@ -1,0 +1,16 @@
+<div x-show="introOpen" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-lg shadow-lg relative m-4 sm:m-8 md:m-12 lg:m-16 xl:m-20 text-center w-full h-full">
+        <button @click="introOpen = false" class="absolute top-0 right-0 m-4 text-gray-500 text-4xl cursor-pointer hover:text-gray-700">&times;</button>
+        <h1 class="text-2xl font-semibold mb-4">Welcome to Our Totally Sick Bike Map</h1>
+    </div>
+</div>
+
+<script>
+    window.onload = function() {
+        document.getElementById('introScreen').style.display = 'flex';
+    };
+
+    function closeintroScreen() {
+        document.getElementById('introScreen').style.display = 'none';
+    }
+</script>

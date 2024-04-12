@@ -9,6 +9,8 @@
 		searchBar.addEventListener('focus', function () {
 			this.value = '';
 			searchPrompt.classList.add('hidden');
+			closeRightSidebar();
+			event.stopPropagation();
 		});
 
 		searchBar.addEventListener('input', function () {
@@ -30,7 +32,8 @@
 								stationDict[id].stationPin,
 								stationDict[id].stationInfoWindow
 							);
-							//openRightSidebar(id);
+							openRightSidebar(id);
+							event.stopPropagation();
 						});
 						searchPrompt.appendChild(suggestion);
 					}
@@ -39,6 +42,7 @@
 			} else {
 				searchPrompt.classList.add('hidden');
 			}
+			event.stopPropagation();
 		});
 
 		// hides search prompt when clicking outside the search bar (i.e. clears when clicking on the map)
@@ -46,6 +50,7 @@
 			const target = event.target;
 			if (target !== searchBar && target !== searchPrompt) {
 				searchPrompt.classList.add('hidden');
+				closeRightSidebar();
 			}
 		});
 	}
