@@ -26,7 +26,6 @@ def createInfoWindowContent(station):
                 <div class="flex flex-col space-y-2"> <!-- Increased space between items -->
                     <div><span class="font-semibold">Bikes Available:</span> <span class="{"text-red-600" if available_bikes == 0 else "text-gray-600"}">{available_bikes}</span></div>
                     <div><span class="font-semibold">Stands Available:</span> <span class="text-gray-600">{available_stands}</span></div>
-                    <div><button onclick="fetchSelectedStation({id})">More Info</button></div>
                 </div>
             </div>
         </div>
