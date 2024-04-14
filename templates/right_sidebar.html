@@ -1,54 +1,148 @@
 <div id="rightSidebar">
     <h2 id="stationName" class="text-2xl font-bold mt-2">Station Name</h2>
-    <p id="bikeAvailability" class="text-1xl font-semibold mt-2">Bikes Available: </p>
-    <p id="standAvailability" class="text-1xl font-semibold mt-2">Stands Available: </p>
+    <p id="bikeAvailability" class="text-1xl mt-2">Bikes Available: </p>
+    <p id="standAvailability" class="text-1xl mt-2">Stands Available: </p>
 
     <div class="text-center"> 
         <label for="daySelect" class="block mt-4 font-bold text-center">Select a day to view predicted bike availability:</label>
-        <select id="daySelect" class="block mt-1 mb-4 mx-auto">
-            <option value="Monday">Monday</option>
-            <option value="Tuesday">Tuesday</option>
-            <option value="Wednesday">Wednesday</option>
-            <option value="Thursday">Thursday</option>
-            <option value="Friday">Friday</option>
-            <option value="Saturday">Saturday</option>
-            <option value="Sunday">Sunday</option>
+        <select id="daySelect" class="block mt-1 mb-4 mx-auto w-64">
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+            <option>Sunday</option>
         </select>
     </div>
+
+    <div class="p-4" style="height: 400px;">
+        <canvas id="bikeAvailabilityChart"></canvas>
+    </div>
+
     <button class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="closeRightSidebar()">Close</button>
 </div>
 
+
 <script>
+    let bikeChart;
+
+    function fetchBikeData() {
+        return fetch('bike_data/bike_avg.json')
+            .then(response => response.json())
+            .catch(error => {
+                console.error('Error loading bike data:', error);
+                return {};
+            });
+    }
+    window.fetchBikeData = fetchBikeData;
+
+    function updateBikeUsageData(stationId, selectedDayIndex) {
+        fetchBikeData().then(data => {
+            console.log('Fetched bike data:', data); 
+    
+            // Convert stationId to string
+            const stationKey = stationId.toString(); 
+    
+            if (!data[stationKey]) {
+                console.error('No data for station:', stationId); // console log
+                return;
+            }
+    
+            const bikeData = data[stationKey][selectedDayIndex];
+            console.log('Selected bike data for station', stationId, 'on day index', selectedDayIndex, ':', bikeData);
+    
+            const labels = Array.from({ length: bikeData.length }, (_, i) => `${i}:00`);
+            const bikeCtx = document.getElementById('bikeAvailabilityChart').getContext('2d');
+    
+            if (bikeChart) {
+                bikeChart.data.labels = labels;
+                bikeChart.data.datasets[0].data = bikeData;
+                bikeChart.update();
+            } else {
+                bikeChart = new Chart(bikeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Hourly Bike Availability',
+                            data: bikeData,
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                            borderColor: 'rgb(75, 192, 192)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Hour of the Day'
+                                }
+                            },
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Number of Bikes Available'
+                                }
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+        }).catch(error => console.error('Error fetching or processing data:', error));
+    }
+    window.updateBikeUsageData = updateBikeUsageData;
+    
+
+    function setupDaySelect(stationId) {
+        const daySelect = document.getElementById('daySelect');
+        daySelect.onchange = () => {
+            const selectedDayIndex = daySelect.selectedIndex;
+            updateBikeUsageData(stationId, selectedDayIndex);
+        };
+    }
+    window.setupDaySelect = setupDaySelect;
+    
     function openRightSidebar(stationId) {
         const stationDict = getStationDict();
+        console.log('Station dictionary:', stationDict);
+        
         const sidebar = document.getElementById('rightSidebar');
-    
         const stationName = document.getElementById('stationName');
         const bikeAvailability = document.getElementById('bikeAvailability');
         const standAvailability = document.getElementById('standAvailability');
+        const daySelect = document.getElementById('daySelect');
     
         const station = stationDict[stationId];
+        console.log('Selected station:', station);
         stationName.textContent = station.name;
         bikeAvailability.textContent = `Bikes Available: ${station.av_bikes}`;
         standAvailability.textContent = `Stands Available: ${station.av_stands}`;
-
-        sidebar.style.transform = "translateX(0)";   
-        
+    
+        setupDaySelect(stationId);
+        updateBikeUsageData(stationId, daySelect.selectedIndex);
+    
+        sidebar.style.transform = "translateX(0)";
         sidebar.addEventListener('click', function(event) {
             event.stopPropagation();
         });
     }
-    window.openRightSidebar = openRightSidebar;
-    
+    window.openRightSidebar = openRightSidebar; 
+
     function closeRightSidebar() {
         const sidebar = document.getElementById('rightSidebar');
         sidebar.style.transform = "translateX(100%)";
-    }
-    window.closeRightSidebar = closeRightSidebar;
-
-    function updateBikeUsageData(stationId, selectedDay) {
-        //to fetch when adam has the data
-    }
-    window.updateBikeUsageData = updateBikeUsageData;
+        if (bikeChart) {
+            bikeChart.destroy();
+            bikeChart = null;
+        }
+    }        
+    window.closeRightSidebar = closeRightSidebar; 
 </script>
 
