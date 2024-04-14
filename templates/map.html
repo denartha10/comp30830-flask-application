@@ -170,6 +170,7 @@
 				av_bikes: station.available_bikes,
 				av_stands: station.available_stands,
 				name: station.name,
+				id: station.id 
 			};
 			// Add the marker to the map
 			marker.addListener('click', () => {
@@ -180,7 +181,6 @@
 					rightSideBarOpen = false;
 					selMarker = null;
 				} else {
-					// If a different marker is clicked, select it and open the right sidebar
 					selectPin(marker, pin, infoWindow, false);
 					openRightSidebar(station.id);
 					rightSideBarOpen = true;
