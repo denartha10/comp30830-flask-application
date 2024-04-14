@@ -4,7 +4,7 @@
     <p id="standAvailability" class="text-1xl mt-2">Stands Available: </p>
 
     <div class="text-center"> 
-        <label for="daySelect" class="block mt-4 font-bold text-center">Select a day to view predicted bike availability:</label>
+        <label for="daySelect" class="block mt-4 font-bold text-center">Select a day to view average bike availability:</label>
         <select id="daySelect" class="block mt-1 mb-4 mx-auto w-64">
             <option>Monday</option>
             <option>Tuesday</option>
@@ -65,7 +65,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Hourly Bike Availability',
+                            label: 'Hourly Bike Availability (Avg.)',
                             data: bikeData,
                             backgroundColor: 'rgba(75, 192, 192, 0.5)',
                             borderColor: 'rgb(75, 192, 192)',
