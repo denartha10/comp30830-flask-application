@@ -116,7 +116,8 @@
 				marker.title = 'not selected';
 				infoWindow.close();
 			}
-			closeRightSidebar(); 
+			closeRightSidebar();
+			rightSideBarOpen = false;
 		}
 
 		//event handler for closing pins when clicking on map
@@ -137,6 +138,8 @@
 				infoWindow.close();
 			}
 			closeRightSidebar();
+			rightSideBarOpen = false;
+			selMarker = null;
 		});
 	}
 	window.selectPin = selectPin;
@@ -149,7 +152,7 @@
 	});
 	directionsRenderer.setMap(map);
 
-	let selectedMarker = null;
+	let selMarker = null;
 	// Fetch and process the stations data
 	fetchProcessedStations().then((stations) => {
 		stations.forEach((station) => {
@@ -170,16 +173,18 @@
 			};
 			// Add the marker to the map
 			marker.addListener('click', () => {
-				if (selectedMarker === marker) {
+				if (selMarker === marker) {
 					// If the clicked marker is already selected, unselect it and close the right sidebar
 					selectPin(marker, pin, infoWindow, true);
 					closeRightSidebar();
-					selectedMarker = null;
+					rightSideBarOpen = false;
+					selMarker = null;
 				} else {
 					// If a different marker is clicked, select it and open the right sidebar
 					selectPin(marker, pin, infoWindow, false);
 					openRightSidebar(station.id);
-					selectedMarker = marker;
+					rightSideBarOpen = true;
+					selMarker = marker;
 				}
 				event.stopPropagation();
 			});
@@ -197,7 +202,7 @@
 	};
 	const options = {
 		bounds: defaultBounds,
-		strictBounds: false,
+		strictBounds: true,
 	};
 
 	const startPoint = new Autocomplete(
@@ -218,7 +223,14 @@
 		setEndPlace(endPoint.getPlace());
 	});
 
-	function setDirection(startLatLng, endLatLng, waypts, wayptPositions, startMarkerNum, endMarkerNum) {
+	function setDirection(
+		startLatLng,
+		endLatLng,
+		waypts,
+		wayptPositions,
+		startMarkerNum,
+		endMarkerNum
+	) {
 		directionsService.route(
 			{
 				origin: startLatLng,
@@ -230,7 +242,14 @@
 			(response, status) => {
 				if (status === 'OK') {
 					directionsRenderer.setDirections(response);
-					directionServiceMarkers(startLatLng, endLatLng, wayptPositions[0], wayptPositions[1], startMarkerNum, endMarkerNum);
+					directionServiceMarkers(
+						startLatLng,
+						endLatLng,
+						wayptPositions[0],
+						wayptPositions[1],
+						startMarkerNum,
+						endMarkerNum
+					);
 				} else {
 					window.alert('Directions request failed due to ' + status);
 				}
@@ -243,14 +262,14 @@
 		background: '#9cf6f7',
 		borderColor: '#0f6a6b',
 		glyphColor: '#0f6a6b',
-		glyph: "0",
+		glyph: '0',
 		scale: 1.3,
 	});
 	const waypt2Pin = new PinElement({
 		background: '#9cf6f7',
 		borderColor: '#0f6a6b',
 		glyphColor: '#0f6a6b',
-		glyph: "0",
+		glyph: '0',
 		scale: 1.3,
 	});
 	//start and end markers for trips
@@ -273,7 +292,14 @@
 		content: waypt2Pin.element,
 	});
 
-	function directionServiceMarkers(start, end, w1, w2, startMarkerNum, endMarkerNum) {
+	function directionServiceMarkers(
+		start,
+		end,
+		w1,
+		w2,
+		startMarkerNum,
+		endMarkerNum
+	) {
 		startM.setMap(map);
 		endM.setMap(map);
 		startM.position = start;
@@ -289,11 +315,14 @@
 			waypt1.setMap(null);
 			waypt2.setMap(null);
 		}
-		
-		
 	}
 
-	function callDirections(closeIDStart, closeIDEnd, startMarkerNum, endMarkerNum) {
+	function callDirections(
+		closeIDStart,
+		closeIDEnd,
+		startMarkerNum,
+		endMarkerNum
+	) {
 		let startLat = startPlace.geometry.location.lat();
 		let startLng = startPlace.geometry.location.lng();
 		let startLatLng = new google.maps.LatLng(startLat, startLng);
@@ -306,7 +335,7 @@
 		let stationEnd = stationDict[closeIDEnd];
 
 		let all = false;
-		if (startMarkerNum != null){
+		if (startMarkerNum != null) {
 			all = true;
 		}
 
@@ -333,7 +362,14 @@
 			stopover: true,
 		});
 		directionsRenderer.setMap(map);
-		setDirection(startLatLng, endLatLng, waypts, wayptPosition, startMarkerNum, endMarkerNum);
+		setDirection(
+			startLatLng,
+			endLatLng,
+			waypts,
+			wayptPosition,
+			startMarkerNum,
+			endMarkerNum
+		);
 		tripDisplayed = true;
 	}
 	window.callDirections = callDirections;
