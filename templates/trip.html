@@ -44,7 +44,8 @@
 			true
 		);
 
-		fetchPredict(closeIDStart).then((predBikeNum) => {
+		fetchPredict(closeIDStart).then((predObj) => {
+			let predBikeNum = predObj['prediction'];
 			//predicted to have at least 2 bikes (for saftey)
 			if (predBikeNum > 2) {
 				failedPredictions = [];
@@ -68,12 +69,14 @@
 		const station = stationDict[closeIDEnd];
 		const totalStands = station.av_stands + station.av_bikes;
 
-		fetchPredict(closeIDEnd).then((predBikeNum) => {
+		fetchPredict(closeIDEnd).then((predObj) => {
 			//predicted to have at least 2 bikes (for saftey)
-			let openStands = totalStands - predBikeNum;
+			let openStands = totalStands - predObj['prediction'];;
 			if (openStands > 2) {
 				failedPredictions = [];
 				callDirections(closeIDStart, closeIDEnd, startMarkerNum, openStands);
+				displayWeather(predObj['temp'], predObj['rain'], predObj['wind']);
+                document.getElementById('predWeatherMsg').style.display = 'block';
 				return;
 			}
 			//if its predicted to have no bikes we add it to the failed predictions array and try again

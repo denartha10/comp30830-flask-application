@@ -80,7 +80,13 @@ def get_prediction():
         if params:
             (temp, wind, rain) = params
             prediction = get_predictions(day, hour, temp, rain, wind, station_id)
-            return f"{prediction}"
+            return_dict = {
+                "prediction": prediction,
+                "temp": temp,
+                "rain": rain,
+                "wind": wind,
+            }
+            return return_dict
         else:
              abort(404)
     else:

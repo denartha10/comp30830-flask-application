@@ -48,30 +48,57 @@
 		Plan a Future Trip
 	</button>
 
-	<div id="weatherMenu" class="bg-gradient-to-br from-cyan-500 to-purple-600 text-white rounded-xl shadow-md p-4 mx-auto text-center" style="margin-top: 32px; box-sizing: border-box; font-family: 'Poppins', sans-serif; height: 45vh;">
-        <img src="images/clouds.png" class="w-24 mx-auto mt-0" style="width: 100px; margin-top: 0px;"> 
-        <h1 id="City" class="text-3xl font-semibold mt-2">Dublin</h1>
-        <div class="flex justify-center items-baseline mt-2">
-            <h1 id="temp" class="text-5xl font-medium"></h1>
-            <span class="text-3xl" style= "margin-top: 15px;">°C</span>
-        </div>
-        <div class="flex flex-wrap justify-around mt-4 px-2">
-            <div class="text-center" style= "margin-top: 0px;">
-                <img src="images/rain.png" alt="rain Icon" class="w-8 h-8 mr-2 mb-2 inline"><p id="rain" class="text-2xl font-medium inline"></p><span class="text-lg">%</span>
+	<div
+		id="weatherMenu"
+		class="bg-gradient-to-br from-cyan-500 to-purple-600 text-white rounded-xl shadow-md p-4 mx-auto text-center"
+		style="
+			margin-top: 32px;
+			box-sizing: border-box;
+			font-family: 'Poppins', sans-serif;
+			height: 45vh;
+		"
+	>
+		<p id="predWeatherMsg" class="text-l" style="display: none">
+			Weather Prediction
+		</p>
+		<img
+			src="images/clouds.png"
+			class="w-24 mx-auto mt-0"
+			style="width: 100px; margin-top: 0px"
+		/>
+		<h1 id="City" class="text-3xl font-semibold mt-2">Dublin</h1>
+		<div class="flex justify-center items-baseline mt-2">
+			<h1 id="temp" class="text-5xl font-medium"></h1>
+			<span class="text-3xl" style="margin-top: 15px">°C</span>
+		</div>
+		<div class="flex flex-wrap justify-around mt-4 px-2">
+			<div class="text-center" style="margin-top: 0px">
+				<img
+					src="images/rain.png"
+					alt="rain Icon"
+					class="w-8 h-8 mr-2 mb-2 inline"
+				/>
+				<p id="rain" class="text-2xl font-medium inline"></p>
+				<span class="text-lg">%</span>
 				<p class="text-l">Precipitation</p>
-            </div>
-            <div class="text-center">
-                <img src="images/wind.png" alt="Wind Icon" class="w-5 h-5 mr-2 mb-2 inline"> <p id="wind" class="text-2xl font-medium inline"></p><span class="text-1xl">km/h</span>
-                <p class="text-l mt-1.5" style= "margin-top: 8px">Wind Speed</p>
-            </div>
-        </div>
-    </div>
-
+			</div>
+			<div class="text-center">
+				<img
+					src="images/wind.png"
+					alt="Wind Icon"
+					class="w-5 h-5 mr-2 mb-2 inline"
+				/>
+				<p id="wind" class="text-2xl font-medium inline"></p>
+				<span class="text-1xl">km/h</span>
+				<p class="text-l mt-1.5" style="margin-top: 8px">Wind Speed</p>
+			</div>
+		</div>
+	</div>
 
 	<script>
 		let temp;
-        let rain;
-        let wind;
+		let rain;
+		let wind;
 
 		const fetchWeather = async () => {
 			const response = await fetch('/weather');
@@ -81,12 +108,16 @@
 
 		fetchWeather().then((weather) => {
 			temp = weather[0]['temperature'];
-            rain = weather[0]['precipitation'];
-            wind = weather[0]['wind'];
-			document.getElementById("temp").innerHTML = temp;
-			document.getElementById("rain").innerHTML = rain + " ";
-			document.getElementById("wind").innerHTML = wind.toFixed(2) + " ";
+			rain = weather[0]['precipitation'];
+			wind = weather[0]['wind'];
+			displayWeather(temp, rain, wind);
 		});
+
+		function displayWeather(t, r, w) {
+			document.getElementById('temp').innerHTML = t;
+			document.getElementById('rain').innerHTML = r + ' ';
+			document.getElementById('wind').innerHTML = w.toFixed(2) + ' ';
+		}
 
 		let future = false;
 		document.getElementById('futureInputs').style.display = 'none';
@@ -110,7 +141,7 @@
 			let selectedDateTime = new Date(dateTimeString);
 			if (selectedDateTime < current) {
 				alert(
-					'The selected date and time is in the past. Please select a future date'
+					'The selected date and time is not in the future. Please select a future date.'
 				);
 				return;
 			}
@@ -123,21 +154,19 @@
 			let futureBtn = document.getElementById('futureBtn');
 			let currentDateInput = document.getElementById('dateInput');
 			let currentTimeInput = document.getElementById('timeInput');
-			
-			startPoint.value = '';
-        	endPoint.value = '';
+			let predWeatherMsg = document.getElementById('predWeatherMsg');
 
 			if (future) {
 				futureBtn.textContent = 'Plan a Future Trip';
-				futureInputs.style.display = 'none';
 				weatherMenu.classList.replace('h-32', 'h-64');
+				resetLeftSideBar();
 				future = false;
 			} else {
 				futureBtn.textContent = 'Cancel';
 				let current = new Date();
 				let currentDate = current.toISOString().split('T')[0];
 				let currentTime = current.toTimeString().split(' ')[0].substring(0, 5);
-		
+
 				currentDateInput.value = currentDate;
 				currentTimeInput.value = currentTime;
 				future = true;
@@ -146,10 +175,18 @@
 			}
 		}
 
-		document.getElementById('startPoint').addEventListener('focus', function() {
-			this.value = '';
-		});
-		document.getElementById('endPoint').addEventListener('focus', function() {
+		function resetLeftSideBar() {
+			predWeatherMsg.style.display = 'none';
+			displayWeather(temp, rain, wind);
+			futureInputs.style.display = 'none';
+		}
+
+		document
+			.getElementById('startPoint')
+			.addEventListener('focus', function () {
+				this.value = '';
+			});
+		document.getElementById('endPoint').addEventListener('focus', function () {
 			this.value = '';
 		});
 	</script>
