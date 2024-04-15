@@ -158,10 +158,8 @@
 
 			if (future) {
 				futureBtn.textContent = 'Plan a Future Trip';
-				futureInputs.style.display = 'none';
 				weatherMenu.classList.replace('h-32', 'h-64');
-				displayWeather(temp, rain, wind);
-				predWeatherMsg.style.display = 'none';
+				resetLeftSideBar();
 				future = false;
 			} else {
 				futureBtn.textContent = 'Cancel';
@@ -175,6 +173,12 @@
 				futureInputs.style.display = 'block';
 				weatherMenu.classList.replace('h-64', 'h-32');
 			}
+		}
+
+		function resetLeftSideBar() {
+			predWeatherMsg.style.display = 'none';
+			displayWeather(temp, rain, wind);
+			futureInputs.style.display = 'none';
 		}
 
 		document
