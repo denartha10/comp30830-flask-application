@@ -49,7 +49,8 @@
 	</button>
 
 	<div id="weatherMenu" class="bg-gradient-to-br from-cyan-500 to-purple-600 text-white rounded-xl shadow-md p-4 mx-auto text-center" style="margin-top: 32px; box-sizing: border-box; font-family: 'Poppins', sans-serif; height: 45vh;">
-        <img src="images/clouds.png" class="w-24 mx-auto mt-0" style="width: 100px; margin-top: 0px;"> 
+        <p id='predWeatherMsg' class='text-l' style="display: none"> Weather Prediction </p>
+		<img src="images/clouds.png" class="w-24 mx-auto mt-0" style="width: 100px; margin-top: 0px;"> 
         <h1 id="City" class="text-3xl font-semibold mt-2">Dublin</h1>
         <div class="flex justify-center items-baseline mt-2">
             <h1 id="temp" class="text-5xl font-medium"></h1>
@@ -67,7 +68,6 @@
         </div>
     </div>
 
-
 	<script>
 		let temp;
         let rain;
@@ -80,13 +80,17 @@
 		};
 
 		fetchWeather().then((weather) => {
-			temp = weather[0]['temperature'];
+            temp = weather[0]['temperature'];
             rain = weather[0]['precipitation'];
             wind = weather[0]['wind'];
-			document.getElementById("temp").innerHTML = temp;
-			document.getElementById("rain").innerHTML = rain + " ";
-			document.getElementById("wind").innerHTML = wind.toFixed(2) + " ";
-		});
+            displayWeather(temp, rain, wind);
+        });
+
+        function displayWeather(t, r, w) {
+            document.getElementById('temp').innerHTML = t;
+            document.getElementById('rain').innerHTML = r + ' ';
+            document.getElementById('wind').innerHTML = w.toFixed(2) + ' ';
+        }
 
 		let future = false;
 		document.getElementById('futureInputs').style.display = 'none';
@@ -123,14 +127,14 @@
 			let futureBtn = document.getElementById('futureBtn');
 			let currentDateInput = document.getElementById('dateInput');
 			let currentTimeInput = document.getElementById('timeInput');
-			
-			startPoint.value = '';
-        	endPoint.value = '';
+			let predWeatherMsg = document.getElementById('predWeatherMsg');
 
 			if (future) {
 				futureBtn.textContent = 'Plan a Future Trip';
 				futureInputs.style.display = 'none';
 				weatherMenu.classList.replace('h-32', 'h-64');
+				fetchWeather();
+				predWeatherMsg.style.display = 'none';
 				future = false;
 			} else {
 				futureBtn.textContent = 'Cancel';

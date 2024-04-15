@@ -64,7 +64,6 @@
 
 	let stationDict = {};
 	let tripDisplayed = false;
-	let rightSideBarOpen = false;
 	let leftSideBarOpen = false;
 
 	function selectPin(selectedMarker, selectedPin, selectedInfo) {
@@ -94,12 +93,6 @@
 			selectedMarker.zIndex = 2;
 			selectedMarker.title = 'selected';
 			selectedInfo.open(map, selectedMarker);
-			if (leftSideBarOpen && rightSideBarOpen) {
-				map.setCenter({
-					lat: 53.347,
-					lng: selectedMarker.position['lng'] + 0.04,
-				});
-			}
 		} else {
 			//reshow all pins;
 			for (let id in stationDict) {
@@ -117,7 +110,6 @@
 				infoWindow.close();
 			}
 			closeRightSidebar();
-			rightSideBarOpen = false;
 		}
 
 		//event handler for closing pins when clicking on map
@@ -138,7 +130,6 @@
 				infoWindow.close();
 			}
 			closeRightSidebar();
-			rightSideBarOpen = false;
 			selMarker = null;
 		});
 	}
@@ -178,12 +169,10 @@
 					// If the clicked marker is already selected, unselect it and close the right sidebar
 					selectPin(marker, pin, infoWindow, true);
 					closeRightSidebar();
-					rightSideBarOpen = false;
 					selMarker = null;
 				} else {
 					selectPin(marker, pin, infoWindow, false);
 					openRightSidebar(station.id);
-					rightSideBarOpen = true;
 					selMarker = marker;
 				}
 				event.stopPropagation();
