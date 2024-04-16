@@ -1,52 +1,57 @@
 <script>
-	function updateSearchBar() {
-		const searchBar = document.getElementById('searchBar');
-		const searchPrompt = document.getElementById('searchPrompt');
+  function updateSearchBar() {
+    // This fetches the search bar
+    const searchBar = document.getElementById("searchBar");
 
-		const stationDict = getStationDict();
+    // This fetches the search prompt
+    const searchPrompt = document.getElementById("searchPrompt");
 
-		// initially clears the search bar when clicked
-		searchBar.addEventListener('focus', function () {
-			this.value = '';
-			searchPrompt.classList.add('hidden');
-		});
+    // TODO: I AM NOT SURE WHERE getStationDict() is from
+    const stationDict = getStationDict();
 
-		searchBar.addEventListener('input', function () {
-			const searchText = this.value.trim().toLowerCase();
-			searchPrompt.innerHTML = '';
-			if (searchText.length > 0) {
-				for (let id in stationDict) {
-					const stationName = stationDict[id].name.toLowerCase();
-					if (stationName.includes(searchText)) {
-						const suggestion = document.createElement('div');
-						suggestion.textContent = stationDict[id].name;
-						suggestion.className = 'p-2 hover:bg-gray-100 cursor-pointer';
-						suggestion.addEventListener('click', function () {
-							searchBar.value = stationDict[id].name;
-							searchPrompt.innerHTML = '';
-							searchPrompt.classList.add('hidden');
-							selectPin(
-								stationDict[id].stationMarker,
-								stationDict[id].stationPin,
-								stationDict[id].stationInfoWindow
-							);
-							//openRightSidebar(id);
-						});
-						searchPrompt.appendChild(suggestion);
-					}
-				}
-				searchPrompt.classList.remove('hidden');
-			} else {
-				searchPrompt.classList.add('hidden');
-			}
-		});
+    // initially clears the search bar when clicked
+    // CAN REPLACE THIS CODE WITH WITH ALPINE EASILY
+    // searchBar.addEventListener('focus', function () {
+    // 	this.value = '';
+    // 	searchPrompt.classList.add('hidden');
+    // });
 
-		// hides search prompt when clicking outside the search bar (i.e. clears when clicking on the map)
-		document.addEventListener('click', function (event) {
-			const target = event.target;
-			if (target !== searchBar && target !== searchPrompt) {
-				searchPrompt.classList.add('hidden');
-			}
-		});
-	}
+    searchBar.addEventListener("input", function () {
+      const searchText = this.value.trim().toLowerCase();
+      searchPrompt.innerHTML = "";
+      if (searchText.length > 0) {
+        for (let id in stationDict) {
+          const stationName = stationDict[id].name.toLowerCase();
+          if (stationName.includes(searchText)) {
+            const suggestion = document.createElement("div");
+            suggestion.textContent = stationDict[id].name;
+            suggestion.className = "p-2 hover:bg-gray-100 cursor-pointer";
+            suggestion.addEventListener("click", function () {
+              searchBar.value = stationDict[id].name;
+              searchPrompt.innerHTML = "";
+              searchPrompt.classList.add("hidden");
+              selectPin(
+                stationDict[id].stationMarker,
+                stationDict[id].stationPin,
+                stationDict[id].stationInfoWindow,
+              );
+              //openRightSidebar(id);
+            });
+            searchPrompt.appendChild(suggestion);
+          }
+        }
+        searchPrompt.classList.remove("hidden");
+      } else {
+        searchPrompt.classList.add("hidden");
+      }
+    });
+
+    // hides search prompt when clicking outside the search bar (i.e. clears when clicking on the map)
+    document.addEventListener("click", function (event) {
+      const target = event.target;
+      if (target !== searchBar && target !== searchPrompt) {
+        searchPrompt.classList.add("hidden");
+      }
+    });
+  }
 </script>

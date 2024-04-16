@@ -45,12 +45,16 @@ def get_stations():
     json_data = bike_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
 
+
+
 @app.route('/weather', methods=['GET'])
 def get_weather():
     weather = db.session.query(Weather).all()
     weather_data = pd.DataFrame(weather)
     json_data = weather_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
+
+
 
 @app.route('/select/id', methods=['GET'])
 @cache.cached()
@@ -60,6 +64,8 @@ def select_station(id):
     select_station_data = pd.DataFrame(select_station)
     json_data = select_station_data.to_json(orient='records', date_format='iso')
     return Response(json_data, mimetype='application/json')
+
+
 
 @app.route('/predict', methods=['GET'])
 @cache.cached()
