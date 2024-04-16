@@ -15,8 +15,28 @@
 			predictionSystem();
 			return;
 		}
-		let closeIDStart = closestStation(startPlace, true, [], false);
-		let closeIDEnd = closestStation(endPlace, false, [], false);
+
+		let closeIDStart;
+		let closeIDEnd;
+		
+		try {
+            closeIDStart = closestStation(startPlace, true, [], false);
+        } catch (error) {
+            alert(
+                "Your starting location isn't recognised. Please try a different location."
+            );
+            return;
+        }
+
+        try {
+            closeIDEnd = closestStation(endPlace, false, [], false);
+        } catch (error) {
+            alert(
+                "Your ending location isn't recognised. Please try a different location."
+            );
+            return;
+        }
+
 		callDirections(closeIDStart, closeIDEnd, null, null);
 	}
 
@@ -37,12 +57,20 @@
 	}
 
 	function predictionStart() {
-		let closeIDStart = closestStation(
+		let closeIDStart;
+		try {
+            closeIDStart = closestStation(
 			startPlace,
 			true,
 			failedPredictions,
 			true
 		);
+        } catch (error) {
+            alert(
+                "Your starting location isn't recognised. Please try a different location."
+            );
+            return;
+        }
 
 		fetchPredict(closeIDStart).then((predObj) => {
 			let predBikeNum = predObj['prediction'];
@@ -63,7 +91,15 @@
 	}
 
 	function predictionEnd(closeIDStart, startMarkerNum) {
-		let closeIDEnd = closestStation(endPlace, false, failedPredictions, true);
+		let closeIDEnd;
+		try {
+            closeIDEnd = closestStation(endPlace, false, failedPredictions, true);
+        } catch (error) {
+            alert(
+                "Your ending location isn't recognised. Please try a different location."
+            );
+            return;
+        }
 
 		const stationDict = getStationDict();
 		const station = stationDict[closeIDEnd];
