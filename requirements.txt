@@ -2,7 +2,12 @@ Flask
 flask_caching
 pandas
 sqlalchemy
+flask_sqlalchemy
+python-dotenv
 openmeteo_requests
 pytz
 requests
 mysql-connector-python
+gunicorn
+requests
+scikit-learn

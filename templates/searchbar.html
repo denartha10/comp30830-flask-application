@@ -1,0 +1,57 @@
+<script>
+	function updateSearchBar() {
+		const searchBar = document.getElementById('searchBar');
+		const searchPrompt = document.getElementById('searchPrompt');
+
+		const stationDict = getStationDict();
+
+		// initially clears the search bar when clicked
+		searchBar.addEventListener('focus', function () {
+			this.value = '';
+			searchPrompt.classList.add('hidden');
+			closeRightSidebar();
+			event.stopPropagation();
+		});
+
+		searchBar.addEventListener('input', function () {
+			const searchText = this.value.trim().toLowerCase();
+			searchPrompt.innerHTML = '';
+			if (searchText.length > 0) {
+				for (let id in stationDict) {
+					const stationName = stationDict[id].name.toLowerCase();
+					if (stationName.includes(searchText)) {
+						const suggestion = document.createElement('div');
+						suggestion.textContent = stationDict[id].name;
+						suggestion.className = 'p-2 hover:bg-gray-100 cursor-pointer';
+						suggestion.addEventListener('click', function () {
+							searchBar.value = stationDict[id].name;
+							searchPrompt.innerHTML = '';
+							searchPrompt.classList.add('hidden');
+							selectPin(
+								stationDict[id].stationMarker,
+								stationDict[id].stationPin,
+								stationDict[id].stationInfoWindow
+							);
+							openRightSidebar(id);
+							event.stopPropagation();
+						});
+						searchPrompt.appendChild(suggestion);
+					}
+				}
+				searchPrompt.classList.remove('hidden');
+			} else {
+				searchPrompt.classList.add('hidden');
+			}
+			event.stopPropagation();
+		});
+
+		// hides search prompt when clicking outside the search bar (i.e. clears when clicking on the map)
+		document.addEventListener('click', function (event) {
+			const target = event.target;
+			if (target !== searchBar && target !== searchPrompt) {
+				searchPrompt.classList.add('hidden');
+				closeRightSidebar();
+			}
+		});
+	}
+</script>

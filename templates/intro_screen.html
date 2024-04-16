@@ -1,0 +1,31 @@
+<div
+    x-show="introOpen"
+    class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+>
+    <div
+        class="bg-white rounded-lg shadow-lg relative mx-auto text-center"
+        style="width: 100vh; height: 100vh; background-color: white; display: flex; justify-content: center; align-items: center;"
+    >
+        <div
+            style="background-image: url('images/splash_screen.png'); background-size: cover; background-position: center; width: 96vh; height: 96vh;"
+        >
+        </div>
+        <button
+            @click="introOpen = false"
+            class="absolute top-0 right-3 m-1 text-gray-500 text-4xl cursor-pointer hover:text-gray-700"
+        >
+            &times;
+        </button>
+    </div>
+</div>
+
+
+<script>
+	window.onload = function () {
+		document.getElementById('introScreen').style.display = 'flex';
+	};
+
+	function closeintroScreen() {
+		document.getElementById('introScreen').style.display = 'none';
+	}
+</script>

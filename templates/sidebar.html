@@ -1,0 +1,193 @@
+<div class="space-y-4 overflow-y-hidden">
+	<h2 class="text-3xl font-semibold mt-2">Plan Your Bike Trip</h2>
+
+	<div
+		x-timeout:1000="t = new Date(); $el.textContent = `${t.getHours()}:${t.getMinutes().toString().padStart(2, '0')}`"
+		class="text-gray-600 text-lg mb-5"
+	></div>
+	<input
+		id="startPoint"
+		type="text"
+		name="startPoint"
+		placeholder="Starting Destination"
+		class="mt-2 p-2 border border-gray-300 rounded w-full"
+	/>
+	<input
+		id="endPoint"
+		type="text"
+		name="endPoint"
+		placeholder="End Destination"
+		class="mt-2 p-2 border border-gray-300 rounded w-full"
+	/>
+	<div id="futureInputs">
+		<input
+			id="dateInput"
+			type="date"
+			name="date"
+			class="mt-2 p-2 border border-gray-300 rounded w-full"
+		/>
+		<input
+			id="timeInput"
+			type="time"
+			name="time"
+			class="mt-2 p-2 border border-gray-300 rounded w-full"
+		/>
+	</div>
+	<button
+		class="mt-2 bg-blue-500 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full"
+		onclick="searchTripBtn()"
+	>
+		Search Trip
+	</button>
+	<br />
+	<button
+		id="futureBtn"
+		class="mt-2 bg-blue-500 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full"
+		onclick="futureBtn()"
+	>
+		Plan a Future Trip
+	</button>
+
+	<div
+		id="weatherMenu"
+		class="bg-gradient-to-br from-cyan-500 to-purple-600 text-white rounded-xl shadow-md p-4 mx-auto text-center"
+		style="
+			margin-top: 32px;
+			box-sizing: border-box;
+			font-family: 'Poppins', sans-serif;
+			height: 45vh;
+		"
+	>
+		<p id="predWeatherMsg" class="text-l" style="display: none">
+			Weather Prediction
+		</p>
+		<img
+			src="images/clouds.png"
+			class="w-24 mx-auto mt-0"
+			style="width: 100px; margin-top: 0px"
+		/>
+		<h1 id="City" class="text-3xl font-semibold mt-2">Dublin</h1>
+		<div class="flex justify-center items-baseline mt-2">
+			<h1 id="temp" class="text-5xl font-medium"></h1>
+			<span class="text-3xl" style="margin-top: 15px">°C</span>
+		</div>
+		<div class="flex flex-wrap justify-around mt-4 px-2">
+			<div class="text-center" style="margin-top: 0px">
+				<img
+					src="images/rain.png"
+					alt="rain Icon"
+					class="w-8 h-8 mr-2 mb-2 inline"
+				/>
+				<p id="rain" class="text-2xl font-medium inline"></p>
+				<span class="text-lg">%</span>
+				<p class="text-l">Precipitation</p>
+			</div>
+			<div class="text-center">
+				<img
+					src="images/wind.png"
+					alt="Wind Icon"
+					class="w-5 h-5 mr-2 mb-2 inline"
+				/>
+				<p id="wind" class="text-2xl font-medium inline"></p>
+				<span class="text-1xl">km/h</span>
+				<p class="text-l mt-1.5" style="margin-top: 8px">Wind Speed</p>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		let temp;
+		let rain;
+		let wind;
+
+		const fetchWeather = async () => {
+			const response = await fetch('/weather');
+			const weather = await response.json();
+			return weather;
+		};
+
+		fetchWeather().then((weather) => {
+			temp = weather[0]['temperature'];
+			rain = weather[0]['precipitation'];
+			wind = weather[0]['wind'];
+			displayWeather(temp, rain, wind);
+		});
+
+		function displayWeather(t, r, w) {
+			document.getElementById('temp').innerHTML = t;
+			document.getElementById('rain').innerHTML = r + ' ';
+			document.getElementById('wind').innerHTML = w.toFixed(2) + ' ';
+		}
+
+		let future = false;
+		document.getElementById('futureInputs').style.display = 'none';
+
+		function searchTripBtn() {
+			if (
+				document.getElementById('startPoint').value == '' ||
+				document.getElementById('endPoint').value == ''
+			) {
+				alert('Please enter a start and end location.');
+				return;
+			}
+			if (!future) {
+				getTrip(false);
+				return;
+			}
+			let timeValue = document.getElementById('timeInput').value;
+			let dateValue = document.getElementById('dateInput').value;
+			let dateTimeString = dateValue + 'T' + timeValue;
+			let current = new Date();
+			let selectedDateTime = new Date(dateTimeString);
+			if (selectedDateTime < current) {
+				alert(
+					'The selected date and time is not in the future. Please select a future date.'
+				);
+				return;
+			}
+			getTrip(true);
+		}
+
+		function futureBtn() {
+			let weatherMenu = document.getElementById('weatherMenu');
+			let futureInputs = document.getElementById('futureInputs');
+			let futureBtn = document.getElementById('futureBtn');
+			let currentDateInput = document.getElementById('dateInput');
+			let currentTimeInput = document.getElementById('timeInput');
+			let predWeatherMsg = document.getElementById('predWeatherMsg');
+
+			if (future) {
+				futureBtn.textContent = 'Plan a Future Trip';
+				weatherMenu.classList.replace('h-32', 'h-64');
+				resetLeftSideBar();
+				future = false;
+			} else {
+				futureBtn.textContent = 'Cancel';
+				let current = new Date();
+				let currentDate = current.toISOString().split('T')[0];
+				let currentTime = current.toTimeString().split(' ')[0].substring(0, 5);
+
+				currentDateInput.value = currentDate;
+				currentTimeInput.value = currentTime;
+				future = true;
+				futureInputs.style.display = 'block';
+				weatherMenu.classList.replace('h-64', 'h-32');
+			}
+		}
+
+		function resetLeftSideBar() {
+			predWeatherMsg.style.display = 'none';
+			displayWeather(temp, rain, wind);
+			futureInputs.style.display = 'none';
+		}
+
+		document
+			.getElementById('startPoint')
+			.addEventListener('focus', function () {
+				this.value = '';
+			});
+		document.getElementById('endPoint').addEventListener('focus', function () {
+			this.value = '';
+		});
+	</script>
+</div>
