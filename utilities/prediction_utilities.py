@@ -53,8 +53,17 @@ def get_temp_rain_wind(date: str, time: int) -> Tuple[temp, wind, rain] | None:
 
 # Create a function called get prediction with the named parameters above and station ID
 def get_predictions(day: float, hour: float, temp: float, rain: float, wind: float, station_id: int):
+    
+    corrected_id = int(station_id) - 1
+    if corrected_id > 81:
+        corrected_id -= 3
+    elif corrected_id > 70:
+        corrected_id -= 2
+    elif corrected_id > 46:
+        corrected_id -= 1
+    
     root='./model_files/'
-    file=f"model_{station_id}.pkl"
+    file=f"model_{corrected_id}.pkl"
     
     # Example input data
     data = {
