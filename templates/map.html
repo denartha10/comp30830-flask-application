@@ -94,22 +94,7 @@
 			selectedMarker.title = 'selected';
 			selectedInfo.open(map, selectedMarker);
 		} else {
-			//reshow all pins;
-			for (let id in stationDict) {
-				let pin = stationDict[id]['stationPin'];
-				let marker = stationDict[id]['stationMarker'];
-				let infoWindow = stationDict[id]['stationInfoWindow'];
-				let back = pin.background.slice(0, 18) + ', 1)';
-				let bord = pin.borderColor.slice(0, 18) + ', 1)';
-				pin.background = back;
-				pin.borderColor = bord;
-				pin.glyphColor = bord;
-				pin.scale = 1;
-				marker.zIndex = 1;
-				marker.title = 'not selected';
-				infoWindow.close();
-			}
-			closeRightSidebar();
+			showAllPins();
 		}
 
 		//event handler for closing pins when clicking on map
@@ -134,6 +119,24 @@
 		});
 	}
 	window.selectPin = selectPin;
+
+	function showAllPins() {
+		for (let id in stationDict) {
+			let pin = stationDict[id]['stationPin'];
+			let marker = stationDict[id]['stationMarker'];
+			let infoWindow = stationDict[id]['stationInfoWindow'];
+			let back = pin.background.slice(0, 18) + ', 1)';
+			let bord = pin.borderColor.slice(0, 18) + ', 1)';
+			pin.background = back;
+			pin.borderColor = bord;
+			pin.glyphColor = bord;
+			pin.scale = 1;
+			marker.zIndex = 1;
+			marker.title = 'not selected';
+			infoWindow.close();
+		}
+		closeRightSidebar();
+	}
 
 	const mapElement = document.getElementById('dublin_bike_map_id');
 	const map = new Map(mapElement, mapSettings);
@@ -161,7 +164,7 @@
 				av_bikes: station.available_bikes,
 				av_stands: station.available_stands,
 				name: station.name,
-				id: station.id 
+				id: station.id,
 			};
 			// Add the marker to the map
 			marker.addListener('click', () => {
@@ -328,6 +331,7 @@
 			all = true;
 		}
 
+		showAllPins();
 		hideMarkers(stationStart, stationEnd, all);
 
 		let StationOnelatLng = new google.maps.LatLng(
@@ -360,6 +364,7 @@
 			endMarkerNum
 		);
 		tripDisplayed = true;
+		map.setZoom(2);
 	}
 	window.callDirections = callDirections;
 
