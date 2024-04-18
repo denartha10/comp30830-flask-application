@@ -1,7 +1,7 @@
 <div id="rightSidebar">
     <h2 id="stationName" class="text-2xl font-bold mt-2">Station Name</h2>
-    <p id="bikeAvailability" class="text-1xl mt-2">Bikes Available: </p>
-    <p id="standAvailability" class="text-1xl mt-2">Stands Available: </p>
+    <p id="bikeAvailability" class="bg-blue-100 text-1xl mt-2 py-2">Bikes Available: </p>
+    <p id="standAvailability" class="bg-gray-200 text-1xl mt-2 py-2">Stands Available: </p>
 
     <div class="text-center"> 
         <label for="daySelect" class="block mt-4 font-bold text-center">Select a day to view average bike availability:</label>
@@ -29,28 +29,27 @@
 
     function fetchBikeData() {
         return fetch('bike_data/bike_avg.json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Bike Data Unavailable.');
+                }
+                return response.json(); // Parse JSON data
+            })
+            .then(data => {
+                // If everything is good, you might want to do something with 'data' here
+                return data; // Assuming no specific function to send data to, just returning it
+            })
             .catch(error => {
-                console.error('Error loading bike data:', error);
-                return {};
+                console.error('Error loading bike data:', error); // Send the error to the console
+                alert('Error loading bike data: ' + error); // Display alert with error
             });
     }
-    window.fetchBikeData = fetchBikeData;
 
     function updateBikeUsageData(stationId, selectedDayIndex) {
-        fetchBikeData().then(data => {
-            console.log('Fetched bike data:', data); 
-    
+        fetchBikeData().then(data => {    
             // Convert stationId to string
             const stationKey = stationId.toString(); 
-    
-            if (!data[stationKey]) {
-                console.error('No data for station:', stationId); // console log
-                return;
-            }
-    
             const bikeData = data[stationKey][selectedDayIndex];
-            console.log('Selected bike data for station', stationId, 'on day index', selectedDayIndex, ':', bikeData);
     
             const labels = Array.from({ length: bikeData.length }, (_, i) => `${i}:00`);
             const bikeCtx = document.getElementById('bikeAvailabilityChart').getContext('2d');
@@ -95,10 +94,8 @@
                     }
                 });
             }
-        }).catch(error => console.error('Error fetching or processing data:', error));
-    }
-    window.updateBikeUsageData = updateBikeUsageData;
-    
+        })
+    }    
 
     function setupDaySelect(stationId) {
         const daySelect = document.getElementById('daySelect');
@@ -110,9 +107,7 @@
     window.setupDaySelect = setupDaySelect;
     
     function openRightSidebar(stationId) {
-        const stationDict = getStationDict();
-        console.log('Station dictionary:', stationDict);
-        
+        const stationDict = getStationDict();        
         const sidebar = document.getElementById('rightSidebar');
         const stationName = document.getElementById('stationName');
         const bikeAvailability = document.getElementById('bikeAvailability');
@@ -120,7 +115,6 @@
         const daySelect = document.getElementById('daySelect');
     
         const station = stationDict[stationId];
-        console.log('Selected station:', station);
         stationName.textContent = station.name;
         bikeAvailability.textContent = `Bikes Available: ${station.av_bikes}`;
         standAvailability.textContent = `Stands Available: ${station.av_stands}`;
@@ -133,7 +127,6 @@
             event.stopPropagation();
         });
     }
-    window.openRightSidebar = openRightSidebar; 
 
     function closeRightSidebar() {
         const sidebar = document.getElementById('rightSidebar');
@@ -143,6 +136,5 @@
             bikeChart = null;
         }
     }        
-    window.closeRightSidebar = closeRightSidebar; 
 </script>
 

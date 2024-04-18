@@ -9,7 +9,6 @@
 		searchBar.addEventListener('focus', function () {
 			this.value = '';
 			searchPrompt.classList.add('hidden');
-			closeRightSidebar();
 			event.stopPropagation();
 		});
 
@@ -50,7 +49,6 @@
 			const target = event.target;
 			if (target !== searchBar && target !== searchPrompt) {
 				searchPrompt.classList.add('hidden');
-				closeRightSidebar();
 			}
 		});
 	}

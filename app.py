@@ -68,7 +68,6 @@ def select_station(id):
     return Response(json_data, mimetype='application/json')
 
 @app.route('/predict', methods=['GET'])
-#@cache.cached()
 def get_prediction():
     date = request.args.get("date")
     time = request.args.get("time")
