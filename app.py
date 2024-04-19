@@ -7,29 +7,20 @@ from json import dumps
 
 from utilities.map_utilities import determinePinColors, createInfoWindowContent
 import pandas as pd
-from dotenv import load_dotenv
+
 import os
 
 from utilities.prediction_utilities import convert_date_and_time_to_day_hour, get_predictions, get_temp_rain_wind
-from sqlalchemy.exc import SQLAlchemyError
-
-# Load .env file
-load_dotenv()
-
-database_uri = os.getenv('DEV_DATABASE_URI')
 
 configuration_dictionary = {
     "DEBUG": True,          # some Flask specific configs
     "CACHE_TYPE": "SimpleCache", # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 300,
-    "SQLALCHEMY_DATABASE_URI": database_uri,
-    "SQLALCHEMY_TRACK_MODIFICATIONS": False # to suppress a warning
+    "CACHE_DEFAULT_TIMEOUT": 300
 }
 
 app = Flask(__name__, static_url_path='', static_folder='public')
 app.config.from_mapping(configuration_dictionary)
 
-db = SQLAlchemy(app)
 cache = Cache(app)
 
 stations_dict = {}
@@ -45,7 +36,7 @@ def get_stations():
     contract = 'Dublin'
     api_request = requests.get(f'https://api.jcdecaux.com/vls/v1/stations?contract={contract}&apiKey={api_key}')
     if api_request.status_code not in range(200, 299):
-        return []
+        abort(404)
     data_json = api_request.json()
     df = pd.DataFrame(data_json)
     bike_data = df[['number', 'address', 'position', 'available_bikes', 'available_bike_stands', 'status']]
@@ -57,8 +48,7 @@ def get_stations():
     new_column_names = {
     'number': 'id',
     'address': 'name',
-    'available_bike_stands': 'available_stands',
-    'status': 'status',
+    'available_bike_stands': 'available_stands'
     }
     bike_data = bike_data.rename(columns=new_column_names)
     
