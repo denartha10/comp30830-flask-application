@@ -50,7 +50,7 @@ def get_stations():
     new_column_names = {
     'number': 'id',
     'address': 'name',
-    'available_bike_stands': 'available_stands'
+    'available_bike_stands': 'available_stands',
     }
     bike_data = bike_data.rename(columns=new_column_names)
     
