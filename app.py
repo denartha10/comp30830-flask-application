@@ -1,7 +1,10 @@
 from flask import Flask, Response, abort, render_template, request, send_from_directory
 from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy
-from utilities.models import Station, Weather
+
+import requests
+from json import dumps
+
 from utilities.map_utilities import determinePinColors, createInfoWindowContent
 import pandas as pd
 from dotenv import load_dotenv
@@ -32,33 +35,65 @@ cache = Cache(app)
 stations_dict = {}
 
 @app.route('/')
-@cache.cached()
 def index():
-    return render_template("index.html")
+    visited = request.cookies.get("visited") if request.cookies.get("visited") else "false"
+    return render_template("index.html", visited=visited)
 
 @app.route('/stations', methods=['GET'])
-@cache.cached()
 def get_stations():
-    stations = db.session.query(Station).all()
-    if not stations:
-        abort(404)  # error handler
-    bike_data = pd.DataFrame(stations)
+    api_key = 'c3888c0fb1578a56ea9015668577aa754fcbecd6'
+    contract = 'Dublin'
+    api_request = requests.get(f'https://api.jcdecaux.com/vls/v1/stations?contract={contract}&apiKey={api_key}')
+    if api_request.status_code not in range(200, 299):
+        return []
+    data_json = api_request.json()
+    df = pd.DataFrame(data_json)
+    bike_data = df[['number', 'address', 'position', 'available_bikes', 'available_bike_stands', 'status']]
+    
+    bike_data['lat'] = bike_data['position'].apply(lambda x: x['lat'])
+    bike_data['lng'] = bike_data['position'].apply(lambda x: x['lng'])
+    del bike_data['position']
+    
+    new_column_names = {
+    'number': 'id',
+    'address': 'name',
+    'available_bike_stands': 'available_stands',
+    'status': 'status',
+    }
+    bike_data = bike_data.rename(columns=new_column_names)
+    
     bike_data["pin_colors"] = bike_data.apply(determinePinColors, axis=1)
     bike_data["info_html"] = bike_data.apply(createInfoWindowContent, axis=1)
+    
     json_data = bike_data.to_json(orient='records', date_format='iso')
-    return Response(json_data, mimetype='application/json')
+    response = Response(json_data, mimetype='application/json')
+    response.set_cookie("visited", "true")
+    return response
 
 @app.route('/weather', methods=['GET'])
 def get_weather():
-    weather = db.session.query(Weather).all()
-    if not weather:
-        abort(404) # error handler
-    weather_data = pd.DataFrame(weather)
-    json_data = weather_data.to_json(orient='records', date_format='iso')
-    return Response(json_data, mimetype='application/json')
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": 52.54,
+        "longitude": 13.41,
+        "current": ["temperature_2m", "precipitation", "wind_speed_10m"],
+    }
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        json = response.json()["current"]
+        data = [{
+            "date_time": json['time'],
+            "temperature": json["temperature_2m"],
+            "precipitation": json["precipitation"],
+            "wind": json["wind_speed_10m"]
+        }]
+        weather = dumps(data)
+    else:
+        weather = dumps([])
+        
+    return Response(weather, mimetype='application/json')
 
 @app.route('/select/id', methods=['GET'])
-@cache.cached()
 def select_station(id):
     select_station = db.session.query.filter_by(id=id).all() # Getting a warning about the filter by here??
     if select_station is None:
