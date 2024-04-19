@@ -3,7 +3,7 @@ from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy
 
 import requests
-import openmeteo_requests
+from json import dumps
 
 from utilities.map_utilities import determinePinColors, createInfoWindowContent
 import pandas as pd
@@ -37,7 +37,6 @@ stations_dict = {}
 @app.route('/')
 def index():
     visited = request.cookies.get("visited") if request.cookies.get("visited") else "false"
-    print(visited)
     return render_template("index.html", visited=visited)
 
 @app.route('/stations', methods=['GET'])
@@ -46,7 +45,6 @@ def get_stations():
     contract = 'Dublin'
     api_request = requests.get(f'https://api.jcdecaux.com/vls/v1/stations?contract={contract}&apiKey={api_key}')
     if api_request.status_code not in range(200, 299):
-        print(api_request.reason)
         return []
     data_json = api_request.json()
     df = pd.DataFrame(data_json)
@@ -56,7 +54,6 @@ def get_stations():
     bike_data['lng'] = bike_data['position'].apply(lambda x: x['lng'])
     del bike_data['position']
     
-    print(bike_data["lat"])
     new_column_names = {
     'number': 'id',
     'address': 'name',
@@ -77,16 +74,24 @@ def get_stations():
 def get_weather():
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
-		"latitude": 53.35, #Dublin lat
-		"longitude": 6.26, #Dublin lng
-		"current": ["temperature_2m", "precipitation", "wind_speed_10m"]
-	}
-    openmeteo = openmeteo_requests.Client()
-    api_request = openmeteo.weather_api(url, params=params)
-    api_return = api_request[0].Current()
-    weather_data = pd.DataFrame(api_return)
-    json_data = weather_data.to_json(orient='records', date_format='iso')
-    return Response(json_data, mimetype='application/json')
+        "latitude": 52.54,
+        "longitude": 13.41,
+        "current": ["temperature_2m", "precipitation", "wind_speed_10m"],
+    }
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        json = response.json()["current"]
+        data = [{
+            "date_time": json['time'],
+            "temperature": json["temperature_2m"],
+            "precipitation": json["precipitation"],
+            "wind": json["wind_speed_10m"]
+        }]
+        weather = dumps(data)
+    else:
+        weather = dumps([])
+        
+    return Response(weather, mimetype='application/json')
 
 @app.route('/select/id', methods=['GET'])
 def select_station(id):
