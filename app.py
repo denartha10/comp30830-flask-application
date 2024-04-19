@@ -1,8 +1,10 @@
 from flask import Flask, Response, abort, render_template, request, send_from_directory
 from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy
+
 import requests
 import openmeteo_requests
+
 from utilities.map_utilities import determinePinColors, createInfoWindowContent
 import pandas as pd
 from dotenv import load_dotenv
@@ -33,12 +35,12 @@ cache = Cache(app)
 stations_dict = {}
 
 @app.route('/')
-@cache.cached()
 def index():
-    return render_template("index.html")
+    visited = request.cookies.get("visited") if request.cookies.get("visited") else "false"
+    print(visited)
+    return render_template("index.html", visited=visited)
 
 @app.route('/stations', methods=['GET'])
-@cache.cached()
 def get_stations():
     api_key = 'c3888c0fb1578a56ea9015668577aa754fcbecd6'
     contract = 'Dublin'
@@ -67,7 +69,9 @@ def get_stations():
     bike_data["info_html"] = bike_data.apply(createInfoWindowContent, axis=1)
     
     json_data = bike_data.to_json(orient='records', date_format='iso')
-    return Response(json_data, mimetype='application/json')
+    response = Response(json_data, mimetype='application/json')
+    response.set_cookie("visited", "true")
+    return response
 
 @app.route('/weather', methods=['GET'])
 def get_weather():
@@ -85,7 +89,6 @@ def get_weather():
     return Response(json_data, mimetype='application/json')
 
 @app.route('/select/id', methods=['GET'])
-@cache.cached()
 def select_station(id):
     select_station = db.session.query.filter_by(id=id).all() # Getting a warning about the filter by here??
     if select_station is None:
