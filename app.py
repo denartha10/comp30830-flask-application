@@ -58,7 +58,6 @@ def get_stations():
     'number': 'id',
     'address': 'name',
     'available_bike_stands': 'available_stands',
-    'status': 'status',
     }
     bike_data = bike_data.rename(columns=new_column_names)
     
