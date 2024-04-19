@@ -28,7 +28,7 @@
     let bikeChart;
 
     function fetchBikeData() {
-        return fetch('bike_data/bike_avg.json')
+        return fetch('select_station')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Bike Data Unavailable.');
@@ -36,8 +36,7 @@
                 return response.json(); // Parse JSON data
             })
             .then(data => {
-                // If everything is good, you might want to do something with 'data' here
-                return data; // Assuming no specific function to send data to, just returning it
+                return data;
             })
             .catch(error => {
                 console.error('Error loading bike data:', error); // Send the error to the console
