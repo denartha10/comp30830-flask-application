@@ -27,8 +27,12 @@
 
 	const fetchProcessedStations = async () => {
 		const response = await fetch('/stations');
-		const stations = await response.json();
-		return stations;
+		if(response.ok){
+			const stations = await response.json();
+			return stations;
+		}
+
+		window.location.href="/404.html"
 	};
 
 	function createInfoWindow(station, content) {

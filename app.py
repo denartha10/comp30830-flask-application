@@ -1,6 +1,5 @@
 from flask import Flask, Response, abort, render_template, request, send_from_directory
 from flask_caching import Cache
-from flask_sqlalchemy import SQLAlchemy
 
 import requests
 from json import dumps
