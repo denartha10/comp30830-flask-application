@@ -24,15 +24,8 @@ cache = Cache(app)
 
 stations_dict = {}
 
-
-@app.route('/')
-def index():
-    visited = request.cookies.get("visited") if request.cookies.get("visited") else "false"
-    return render_template("index.html", visited=visited)
-
-
-@app.route('/stations', methods=['GET'])
-def get_stations():
+@cache.cached(timeout=300)
+def bike_api_call():
     api_key = 'c3888c0fb1578a56ea9015668577aa754fcbecd6'
     contract = 'Dublin'
     api_request = requests.get(f'https://api.jcdecaux.com/vls/v1/stations?contract={contract}&apiKey={api_key}')
@@ -41,7 +34,7 @@ def get_stations():
     data_json = api_request.json()
     df = pd.DataFrame(data_json)
     bike_data = df[['number', 'address', 'position', 'available_bikes', 'available_bike_stands', 'status']]
-    
+
     bike_data['lat'] = bike_data['position'].apply(lambda x: x['lat'])
     bike_data['lng'] = bike_data['position'].apply(lambda x: x['lng'])
     del bike_data['position']
@@ -56,8 +49,16 @@ def get_stations():
     bike_data["pin_colors"] = bike_data.apply(determinePinColors, axis=1)
     bike_data["info_html"] = bike_data.apply(createInfoWindowContent, axis=1)
     
-    json_data = bike_data.to_json(orient='records', date_format='iso')
-    response = Response(json_data, mimetype='application/json')
+    return bike_data.to_json(orient='records', date_format='iso')
+
+@app.route('/')
+def index():
+    visited = request.cookies.get("visited") if request.cookies.get("visited") else "false"
+    return render_template("index.html", visited=visited)
+
+@app.route('/stations', methods=['GET'])
+def get_stations():
+    response = Response(bike_api_call(), mimetype='application/json')
     response.set_cookie("visited", "true")
     return response
 
