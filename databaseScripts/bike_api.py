@@ -68,9 +68,6 @@ def engine_params():
     db_name = 'comp30830'
     return f'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db_name}'
 
-
-
-
 data = api_call()
 
 stations = [
@@ -86,7 +83,6 @@ stations = [
     )
     for d in data
 ]
-
 
 availabilities = [
     Availability(
